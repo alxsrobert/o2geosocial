@@ -1,0 +1,21 @@
+Package: measlesoutbreaker
+Type: Package
+Title: Inference and reconstruction of measles transmission chains
+Version: 1.0
+Date: 2019-06-03
+Author: Alexis Robert
+Maintainer: Alexis Robert <alexis3.robert3@gmail.com>
+Description: First test of a description, to be modified later.
+License: GPL (>= 2)
+Imports: 
+    Rcpp,
+    methods,
+    stats,
+    grDevices,
+    Rcpp,
+    ape,
+    ggplot2,
+    magrittr,
+    visNetwork
+LinkingTo: Rcpp
+RoxygenNote: 6.1.1
