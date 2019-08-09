@@ -66,7 +66,8 @@ considered in the study.}
 \examples{
 
 x <- fake_outbreak
-outbreaker_data(dates = x$sample, dna = x$dna, w_dens = x$w)
+outbreaker_data(dates = x$cases$Date, age_group = x$cases$age_group, 
+postcode = x$cases$county)
 
 }
 \author{

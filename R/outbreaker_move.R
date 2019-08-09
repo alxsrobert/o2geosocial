@@ -42,7 +42,6 @@ outbreaker_move <- function(moves, data, param_current,
       param_current <- moves[[j]](param_current)
 
     }
-
     ## store outputs and influence if needed
     if ((i %% config$sample_every) == 0) {
       param_store <- outbreaker_mcmc_store(param_current, param_store, data,

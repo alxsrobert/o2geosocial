@@ -18,13 +18,13 @@
 #'
 #' }
 #'
-#' @aliases fake_outbreak
+#' @aliases toy_outbreak
 #' @docType data
 #' @author Alexis Robert \email{alexis.robert@lshtm.ac.uk}
 #' @keywords datasets
 #'
 #' @examples
-#' names(fake_outbreak)
-#' fake_outbreak
+#' names(toy_outbreak)
+#' toy_outbreak
 #' 
-"fake_outbreak"
+"toy_outbreak"

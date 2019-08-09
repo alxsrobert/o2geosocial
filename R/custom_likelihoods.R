@@ -73,8 +73,9 @@
 #'                     sample_every = 1)
 #'
 #' ## load data
-#' x <- fake_outbreak
-#' data <- outbreaker_data(dates = x$sample, dna = x$dna, w_dens = x$w)
+#' x <- toy_outbreak
+#' data <- outbreaker_data(dates = x$cases$sample, age_group = x$cases$age_group,
+#' postcode = x$cases$county)
 #' 
 #' res_null <- outbreaker(data = data,
 #'                        config = null_config,

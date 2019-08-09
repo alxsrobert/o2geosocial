@@ -336,12 +336,11 @@ Rcpp::List cpp_move_alpha(Rcpp::List param, Rcpp::List data, Rcpp::List config,
         // loglike with current value
         // old_loglike = cpp_ll_all(data, param, R_NilValue);
         old_loglike = cpp_ll_all(data, config, param, i+1, list_custom_ll); // offset
-        
+
         // proposal (+/- 1)
         new_alpha[i] = possible_ancestors[unif_rand() * possible_ancestors.size()];
         // loglike with current value
         new_loglike = cpp_ll_all(data, config, new_param, i+1, list_custom_ll);
-        
         // acceptance term
         p_accept = exp(new_loglike - old_loglike);
         runif = unif_rand();
@@ -609,11 +608,9 @@ Rcpp::List cpp_move_kappa(Rcpp::List param, Rcpp::List data, Rcpp::List config,
         // loglike with new parameters
         new_loglike = cpp_ll_all(data, config, new_param, i+1, list_custom_ll);
         
-        
         // acceptance term
         p_accept = exp(new_loglike - old_loglike);
-        
-        
+
         // acceptance: change param only if new values is accepted
         if (p_accept >= unif_rand()) { // accept new parameters
           kappa[i] = new_kappa[i];

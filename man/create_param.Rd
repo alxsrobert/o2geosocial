@@ -95,8 +95,9 @@ This function creates initial outputs and parameter states for outbreaker.
 \examples{
 
 ## load data
-x <- fake_outbreak
-data <- outbreaker_data(dates = x$sample, dna = x$dna, w_dens = x$w)
+x <- toy_outbreak
+data <- outbreaker_data(dates = x$cases$Date, age_group = x$cases$age_group, 
+postcode = x$cases$county)
 
 ## modify config settings
 config <- create_config(move_alpha = FALSE, n_iter = 2e5, sample_every = 1000)
