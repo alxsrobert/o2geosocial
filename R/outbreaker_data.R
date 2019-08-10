@@ -60,7 +60,7 @@
 #'
 #' @examples
 #'
-#' x <- fake_outbreak
+#' x <- toy_outbreak
 #' outbreaker_data(dates = x$cases$Date, age_group = x$cases$age_group, 
 #' postcode = x$cases$county)
 #'
