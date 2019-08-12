@@ -184,14 +184,11 @@ double cpp_ll_space(Rcpp::List data, Rcpp::List config,
       log_s_dens = data["log_s_dens"];
     
     
-    double probs;
     double out = 0.0;
-    double sum_gen2 = 0.0;
-    
+
     int size_pop = population.size();
     int postcode_j;
     int postcode_index;
-    int k,j;
 
     if (i == R_NilValue) {
       for (int j = 0; j < N; j++) {
@@ -323,9 +320,6 @@ double cpp_ll_age(Rcpp::List data, Rcpp::List param, int i,
 
 double cpp_ll_reporting(Rcpp::List data, Rcpp::List param, SEXP i,
                         Rcpp::RObject custom_function) {
-  Rcpp::NumericMatrix w_dens = data["log_w_dens"];
-  size_t K = w_dens.nrow();
-  
   size_t N = static_cast<size_t>(data["N"]);
   if(N < 2) return 0.0;
   
@@ -338,14 +332,13 @@ double cpp_ll_reporting(Rcpp::List data, Rcpp::List param, SEXP i,
   }
   
   if (custom_function == R_NilValue) {
-    
     double out = 0.0;
     
     // all cases are retained
     if (i == R_NilValue) {
       for (size_t j = 0; j < N; j++) {
         if (kappa[j] != NA_INTEGER) {
-          if (kappa[j] < 1 || kappa[j] > K) {
+          if (kappa[j] < 1) {
             return  R_NegInf;
           }
           out += R::dgeom(kappa[j] - 1.0, pi, 1); // first arg must be cast to double
@@ -358,7 +351,7 @@ double cpp_ll_reporting(Rcpp::List data, Rcpp::List param, SEXP i,
       for (size_t k = 0; k < length_i; k++) {
         size_t j = vec_i[k] - 1; // offset
         if (kappa[j] != NA_INTEGER) {
-          if (kappa[j] < 1 || kappa[j] > K) {
+          if (kappa[j] < 1) {
             return  R_NegInf;
           }
           out += R::dgeom(kappa[j] - 1.0, pi, 1); // first arg must be cast to double

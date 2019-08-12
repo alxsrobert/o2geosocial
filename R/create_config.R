@@ -181,17 +181,24 @@ create_config <- function (..., data = NULL)
       stop("gamma is below 0")
     if(!is.numeric(config$gamma))
       stop("gamma is not numeric value")
-    if(!is.finite(config$gamma))
-      stop("gamma is infinite or NA")
+    if(is.na(config$gamma))
+      stop("gamma is NA")
+  }
+  if(config$gamma == 0 || is.null(config$gamma)){
+    config$gamma <- Inf
+    warning("gamma was set to max values")
   }
   if(!is.null(config$delta)){
     if(config$delta <= 0)
       stop("delta is below 0")
     if(!is.numeric(config$delta))
       stop("delta is not numeric")
-    if(!is.finite(config$delta))
-      stop("delta is infinite or NA")
-    
+    if(is.na(config$delta))
+      stop("delta is NA")
+  }
+  if(config$delta == 0 || is.null(config$delta)){
+    config$delta <- Inf
+    warning("delta was set to max values")
   }
   if (is.numeric(config$init_tree)) {
     config$init_alpha <- as.integer(config$init_tree)

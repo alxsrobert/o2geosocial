@@ -171,7 +171,7 @@ Rcpp::List cpp_log_like(Rcpp::NumericVector population,
       }
     }
   }
-  
+
   for(k = 0; k<nb_cases; k++){
     for(j = 0; j<nb_cases; j++){
       if(distance(j,k) < thresh){
@@ -203,7 +203,6 @@ Rcpp::List cpp_log_like(Rcpp::NumericVector population,
       }
     }
   }
-  
 
   Rcpp::List new_log_s_dens = Rcpp::List::create(probs, probs2);
   
