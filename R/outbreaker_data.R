@@ -83,14 +83,19 @@ outbreaker_data <- function(..., data = list(...)) {
   ## CHECK CLUSTER
   if(is.null(data$is_cluster)){
     data$is_cluster <- rep(1, length(data$dates))
-    data$cluster <- list(data$is_cluster)
+    cluster_list <- list(1:length(data$is_cluster))
+    names(cluster_list) <- 1
   } else{
     if(any(is.na(data$is_cluster)))
       stop("non-finite values detected in is_cluster")
     data$is_cluster <- factor(data$is_cluster, levels = unique(data$is_cluster))
     data$is_cluster <- as.numeric(data$is_cluster)
-    cluster_list <- sapply(unique(data$is_cluster), function(X) 
-      return(which(data$is_cluster == as.numeric(X))))
+    if(all(data$is_cluster == 1)){
+      cluster_list <- list(1:length(data$is_cluster))
+    } else{
+      cluster_list <- sapply(unique(data$is_cluster), function(X) 
+        return(which(data$is_cluster == as.numeric(X))))
+    }
     names(cluster_list) <- 1:length(unique(data$is_cluster))
     data$cluster <- cluster_list
   }
