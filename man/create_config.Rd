@@ -17,6 +17,119 @@ items as input, performs various checks, set defaults where arguments are
 missing, and return a correct list of settings. If no input is given, it
 returns the default settings.
 }
+\details{
+Acceptables arguments for ... are:
+
+\describe{
+
+\item{init_tree}{the tree used to initialize the MCMC. Can be either a
+character string indicating how this tree should be computed, or a vector of
+integers corresponding to the tree itself, where the i-th value corresponds
+to the index of the ancestor of 'i' (i.e., \code{init.tree[i]} is the
+ancestor of case \code{i}). The only accepted character string is 
+"star" (all cases coalesce to the first case).}
+
+\item{spatial_method}{a character string indicating the mthod used to
+evaluate the spatial likelihood. Can be either "exponential" or "power-law".}
+
+\item{gamma}{a double indicating the spatial threshold for pre clustering; 
+defaults to NULL.}
+
+\item{delta}{a double indicating the temporal threshold for pre clustering;  
+defaults to NULL.}
+
+\item{init_kappa}{a vector of integers indicating the initial values of kappa; 
+defaults to 1.}
+
+\item{init_a}{initial value of the first spatial parameter (population).}
+
+\item{init_b}{initial value of the second spatial parameter (distance).}
+
+\item{init_alpha}{a vector of integers indicating the initial values of
+alpha, where the i-th value indicates the ancestor of case 'i'; defaults to
+\code{NULL}, in which ancestries are defined from \code{init_tree}.}
+
+\item{init_kappa}{a vector of integers indicating the initial values of kappa; 
+defaults to 1.}
+
+\item{init_t_inf}{a vector of integers indicating the initial values of
+\code{t_inf}, i.e. dates of infection; defaults to \code{NULL}, in which case
+the most likely \code{t_inf} will be determined from the delay to
+reporting/symptoms distribution, and the dates of reporting/symptoms,
+provided in \code{data}.}
+
+\item{init_pi}{initial value for the reporting probability.}
+
+\item{n_iter}{an integer indicating the number of iterations in the MCMC,
+including the burnin period.}
+
+\item{move_alpha}{a vector of logicals indicating, for each case, if the
+ancestry should be estimated ('moved' in the MCMC), or not, defaulting to
+TRUE; the vector is recycled if needed.}
+
+\item{move_t_inf}{a vector of logicals indicating, for each case, if the
+dates of infection should be estimated ('moved' in the MCMC), or not,
+defaulting to TRUE; the vector is recycled if needed.}
+
+\item{move_pi}{a logical indicating whether the reporting probability
+should be estimated ('moved' in the MCMC), or not, all defaulting to TRUE.}
+
+\item{move_kappa}{a logical indicating whether the number of generations
+between two successive cases should be estimated ('moved' in the MCMC), or
+not, all defaulting to TRUE.}
+\item{move_a}{a logical indicating whether the first spatial parameter
+should be estimated ('moved' in the MCMC), or not, all defaulting to TRUE.}
+\item{move_b}{a logical indicating whether the second spatial parameter
+should be estimated ('moved' in the MCMC), or not, all defaulting to TRUE.}
+
+\item{move_swap_cases}{a logical indicating whether the movement to swap cases
+should be used, or not, all defaulting to TRUE.}
+
+\item{sample_every}{the frequency at which MCMC samples are retained for the
+output.}
+
+\item{sd_pi}{the standard deviation for the Normal proposal for the reporting
+probability.}
+
+\item{sd_a}{the standard deviation for the Normal proposal for the first spatial 
+parameter.}
+
+\item{sd_b}{the standard deviation for the Normal proposal for the second spatial 
+parameter.}
+
+\item{min_date}{earliest infection date possible, expressed as days since the
+first sampling.}
+
+\item{find_import}{a logical indicating whether the import status of cases should
+be estimated.}
+
+\item{outlier_threshold}{a numeric value indicating the probability that should be
+used to compute the threshold when estimating the import status.}
+
+\item{outlier_relative}{a logical indicating whether the threshold is an absolute 
+or relative value, default to FALSE (absolute value).}
+
+\item{n_iter_import}{Number of iterations of the first short run.}
+
+\item{sample_every_import}{the frequency at which MCMC samples are retained for the
+output during the first run.}
+
+\item{burnin}{The number of iterations that should be removed when estimating import.}
+
+\item{max_kappa}{an integer indicating the largest number of generations
+between any two linked cases; defaults to 5.}
+
+\item{prior_pi}{a numeric vector of length 2 indicating the first and second
+parameter of the beta prior for the reporting probability 'pi'.}
+
+\item{prior_a}{a numeric vector of length 2 indicating the first and second
+parameter of the uniform prior for the first spatial parameter 'a'.}
+
+\item{prior_b}{a numeric vector of length 2 indicating the first and second
+parameter of the uniform prior for the second spatial parameter 'b'.}
+
+}
+}
 \examples{
 ## see default settings
 create_config()
