@@ -14,10 +14,10 @@
 #' integers corresponding to the tree itself, where the i-th value corresponds
 #' to the index of the ancestor of 'i' (i.e., \code{init.tree[i]} is the
 #' ancestor of case \code{i}). The only accepted character string is 
-#' "star" (all cases coalesce to the first case)}. 
+#' "star" (all cases coalesce to the first case).}
 #'
 #' \item{spatial_method}{a character string indicating the mthod used to
-#' evaluate the spatial likelihood. Can be either "exponential" or "power-law".
+#' evaluate the spatial likelihood. Can be either "exponential" or "power-law".}
 #'
 #' \item{gamma}{a double indicating the spatial threshold for pre clustering; 
 #' defaults to NULL.}
@@ -28,7 +28,7 @@
 #' \item{init_kappa}{a vector of integers indicating the initial values of kappa; 
 #' defaults to 1.}
 #' 
-#' \item{init_a}{initial value of the first spatial parameter (population)}
+#' \item{init_a}{initial value of the first spatial parameter (population).}
 #' 
 #' \item{init_b}{initial value of the second spatial parameter (distance).}
 #' 
@@ -45,10 +45,10 @@
 #' reporting/symptoms distribution, and the dates of reporting/symptoms,
 #' provided in \code{data}.}
 #'
-#' \item{init_pi}{initial value for the reporting probability}
+#' \item{init_pi}{initial value for the reporting probability.}
 #'
 #' \item{n_iter}{an integer indicating the number of iterations in the MCMC,
-#' including the burnin period}
+#' including the burnin period.}
 #'
 #' \item{move_alpha}{a vector of logicals indicating, for each case, if the
 #' ancestry should be estimated ('moved' in the MCMC), or not, defaulting to
@@ -75,19 +75,19 @@
 #' should be used, or not, all defaulting to TRUE.}
 #'
 #' \item{sample_every}{the frequency at which MCMC samples are retained for the
-#' output}
+#' output.}
 #'
 #' \item{sd_pi}{the standard deviation for the Normal proposal for the reporting
-#' probability}
+#' probability.}
 #' 
 #' \item{sd_a}{the standard deviation for the Normal proposal for the first spatial 
-#' parameter}
+#' parameter.}
 #' 
 #' \item{sd_b}{the standard deviation for the Normal proposal for the second spatial 
-#' parameter}
+#' parameter.}
 #'
 #' \item{min_date}{earliest infection date possible, expressed as days since the
-#' first sampling}
+#' first sampling.}
 #' 
 #' \item{find_import}{a logical indicating whether the import status of cases should
 #' be estimated.}
@@ -96,26 +96,26 @@
 #' used to compute the threshold when estimating the import status.}
 #'
 #' \item{outlier_relative}{a logical indicating whether the threshold is an absolute 
-#' or relative value, default to FALSE (absolute value)}
+#' or relative value, default to FALSE (absolute value).}
 #' 
-#' \item{n_iter_import}{Number of iterations of the first short run}
+#' \item{n_iter_import}{Number of iterations of the first short run.}
 #' 
 #' \item{sample_every_import}{the frequency at which MCMC samples are retained for the
-#' output during the first run}
+#' output during the first run.}
 #' 
-#' \item{burnin}{The number of iterations that should be removed when estimating import}
+#' \item{burnin}{The number of iterations that should be removed when estimating import.}
 #' 
 #' \item{max_kappa}{an integer indicating the largest number of generations
-#' between any two linked cases; defaults to 5}
+#' between any two linked cases; defaults to 5.}
 #'
 #' \item{prior_pi}{a numeric vector of length 2 indicating the first and second
-#' parameter of the beta prior for the reporting probability 'pi'}
+#' parameter of the beta prior for the reporting probability 'pi'.}
 #' 
 #' \item{prior_a}{a numeric vector of length 2 indicating the first and second
-#' parameter of the uniform prior for the first spatial parameter 'a'}
+#' parameter of the uniform prior for the first spatial parameter 'a'.}
 #' 
 #' \item{prior_b}{a numeric vector of length 2 indicating the first and second
-#' parameter of the uniform prior for the second spatial parameter 'b'}
+#' parameter of the uniform prior for the second spatial parameter 'b'.}
 
 #'
 #' }
