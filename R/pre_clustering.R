@@ -4,6 +4,8 @@
 #' This function updates the clusters and the  initial tree in the lists data 
 #' and config
 #' 
+#' @author Alexis Robert (\email{alexis.robert@lshtm.ac.uk})
+#'
 #' @param data A list of data items as returned by \code{outbreaker_data}, or
 #' arguments passed to this function.
 #'

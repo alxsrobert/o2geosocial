@@ -54,7 +54,7 @@
 #'
 #' @param data optionally, an existing list of data item as returned by \code{outbreaker_data}.
 #'
-#' @author Thibaut Jombart (\email{thibautjombart@@gmail.com})
+#' @author Initial version by Thibaut Jombart, rewritten by Alexis Robert (\email{alexis.robert@lshtm.ac.uk})
 #'
 #' @export
 #'

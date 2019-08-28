@@ -9,7 +9,7 @@
 #' @aliases outbreaker_chains print.outbreaker_chains plot.outbreaker_chains
 #'   summary.outbreaker_chains
 #'
-#' @author Thibaut Jombart (\email{thibautjombart@@gmail.com})
+#' @author Initial version by Thibaut Jombart, rewritten by Alexis Robert (\email{alexis.robert@lshtm.ac.uk})
 #'
 #' @param x an \code{outbreaker_chains} object as returned by \code{outbreaker}.
 #' @param n_row the number of rows to display in head and tail; defaults to 3.

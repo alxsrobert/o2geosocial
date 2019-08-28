@@ -126,7 +126,7 @@
 #'
 #' @seealso \code{\link{outbreaker_data}} to check and process data for outbreaker
 #'
-#' @author Thibaut Jombart (\email{thibautjombart@@gmail.com})
+#' @author Initial version by Thibaut Jombart, rewritten by Alexis Robert (\email{alexis.robert@lshtm.ac.uk})
 #'
 #' @export
 #'

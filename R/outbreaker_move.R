@@ -2,7 +2,7 @@
 ## #'
 ## #' This function moves all parameters for outbreaker2.
 ## #'
-## #' @author Thibaut Jombart \email{thibautjombart@@gmail.com}
+## #' @author Initial version by Thibaut Jombart, rewritten by Alexis Robert (\email{alexis.robert@lshtm.ac.uk})
 ## #'
 ## #'
 ## #' @param moves a list of movement functions as returned by \code{bind_moves}

@@ -2,7 +2,7 @@
 ## #'
 ## #' This function creates initial outputs and parameter states for outbreaker.
 ## #'
-## #' @author Thibaut Jombart (\email{thibautjombart@@gmail.com})
+## #' @author Initial version by Thibaut Jombart, rewritten by Alexis Robert (\email{alexis.robert@lshtm.ac.uk})
 ## #'
 ## #' @param param a list of data items as returned by \code{create_param}
 ## #'

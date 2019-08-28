@@ -45,7 +45,7 @@
 #'     outbreaker. Functions which are not customised will result in a NULL
 #'     component.
 #'
-#' @author Thibaut Jombart (\email{thibautjombart@@gmail.com})
+#' @author Initial version by Thibaut Jombart, rewritten by Alexis Robert (\email{alexis.robert@lshtm.ac.uk})
 #'
 #' @param ... a named list of functions, each computing a log-likelihood component.
 #'

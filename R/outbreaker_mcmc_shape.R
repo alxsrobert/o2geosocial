@@ -2,7 +2,7 @@
 ## #'
 ## #' This function shapes MCMC samples for outbreaker into a data.frame with the class \code{outbreaker_chains}.
 ## #'
-## #' @author Thibaut Jombart (\email{thibautjombart@@gmail_com})
+## #' @author Initial version by Thibaut Jombart, rewritten by Alexis Robert (\email{alexis.robert@lshtm.ac.uk})
 ## #'
 ## #' @param param a list of output items as returned by \code{create_param}
 ## #'
