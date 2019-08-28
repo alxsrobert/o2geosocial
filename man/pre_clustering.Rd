@@ -23,3 +23,6 @@ A list containing two components \code{$data} and
 This function updates the clusters and the  initial tree in the lists data 
 and config
 }
+\author{
+Alexis Robert (\email{alexis.robert@lshtm.ac.uk})
+}

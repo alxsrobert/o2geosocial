@@ -78,5 +78,5 @@ movements (i.e. none of the names specified above), the closure will contain:
 See \href{http://www.repidemicsconsortium.org/outbreaker2/articles/customisation.html#customising-movements}{customization vignette} for detailed examples on how to customise movement functions.
 }
 \author{
-Thibaut Jombart (\email{thibautjombart@gmail.com}).
+Initial version by Thibaut Jombart, rewritten by Alexis Robert (\email{alexis.robert@lshtm.ac.uk})
 }

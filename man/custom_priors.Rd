@@ -105,5 +105,5 @@ priors$pi(list(pi=.49))
 See \href{http://www.repidemicsconsortium.org/outbreaker2/articles/customisation.html#customising-priors}{customization vignette} for detailed examples on how to customize priors.
 }
 \author{
-Thibaut Jombart (\email{thibautjombart@gmail.com}).
+Initial version by Thibaut Jombart, rewritten by Alexis Robert (\email{alexis.robert@lshtm.ac.uk})
 }

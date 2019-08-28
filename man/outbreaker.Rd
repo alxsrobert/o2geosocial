@@ -57,11 +57,6 @@ as.data.frame(out2)
 
 }
 }
-\references{
-Jombart T, Cori A, Didelot X, Cauchemez S, Fraser C and Ferguson
-    N (2014).  Bayesian reconstruction of disease outbreaks by combining
-    epidemiologic and genomic data. PLoS Computational Biology.
-}
 \seealso{
 \code{\link{outbreaker_data}} to process input data, and
     \code{\link{create_config}} to process/set up parameters
@@ -85,5 +80,5 @@ functions
 }
 }
 \author{
-Thibaut Jombart (\email{thibautjombart@gmail.com})
+Initial version by Thibaut Jombart, rewritten by Alexis Robert (\email{alexis.robert@lshtm.ac.uk})
 }

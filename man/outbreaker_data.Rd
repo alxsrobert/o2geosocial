@@ -71,5 +71,5 @@ postcode = x$cases$county)
 
 }
 \author{
-Thibaut Jombart (\email{thibautjombart@gmail.com})
+Initial version by Thibaut Jombart, rewritten by Alexis Robert (\email{alexis.robert@lshtm.ac.uk})
 }

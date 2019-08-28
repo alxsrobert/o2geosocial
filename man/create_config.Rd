@@ -144,5 +144,5 @@ create_config(move_alpha = FALSE, n_iter = 2e5, sample_every = 1000)
 \code{\link{outbreaker_data}} to check and process data for outbreaker
 }
 \author{
-Thibaut Jombart (\email{thibautjombart@gmail.com})
+Initial version by Thibaut Jombart, rewritten by Alexis Robert (\email{alexis.robert@lshtm.ac.uk})
 }

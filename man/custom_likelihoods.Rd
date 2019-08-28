@@ -94,5 +94,5 @@ plot(res_null, type = "alpha")
 See \href{http://www.repidemicsconsortium.org/outbreaker2/articles/customisation.html#customizing-likelihood}{customization vignette} for detailed examples on how to customize likelihoods.
 }
 \author{
-Thibaut Jombart (\email{thibautjombart@gmail.com})
+Initial version by Thibaut Jombart, rewritten by Alexis Robert (\email{alexis.robert@lshtm.ac.uk})
 }
