@@ -51,8 +51,6 @@
 #'
 #' @return a list of named functions
 #'
-#' @seealso See \href{http://www.repidemicsconsortium.org/outbreaker2/articles/customisation.html#customizing-likelihood}{customization vignette} for detailed examples on how to customize likelihoods.
-#'
 #' @export
 #' 
 #' @examples
@@ -87,7 +85,7 @@
 
 ## USING CUSTOM LIKELIHOOD FUNCTIONS
 
-## Likelihood functions in outbreaker2 are implemented using Rcpp. However,
+## Likelihood functions in measlesoutbreaker are implemented using Rcpp. However,
 ## these functions can also be replaced by customized functions. These can be
 ## specified by the user, through the '...' argument of
 ## 'custom_likelihoods'. These functions must have 2 arguments:

@@ -62,8 +62,6 @@
 #'
 #' @author Initial version by Thibaut Jombart, rewritten by Alexis Robert (\email{alexis.robert@lshtm.ac.uk})
 #'
-#' @seealso See \href{http://www.repidemicsconsortium.org/outbreaker2/articles/customisation.html#customising-movements}{customization vignette} for detailed examples on how to customise movement functions.
-#' 
 #' @export
 #'
 #' @param ... A list or a series of named, comma-separated functions

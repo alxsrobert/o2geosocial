@@ -1,6 +1,6 @@
-## #' Movements of augmented data and parameters for outbreaker2
+## #' Movements of augmented data and parameters for measlesoutbreaker
 ## #'
-## #' This function moves all parameters for outbreaker2.
+## #' This function moves all parameters for measlesoutbreaker
 ## #'
 ## #' @author Initial version by Thibaut Jombart, rewritten by Alexis Robert (\email{alexis.robert@lshtm.ac.uk})
 ## #'

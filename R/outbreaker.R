@@ -1,16 +1,9 @@
-#' outbreaker2: main function for reconstructing disease outbreaks
+#' outbreaker: main function for reconstructing disease outbreaks
 #'
 #' The function \code{outbreaker} is the main function of the package. It runs
 #' processes various inputs (data, configuration settings, custom priors,
 #' likelihoods and movement functions) and explores the space of plausible
 #' transmission trees of a densely sampled outbreaks.\cr
-#'
-#' The emphasis of 'outbreaker2' is on modularity, which enables customisation
-#' of priors, likelihoods and even movements of parameters and augmented data by
-#' the user. This the dedicated vignette on this topic
-#' \code{vignette("outbreaker2_custom")}.\cr
-#'
-#' 
 #'
 #' @export
 #'

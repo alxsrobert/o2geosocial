@@ -2,11 +2,15 @@
 % Please edit documentation in R/outbreaker.R
 \name{outbreaker}
 \alias{outbreaker}
-\title{outbreaker2: main function for reconstructing disease outbreaks}
+\title{outbreaker: main function for reconstructing disease outbreaks}
 \usage{
-outbreaker(data = outbreaker_data(), config = create_config(),
-  priors = custom_priors(), likelihoods = custom_likelihoods(),
-  moves = custom_moves())
+outbreaker(
+  data = outbreaker_data(),
+  config = create_config(),
+  priors = custom_priors(),
+  likelihoods = custom_likelihoods(),
+  moves = custom_moves()
+)
 }
 \arguments{
 \item{data}{a list of named items containing input data as returned by
@@ -28,12 +32,6 @@ The function \code{outbreaker} is the main function of the package. It runs
 processes various inputs (data, configuration settings, custom priors,
 likelihoods and movement functions) and explores the space of plausible
 transmission trees of a densely sampled outbreaks.\cr
-}
-\details{
-The emphasis of 'outbreaker2' is on modularity, which enables customisation
-of priors, likelihoods and even movements of parameters and augmented data by
-the user. This the dedicated vignette on this topic
-\code{vignette("outbreaker2_custom")}.\cr
 }
 \examples{
 

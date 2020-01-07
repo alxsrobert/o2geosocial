@@ -52,6 +52,7 @@ default, the function \code{cpp_move_kappa} is used.
 
 }
 
+
 Movement functions must have an argument \code{param}, which is a list of
 parameters and augmented data of the class \code{\link{create_param}}.
 Each movement function will be enclosed with its other arguments, so that the
@@ -73,9 +74,6 @@ movements (i.e. none of the names specified above), the closure will contain:
 \code{\link{custom_priors}}
 
 }
-}
-\seealso{
-See \href{http://www.repidemicsconsortium.org/outbreaker2/articles/customisation.html#customising-movements}{customization vignette} for detailed examples on how to customise movement functions.
 }
 \author{
 Initial version by Thibaut Jombart, rewritten by Alexis Robert (\email{alexis.robert@lshtm.ac.uk})

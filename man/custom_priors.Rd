@@ -22,7 +22,7 @@ A list of custom functions with class \code{custom_priors}. Values
     instead.
 }
 \description{
-Priors can be specified in several ways in outbreaker2 (see details and
+Priors can be specified in several ways in measlesoutbreaker (see details and
 examples). The most flexible way to specify a prior is to provide a prior
 function directly. This function must take an argument 'param', which is a
 list which contains all the states of the parameters and augmented data. See
@@ -78,9 +78,9 @@ new_config <- create_config(prior_mu = 1e-5,
 
 ## - to check the prior manually, default settings:
 param <- list(mu = 0.001, pi = 0.9)
-outbreaker2:::cpp_prior_pi(param, default_config)
+measlesoutbreaker:::cpp_prior_pi(param, default_config)
 
-outbreaker2:::cpp_prior_pi(param, new_config)
+measlesoutbreaker:::cpp_prior_pi(param, new_config)
 
 ## these correspond to:
 dexp(0.001, 0.01, log = TRUE)
@@ -100,9 +100,6 @@ priors$pi(list(pi=.6))
 priors$pi(list(pi=.2))
 priors$pi(list(pi=.49))
 
-}
-\seealso{
-See \href{http://www.repidemicsconsortium.org/outbreaker2/articles/customisation.html#customising-priors}{customization vignette} for detailed examples on how to customize priors.
 }
 \author{
 Initial version by Thibaut Jombart, rewritten by Alexis Robert (\email{alexis.robert@lshtm.ac.uk})
