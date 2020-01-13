@@ -252,15 +252,15 @@ outbreaker_data <- function(..., data = list(...)) {
     ## CHECK DISTANCE
     if(!is.null(data$distance)){
       if(any(!is.numeric(data$distance)))
-        stop("The matrix distance can only include positive numeric values")
+        stop("The matrix distance can only include numeric values")
       if(!is.matrix(data$distance))
         stop("distance has to be a matrix")
       if(dim(data$distance)[1] != dim(data$distance)[2])
         stop("distance has to be a square matrix")
       if(any(rownames(data$distance) != colnames(data$distance)))
         stop("The rownames and colnames of the matrix distance should be the same")
-      if(any(diag(data$distance) !=0))
-        stop("distance between the same county should be 0")
+      # if(any(diag(data$distance) !=0))
+      #   stop("distance between the same county should be 0")
     }else
       stop("The distance matrix is null")
     
