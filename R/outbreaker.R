@@ -85,11 +85,7 @@ outbreaker <- function(data = outbreaker_data(),
   config <- create_config(config, data = data)
   
   ## ADD SPATIAL LIKELIHOOD TO DATA IF NO INFERENCE OF SPATIAL KERNEL ##
-  if(config$move_a == FALSE && config$move_b == FALSE)
-    data$log_s_dens <- cpp_log_like(data$population, data$distance, 
-                                    config$init_a, config$init_b,config$gamma, 
-                                    config$spatial_method, 
-                                    length(unique(data$postcode)))
+  data$log_s_dens <- config$function_s_dens(data, config)
   
   
   ## PRE CLUSTERING OF THE CASES

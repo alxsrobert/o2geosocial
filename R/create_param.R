@@ -140,14 +140,8 @@ create_param <- function(data = outbreaker_data(),
   class(store) <- c("outbreaker_store", "list")
   
   if(config$move_a == T | config$move_b == T){
-    current_log_s_dens <- cpp_log_like(data$population,
-                                       data$distance,
-                                       config$init_a, config$init_b,
-                                       config$gamma,
-                                       config$spatial_method,
-                                       length(unique(data$postcode)))
-    
-    
+    current_log_s_dens <- data$log_s_dens
+    data$log_s_dens <- NULL
     
     current  <- list(
       alpha = current_alpha, 
