@@ -40,9 +40,8 @@ outbreaker_find_imports <- function(moves, data, param_current,
     counter <- 1L
     for (i in seq.int(2, config_imports$n_iter_import, 1)) {
       ## move parameters / augmented data_imports
-      for (j in seq_len(J_imports)) {
+      for (j in seq_len(J_imports)) 
         param_current_imports <- moves_imports[[j]](param_current_imports)
-      }
       ## store outputs if needed
       if ((i %% config_imports$sample_every_import) == 0 && i>config$burnin) {
         influences_imports[counter,] <- 
@@ -52,9 +51,12 @@ outbreaker_find_imports <- function(moves, data, param_current,
                                  param = param_current_imports, i = i,
                                  custom_functions = likelihoods_imports)
                       ), numeric(1))
+        if(config_imports$verbatim == TRUE) 
+          message(paste0("Finding import, Iteration number: ", i, "/",
+                         config_imports$n_iter_import,
+                         "|| likelihood = ", sum(influences_imports[counter,]) %>% round(2)))
         counter <- counter + 1L
       }
-      
     } # end of the chain
     return(list(param_current = param_current_imports,
                 influences = influences_imports))

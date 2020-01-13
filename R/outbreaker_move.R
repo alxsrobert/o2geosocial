@@ -57,6 +57,9 @@ outbreaker_move <- function(moves, data, param_current,
                                            ),
                                          numeric(1))
       }
+      if(config$verbatim == TRUE)
+        message(paste0("Iteration number: ", i, "/", config$n_iter,
+                       "|| likelihood = ", sum(influences[counter,]) %>% round(2)))
     }
   } # end of the chain
   
