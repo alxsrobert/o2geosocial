@@ -86,9 +86,6 @@
 #' \item{sd_b}{the standard deviation for the Normal proposal for the second spatial 
 #' parameter.}
 #'
-#' \item{min_date}{earliest infection date possible, expressed as days since the
-#' first sampling.}
-#' 
 #' \item{find_import}{a logical indicating whether the import status of cases should
 #' be estimated.}
 #' 
@@ -117,6 +114,7 @@
 #' \item{prior_b}{a numeric vector of length 2 indicating the first and second
 #' parameter of the uniform prior for the second spatial parameter 'b'.}
 
+#' \item{verbatim}{Logical, should the number of iteration be printed.}
 #'
 #' }
 #'
@@ -161,11 +159,10 @@ create_config <- function (..., data = NULL)
 
                    n_iter = 10000, sample_every = 50, 
                    
-                   min_date = -10, 
                    max_kappa = 5, find_import = TRUE, outlier_threshold = 0.05, 
                    outlier_relative = FALSE,
                    n_iter_import = 5000, sample_every_import = 50, 
-                   burnin = 10000)
+                   burnin = 10000, verbatim = FALSE, function_s_dens = calc_s_dens)
   config <- modify_defaults(defaults, config)
   if (is.character(config$init_tree)) {
     config$init_tree <- match.arg(config$init_tree, c("star"))
@@ -357,15 +354,6 @@ create_config <- function (..., data = NULL)
   if (!is.finite(config$sd_b)) {
     stop("sd_b is infinite or NA")
   }
-  if (!is.numeric(config$min_date)) {
-    stop("min_date is not numeric")
-  }
-  if (config$min_date >= 0) {
-    stop("min_date is greater or equal to 0")
-  }
-  if (!is.finite(config$min_date)) {
-    stop("min_date is infinite or NA")
-  }
   if (!is.logical(config$find_import)) {
     stop("find_import is not logical")
   }
@@ -386,6 +374,9 @@ create_config <- function (..., data = NULL)
   }
   if (!is.numeric(config$n_iter_import)) {
     stop("n_iter_import is not a numeric value")
+  }
+  if (!is.function(config$function_s_dens)) {
+    stop("function_s_dens should be a function")
   }
   if (config$n_iter_import < 1000) {
     stop("n_iter is smaller than 1000")
@@ -439,6 +430,9 @@ create_config <- function (..., data = NULL)
   }
   if (!all(is.finite(config$prior_b))) {
     stop("prior_b is has values which are infinite or NA")
+  }
+  if(!is.null(config$verbatim)){
+    if(!is.logical(config$verbatim)) stop("verbatim should be a logical value")
   }
   
   if((config$move_a == TRUE || config$move_b == TRUE) && 
