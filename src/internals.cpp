@@ -124,12 +124,8 @@ std::vector<int> cpp_are_possible_ancestors(Rcpp::IntegerVector t_inf,
 //  and b
 
 // [[Rcpp::export()]]
-Rcpp::List cpp_log_like(Rcpp::NumericVector population,
-                        Rcpp::NumericMatrix distance,
-                        double a,
-                        double b,
-                        double gamma,
-                        Rcpp::String spatial,
+Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix distance,
+                        double a, double b, double gamma, Rcpp::String spatial,
                         int nb_cases) {
 
   int size_pop = population.size();
