@@ -46,20 +46,23 @@ outbreaker_move <- function(moves, data, param_current,
     if ((i %% config$sample_every) == 0) {
       param_store <- outbreaker_mcmc_store(param_current, param_store, data,
                                            config, likelihoods, priors, i)
+      if(config$verbatim == TRUE){
+        influence_i <- - vapply(seq_len(data$N), function(case) 
+          (cpp_ll_all(data = data,config = config,
+                      param = param_current, i = case,
+                      custom_functions = likelihoods)
+          ), numeric(1))
+        message(paste0("Iteration number: ", i, "/", config$n_iter,
+                       "|| likelihood = ", sum(influences_i) %>% round(2)))
+      }
       if(config$find_import == TRUE){
         counter <- i / config$sample_every + 1
-        influences[counter,] <- - vapply(seq_len(data$N),
-                                         function(case) 
-                                           (cpp_ll_all(data = data,config = config,
-                                                       param = param_current,
-                                                       i = case,
-                                                       custom_functions = likelihoods)
-                                           ),
-                                         numeric(1))
+        influences[counter,] <- - vapply(seq_len(data$N), function(case) 
+          (cpp_ll_all(data = data,config = config,
+                      param = param_current, i = case,
+                      custom_functions = likelihoods)
+          ), numeric(1))
       }
-      if(config$verbatim == TRUE)
-        message(paste0("Iteration number: ", i, "/", config$n_iter,
-                       "|| likelihood = ", sum(influences[counter,]) %>% round(2)))
     }
   } # end of the chain
   
