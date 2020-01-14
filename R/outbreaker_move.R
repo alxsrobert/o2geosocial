@@ -53,7 +53,7 @@ outbreaker_move <- function(moves, data, param_current,
                       custom_functions = likelihoods)
           ), numeric(1))
         message(paste0("Iteration number: ", i, "/", config$n_iter,
-                       "|| likelihood = ", sum(influences_i) %>% round(2)))
+                       "|| likelihood = ", sum(influence_i) %>% round(2)))
       }
       if(config$find_import == TRUE){
         counter <- i / config$sample_every + 1
