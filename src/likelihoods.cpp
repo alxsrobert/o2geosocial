@@ -161,6 +161,7 @@ double cpp_ll_timing_sampling(Rcpp::List data, Rcpp::List param, size_t i,
 
 // This likelihood corresponds to the probability of observing infection postcode
 // of cases given the infection postcode of their ancestors.
+// [[Rcpp::interfaces(cpp)]]
 double cpp_ll_space(Rcpp::List data, Rcpp::List config, 
                     Rcpp::List param, SEXP i,
                     Rcpp::RObject custom_function) {
