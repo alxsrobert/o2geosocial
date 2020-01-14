@@ -171,6 +171,132 @@ namespace measlesoutbreaker {
         return Rcpp::as<Rcpp::List >(rcpp_result_gen);
     }
 
+    inline double cpp_ll_timing_infections(Rcpp::List data, Rcpp::List param, size_t i, Rcpp::RObject custom_function) {
+        typedef SEXP(*Ptr_cpp_ll_timing_infections)(SEXP,SEXP,SEXP,SEXP);
+        static Ptr_cpp_ll_timing_infections p_cpp_ll_timing_infections = NULL;
+        if (p_cpp_ll_timing_infections == NULL) {
+            validateSignature("double(*cpp_ll_timing_infections)(Rcpp::List,Rcpp::List,size_t,Rcpp::RObject)");
+            p_cpp_ll_timing_infections = (Ptr_cpp_ll_timing_infections)R_GetCCallable("measlesoutbreaker", "_measlesoutbreaker_cpp_ll_timing_infections");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_cpp_ll_timing_infections(Shield<SEXP>(Rcpp::wrap(data)), Shield<SEXP>(Rcpp::wrap(param)), Shield<SEXP>(Rcpp::wrap(i)), Shield<SEXP>(Rcpp::wrap(custom_function)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<double >(rcpp_result_gen);
+    }
+
+    inline double cpp_ll_timing_sampling(Rcpp::List data, Rcpp::List param, size_t i, Rcpp::RObject custom_function) {
+        typedef SEXP(*Ptr_cpp_ll_timing_sampling)(SEXP,SEXP,SEXP,SEXP);
+        static Ptr_cpp_ll_timing_sampling p_cpp_ll_timing_sampling = NULL;
+        if (p_cpp_ll_timing_sampling == NULL) {
+            validateSignature("double(*cpp_ll_timing_sampling)(Rcpp::List,Rcpp::List,size_t,Rcpp::RObject)");
+            p_cpp_ll_timing_sampling = (Ptr_cpp_ll_timing_sampling)R_GetCCallable("measlesoutbreaker", "_measlesoutbreaker_cpp_ll_timing_sampling");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_cpp_ll_timing_sampling(Shield<SEXP>(Rcpp::wrap(data)), Shield<SEXP>(Rcpp::wrap(param)), Shield<SEXP>(Rcpp::wrap(i)), Shield<SEXP>(Rcpp::wrap(custom_function)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<double >(rcpp_result_gen);
+    }
+
+    inline double cpp_ll_space(Rcpp::List data, Rcpp::List config, Rcpp::List param, int i, Rcpp::RObject custom_function) {
+        typedef SEXP(*Ptr_cpp_ll_space)(SEXP,SEXP,SEXP,SEXP,SEXP);
+        static Ptr_cpp_ll_space p_cpp_ll_space = NULL;
+        if (p_cpp_ll_space == NULL) {
+            validateSignature("double(*cpp_ll_space)(Rcpp::List,Rcpp::List,Rcpp::List,int,Rcpp::RObject)");
+            p_cpp_ll_space = (Ptr_cpp_ll_space)R_GetCCallable("measlesoutbreaker", "_measlesoutbreaker_cpp_ll_space");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_cpp_ll_space(Shield<SEXP>(Rcpp::wrap(data)), Shield<SEXP>(Rcpp::wrap(config)), Shield<SEXP>(Rcpp::wrap(param)), Shield<SEXP>(Rcpp::wrap(i)), Shield<SEXP>(Rcpp::wrap(custom_function)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<double >(rcpp_result_gen);
+    }
+
+    inline double cpp_ll_age(Rcpp::List data, Rcpp::List param, int i, Rcpp::RObject custom_function) {
+        typedef SEXP(*Ptr_cpp_ll_age)(SEXP,SEXP,SEXP,SEXP);
+        static Ptr_cpp_ll_age p_cpp_ll_age = NULL;
+        if (p_cpp_ll_age == NULL) {
+            validateSignature("double(*cpp_ll_age)(Rcpp::List,Rcpp::List,int,Rcpp::RObject)");
+            p_cpp_ll_age = (Ptr_cpp_ll_age)R_GetCCallable("measlesoutbreaker", "_measlesoutbreaker_cpp_ll_age");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_cpp_ll_age(Shield<SEXP>(Rcpp::wrap(data)), Shield<SEXP>(Rcpp::wrap(param)), Shield<SEXP>(Rcpp::wrap(i)), Shield<SEXP>(Rcpp::wrap(custom_function)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<double >(rcpp_result_gen);
+    }
+
+    inline double cpp_ll_reporting(Rcpp::List data, Rcpp::List param, size_t i, Rcpp::RObject custom_function) {
+        typedef SEXP(*Ptr_cpp_ll_reporting)(SEXP,SEXP,SEXP,SEXP);
+        static Ptr_cpp_ll_reporting p_cpp_ll_reporting = NULL;
+        if (p_cpp_ll_reporting == NULL) {
+            validateSignature("double(*cpp_ll_reporting)(Rcpp::List,Rcpp::List,size_t,Rcpp::RObject)");
+            p_cpp_ll_reporting = (Ptr_cpp_ll_reporting)R_GetCCallable("measlesoutbreaker", "_measlesoutbreaker_cpp_ll_reporting");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_cpp_ll_reporting(Shield<SEXP>(Rcpp::wrap(data)), Shield<SEXP>(Rcpp::wrap(param)), Shield<SEXP>(Rcpp::wrap(i)), Shield<SEXP>(Rcpp::wrap(custom_function)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<double >(rcpp_result_gen);
+    }
+
+    inline double cpp_ll_all(Rcpp::List data, Rcpp::List config, Rcpp::List param, size_t i, Rcpp::RObject custom_function) {
+        typedef SEXP(*Ptr_cpp_ll_all)(SEXP,SEXP,SEXP,SEXP,SEXP);
+        static Ptr_cpp_ll_all p_cpp_ll_all = NULL;
+        if (p_cpp_ll_all == NULL) {
+            validateSignature("double(*cpp_ll_all)(Rcpp::List,Rcpp::List,Rcpp::List,size_t,Rcpp::RObject)");
+            p_cpp_ll_all = (Ptr_cpp_ll_all)R_GetCCallable("measlesoutbreaker", "_measlesoutbreaker_cpp_ll_all");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_cpp_ll_all(Shield<SEXP>(Rcpp::wrap(data)), Shield<SEXP>(Rcpp::wrap(config)), Shield<SEXP>(Rcpp::wrap(param)), Shield<SEXP>(Rcpp::wrap(i)), Shield<SEXP>(Rcpp::wrap(custom_function)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<double >(rcpp_result_gen);
+    }
+
     inline Rcpp::List cpp_move_a(Rcpp::List param, Rcpp::List data, Rcpp::List config, Rcpp::RObject custom_ll = R_NilValue, Rcpp::RObject custom_prior = R_NilValue) {
         typedef SEXP(*Ptr_cpp_move_a)(SEXP,SEXP,SEXP,SEXP,SEXP);
         static Ptr_cpp_move_a p_cpp_move_a = NULL;
