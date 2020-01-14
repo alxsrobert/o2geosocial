@@ -23,7 +23,6 @@
 
 // This likelihood corresponds to the probability of observing infection dates
 // of cases given the infection dates of their ancestors.
-
 double cpp_ll_timing_infections(Rcpp::List data, Rcpp::List param, SEXP i,
                                 Rcpp::RObject custom_function) {
   size_t N = static_cast<size_t>(data["N"]);
@@ -85,7 +84,6 @@ double cpp_ll_timing_infections(Rcpp::List data, Rcpp::List param, SEXP i,
     return Rcpp::as<double>(f(data, param));
   }
 }
-// [[Rcpp::interfaces(cpp)]]
 double cpp_ll_timing_infections(Rcpp::List data, Rcpp::List param, size_t i,
                                 Rcpp::RObject custom_function) {
   SEXP si = PROTECT(Rcpp::wrap(i));
@@ -102,7 +100,6 @@ double cpp_ll_timing_infections(Rcpp::List data, Rcpp::List param, size_t i,
 
 // This likelihood corresponds to the probability of reporting dates of cases
 // given their infection dates.
-
 double cpp_ll_timing_sampling(Rcpp::List data, Rcpp::List param, SEXP i,
                               Rcpp::RObject custom_function) {
   size_t N = static_cast<size_t>(data["N"]);
@@ -146,7 +143,6 @@ double cpp_ll_timing_sampling(Rcpp::List data, Rcpp::List param, SEXP i,
     return Rcpp::as<double>(f(data, param));
   }
 }
-// [[Rcpp::interfaces(cpp)]]
 double cpp_ll_timing_sampling(Rcpp::List data, Rcpp::List param, size_t i,
                               Rcpp::RObject custom_function) {
   SEXP si = PROTECT(Rcpp::wrap(i));
@@ -225,7 +221,6 @@ double cpp_ll_space(Rcpp::List data, Rcpp::List config,
     return Rcpp::as<double>(f(data, param));
   }
 }
-// [[Rcpp::interfaces(cpp)]]
 double cpp_ll_space(Rcpp::List data, Rcpp::List config, 
                     Rcpp::List param, int i,
                     Rcpp::RObject custom_function) {
@@ -296,7 +291,6 @@ double cpp_ll_age(Rcpp::List data, Rcpp::List param, SEXP i,
     return Rcpp::as<double>(f(data, param));
   }
 }
-// [[Rcpp::interfaces(cpp)]]
 double cpp_ll_age(Rcpp::List data, Rcpp::List param, int i,
                   Rcpp::RObject custom_function) {
   SEXP si = PROTECT(Rcpp::wrap(i));
@@ -364,7 +358,6 @@ double cpp_ll_reporting(Rcpp::List data, Rcpp::List param, SEXP i,
     return Rcpp::as<double>(f(data, param));
   }
 }
-// [[Rcpp::interfaces(cpp)]]
 double cpp_ll_reporting(Rcpp::List data, Rcpp::List param, size_t i,
                         Rcpp::RObject custom_function) {
   SEXP si = PROTECT(Rcpp::wrap(i));
@@ -395,7 +388,6 @@ double cpp_ll_timing(Rcpp::List data, Rcpp::List param, SEXP i,
     
   }
 }
-// [[Rcpp::interfaces(cpp)]]
 double cpp_ll_timing(Rcpp::List data, Rcpp::List param, size_t i,
                      Rcpp::RObject custom_function) {
   SEXP si = PROTECT(Rcpp::wrap(i));
@@ -440,7 +432,6 @@ double cpp_ll_all(Rcpp::List data, Rcpp::List config,
     
   }
 }
-// [[Rcpp::interfaces(cpp)]]
 double cpp_ll_all(Rcpp::List data, Rcpp::List config, 
                   Rcpp::List param, size_t i,
                   Rcpp::RObject custom_function) {
