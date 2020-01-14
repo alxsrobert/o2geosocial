@@ -21,6 +21,7 @@
 
 // ---------------------------
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export(rng = true)]]
 Rcpp::List cpp_move_a(Rcpp::List param, Rcpp::List data, Rcpp::List config,
                       Rcpp::RObject custom_ll = R_NilValue,
@@ -83,6 +84,7 @@ Rcpp::List cpp_move_a(Rcpp::List param, Rcpp::List data, Rcpp::List config,
 }
 
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export(rng = true)]]
 Rcpp::List cpp_move_b(Rcpp::List param, Rcpp::List data, Rcpp::List config,
                       Rcpp::RObject custom_ll = R_NilValue,
@@ -158,6 +160,7 @@ Rcpp::List cpp_move_b(Rcpp::List param, Rcpp::List data, Rcpp::List config,
 // range of real values will never change much. Probably not much point in using
 // auto-tuning here.
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export(rng = true)]]
 Rcpp::List cpp_move_pi(Rcpp::List param, Rcpp::List data, Rcpp::List config,
                        Rcpp::RObject custom_ll = R_NilValue,
@@ -235,6 +238,7 @@ Rcpp::List cpp_move_pi(Rcpp::List param, Rcpp::List data, Rcpp::List config,
 // - we generate a new vector 'new_t_inf', which will replace the
 // previous pointer defining param["t_inf"].
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export(rng = true)]]
 Rcpp::List cpp_move_t_inf(Rcpp::List param, Rcpp::List data,
                           Rcpp::RObject list_custom_ll = R_NilValue) {
@@ -307,6 +311,7 @@ Rcpp::List cpp_move_t_inf(Rcpp::List param, Rcpp::List data,
 // (swaps are not possible through move.alpha only); in all instances, 'alpha'
 // is on the scale 1:N.
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export(rng = true)]]
 Rcpp::List cpp_move_alpha(Rcpp::List param, Rcpp::List data, Rcpp::List config, 
                           Rcpp::RObject list_custom_ll = R_NilValue) {
@@ -373,6 +378,7 @@ Rcpp::List cpp_move_alpha(Rcpp::List param, Rcpp::List data, Rcpp::List config,
 // (swaps are not possible through move.alpha only); in all instances, 'alpha'
 // is on the scale 1:N.
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export(rng = true)]]
 Rcpp::List cpp_move_ancestors(Rcpp::List param, Rcpp::List data, Rcpp::List config,
                               Rcpp::RObject list_custom_ll = R_NilValue) {
@@ -482,6 +488,7 @@ Rcpp::List cpp_move_ancestors(Rcpp::List param, Rcpp::List data, Rcpp::List conf
 // changes for this move to scale well with outbreak size. The complicated bit
 // is that the move impacts all descendents from 'a' as well as 'x'.
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export(rng = true)]]
 Rcpp::List cpp_move_swap_cases(Rcpp::List param, Rcpp::List data, 
                                Rcpp::List config, 
@@ -569,6 +576,7 @@ Rcpp::List cpp_move_swap_cases(Rcpp::List param, Rcpp::List data,
 // range (e.g. [1-3]) we probably propose more dumb values here. We may
 // eventually want to bounce back or use and correct for assymetric proposals.
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export(rng = true)]]
 Rcpp::List cpp_move_kappa(Rcpp::List param, Rcpp::List data, Rcpp::List config,
                           Rcpp::RObject list_custom_ll = R_NilValue) {

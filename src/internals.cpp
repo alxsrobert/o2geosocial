@@ -29,6 +29,7 @@
 //   while 'i' and 'alpha' (ancestors) are values from 1 to N.
 
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export()]]
 std::vector<int> cpp_are_possible_ancestors(Rcpp::IntegerVector t_inf, 
                                             Rcpp::IntegerVector alpha,
@@ -123,6 +124,7 @@ std::vector<int> cpp_are_possible_ancestors(Rcpp::IntegerVector t_inf,
 //  This function compute the spatial log likelihood distribution from parameters a 
 //  and b
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export()]]
 Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix distance,
                         double a, double b, double gamma, Rcpp::String spatial,
@@ -220,6 +222,7 @@ Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix dist
 //     which(param.current$alpha==i)
 //  }
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export()]]
 Rcpp::IntegerVector cpp_find_descendents(Rcpp::IntegerVector alpha, 
                                          Rcpp::IntegerVector cluster, 
@@ -249,6 +252,7 @@ Rcpp::IntegerVector cpp_find_descendents(Rcpp::IntegerVector alpha,
 // This function returns all the descendents of a given case 'i' in the current
 // ancestries; 'i' is on the scale 1:N. The output is also on the scale 1:N.
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export()]]
 std::vector<int> cpp_find_all_descendents(Rcpp::IntegerVector alpha, 
                                           Rcpp::IntegerVector t_inf, 
@@ -286,6 +290,7 @@ std::vector<int> cpp_find_all_descendents(Rcpp::IntegerVector alpha,
 // 'i' in the current  ancestries; 'i' is on the scale 1:N. The output is also
 // on the scale 1:N.
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export()]]
 Rcpp::IntegerVector cpp_find_all_tree(Rcpp::IntegerVector alpha,
                                       Rcpp::IntegerVector t_inf,
@@ -319,6 +324,7 @@ Rcpp::IntegerVector cpp_find_all_tree(Rcpp::IntegerVector alpha,
 // where 'alpha' is a IntegerVector storing ancestries. Note that 'i' and
 // 'alpha' are on the scale 1:N. 
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export()]]
 Rcpp::IntegerVector cpp_find_local_cases(Rcpp::IntegerVector alpha,
                                          Rcpp::IntegerVector cluster,
@@ -385,6 +391,7 @@ Rcpp::IntegerVector cpp_find_local_cases(Rcpp::IntegerVector alpha,
 // - 'i' is imported, so that 'alpha[i-1]' is NA_INTEGER
 // - 'x' is imported, so that 'alpha[x-1]' is NA_INTEGER
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export()]]
 Rcpp::List cpp_swap_cases(Rcpp::List param, Rcpp::IntegerVector cluster, size_t i) {
   Rcpp::IntegerVector alpha_in = param["alpha"];

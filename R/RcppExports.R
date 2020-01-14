@@ -105,3 +105,7 @@ cpp_prior_all <- function(param, config, custom_functions = NULL) {
     .Call(`_measlesoutbreaker_cpp_prior_all`, param, config, custom_functions)
 }
 
+# Register entry points for exported C++ functions
+methods::setLoadAction(function(ns) {
+    .Call('_measlesoutbreaker_RcppExport_registerCCallable', PACKAGE = 'measlesoutbreaker')
+})

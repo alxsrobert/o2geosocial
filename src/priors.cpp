@@ -35,6 +35,7 @@
 
 // The prior for the reporting probability 'pi' is a beta distribution
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export(rng = false)]]
 double cpp_prior_pi(Rcpp::List param, Rcpp::List config,
                     Rcpp::RObject custom_function = R_NilValue) {
@@ -57,6 +58,7 @@ double cpp_prior_pi(Rcpp::List param, Rcpp::List config,
 
 // The prior for the spatial parameters 'a' and 'b' are uniform distributions
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export(rng = false)]]
 double cpp_prior_a(Rcpp::List param, Rcpp::List config,
                    Rcpp::RObject custom_function = R_NilValue) {
@@ -74,6 +76,7 @@ double cpp_prior_a(Rcpp::List param, Rcpp::List config,
   
 }
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export(rng = false)]]
 double cpp_prior_b(Rcpp::List param, Rcpp::List config,
                    Rcpp::RObject custom_function = R_NilValue) {
@@ -94,6 +97,7 @@ double cpp_prior_b(Rcpp::List param, Rcpp::List config,
 
 
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export(rng = false)]]
 double cpp_prior_all(Rcpp::List param, Rcpp::List config,
                      Rcpp::RObject custom_functions = R_NilValue
