@@ -367,7 +367,7 @@ summary.outbreaker_chains <- function(object, burnin = 0, ...) {
   
   ## function to get frequency of most frequent item
   f2 <- function(x) {
-    (sort(table(x), decreasing = TRUE)/length(x))[1]
+    (sort(table(x, exclude = NULL), decreasing = TRUE)/length(x))[1]
   }
   out$tree$support <- apply(alpha, 2, f2)
   
