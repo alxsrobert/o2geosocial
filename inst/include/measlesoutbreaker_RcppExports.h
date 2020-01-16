@@ -66,11 +66,11 @@ namespace measlesoutbreaker {
         return Rcpp::as<Rcpp::List >(rcpp_result_gen);
     }
 
-    inline Rcpp::IntegerVector cpp_find_descendents(Rcpp::IntegerVector alpha, Rcpp::IntegerVector cluster, size_t i) {
+    inline Rcpp::IntegerVector cpp_find_descendents(Rcpp::IntegerVector alpha, Rcpp::IntegerVector cluster, int i) {
         typedef SEXP(*Ptr_cpp_find_descendents)(SEXP,SEXP,SEXP);
         static Ptr_cpp_find_descendents p_cpp_find_descendents = NULL;
         if (p_cpp_find_descendents == NULL) {
-            validateSignature("Rcpp::IntegerVector(*cpp_find_descendents)(Rcpp::IntegerVector,Rcpp::IntegerVector,size_t)");
+            validateSignature("Rcpp::IntegerVector(*cpp_find_descendents)(Rcpp::IntegerVector,Rcpp::IntegerVector,int)");
             p_cpp_find_descendents = (Ptr_cpp_find_descendents)R_GetCCallable("measlesoutbreaker", "_measlesoutbreaker_cpp_find_descendents");
         }
         RObject rcpp_result_gen;
@@ -87,11 +87,11 @@ namespace measlesoutbreaker {
         return Rcpp::as<Rcpp::IntegerVector >(rcpp_result_gen);
     }
 
-    inline std::vector<int> cpp_find_all_descendents(Rcpp::IntegerVector alpha, Rcpp::IntegerVector t_inf, Rcpp::IntegerVector cluster, size_t i) {
+    inline std::vector<int> cpp_find_all_descendents(Rcpp::IntegerVector alpha, Rcpp::IntegerVector t_inf, Rcpp::IntegerVector cluster, int i) {
         typedef SEXP(*Ptr_cpp_find_all_descendents)(SEXP,SEXP,SEXP,SEXP);
         static Ptr_cpp_find_all_descendents p_cpp_find_all_descendents = NULL;
         if (p_cpp_find_all_descendents == NULL) {
-            validateSignature("std::vector<int>(*cpp_find_all_descendents)(Rcpp::IntegerVector,Rcpp::IntegerVector,Rcpp::IntegerVector,size_t)");
+            validateSignature("std::vector<int>(*cpp_find_all_descendents)(Rcpp::IntegerVector,Rcpp::IntegerVector,Rcpp::IntegerVector,int)");
             p_cpp_find_all_descendents = (Ptr_cpp_find_all_descendents)R_GetCCallable("measlesoutbreaker", "_measlesoutbreaker_cpp_find_all_descendents");
         }
         RObject rcpp_result_gen;
@@ -129,11 +129,11 @@ namespace measlesoutbreaker {
         return Rcpp::as<Rcpp::IntegerVector >(rcpp_result_gen);
     }
 
-    inline Rcpp::IntegerVector cpp_find_local_cases(Rcpp::IntegerVector alpha, Rcpp::IntegerVector cluster, size_t i) {
+    inline Rcpp::IntegerVector cpp_find_local_cases(Rcpp::IntegerVector alpha, Rcpp::IntegerVector cluster, int i) {
         typedef SEXP(*Ptr_cpp_find_local_cases)(SEXP,SEXP,SEXP);
         static Ptr_cpp_find_local_cases p_cpp_find_local_cases = NULL;
         if (p_cpp_find_local_cases == NULL) {
-            validateSignature("Rcpp::IntegerVector(*cpp_find_local_cases)(Rcpp::IntegerVector,Rcpp::IntegerVector,size_t)");
+            validateSignature("Rcpp::IntegerVector(*cpp_find_local_cases)(Rcpp::IntegerVector,Rcpp::IntegerVector,int)");
             p_cpp_find_local_cases = (Ptr_cpp_find_local_cases)R_GetCCallable("measlesoutbreaker", "_measlesoutbreaker_cpp_find_local_cases");
         }
         RObject rcpp_result_gen;
@@ -150,11 +150,11 @@ namespace measlesoutbreaker {
         return Rcpp::as<Rcpp::IntegerVector >(rcpp_result_gen);
     }
 
-    inline Rcpp::List cpp_swap_cases(Rcpp::List param, Rcpp::IntegerVector cluster, size_t i) {
+    inline Rcpp::List cpp_swap_cases(Rcpp::List param, Rcpp::IntegerVector cluster, int i) {
         typedef SEXP(*Ptr_cpp_swap_cases)(SEXP,SEXP,SEXP);
         static Ptr_cpp_swap_cases p_cpp_swap_cases = NULL;
         if (p_cpp_swap_cases == NULL) {
-            validateSignature("Rcpp::List(*cpp_swap_cases)(Rcpp::List,Rcpp::IntegerVector,size_t)");
+            validateSignature("Rcpp::List(*cpp_swap_cases)(Rcpp::List,Rcpp::IntegerVector,int)");
             p_cpp_swap_cases = (Ptr_cpp_swap_cases)R_GetCCallable("measlesoutbreaker", "_measlesoutbreaker_cpp_swap_cases");
         }
         RObject rcpp_result_gen;

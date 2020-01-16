@@ -87,13 +87,13 @@ RcppExport SEXP _measlesoutbreaker_cpp_log_like(SEXP populationSEXP, SEXP distan
     return rcpp_result_gen;
 }
 // cpp_find_descendents
-Rcpp::IntegerVector cpp_find_descendents(Rcpp::IntegerVector alpha, Rcpp::IntegerVector cluster, size_t i);
+Rcpp::IntegerVector cpp_find_descendents(Rcpp::IntegerVector alpha, Rcpp::IntegerVector cluster, int i);
 static SEXP _measlesoutbreaker_cpp_find_descendents_try(SEXP alphaSEXP, SEXP clusterSEXP, SEXP iSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type cluster(clusterSEXP);
-    Rcpp::traits::input_parameter< size_t >::type i(iSEXP);
+    Rcpp::traits::input_parameter< int >::type i(iSEXP);
     rcpp_result_gen = Rcpp::wrap(cpp_find_descendents(alpha, cluster, i));
     return rcpp_result_gen;
 END_RCPP_RETURN_ERROR
@@ -123,14 +123,14 @@ RcppExport SEXP _measlesoutbreaker_cpp_find_descendents(SEXP alphaSEXP, SEXP clu
     return rcpp_result_gen;
 }
 // cpp_find_all_descendents
-std::vector<int> cpp_find_all_descendents(Rcpp::IntegerVector alpha, Rcpp::IntegerVector t_inf, Rcpp::IntegerVector cluster, size_t i);
+std::vector<int> cpp_find_all_descendents(Rcpp::IntegerVector alpha, Rcpp::IntegerVector t_inf, Rcpp::IntegerVector cluster, int i);
 static SEXP _measlesoutbreaker_cpp_find_all_descendents_try(SEXP alphaSEXP, SEXP t_infSEXP, SEXP clusterSEXP, SEXP iSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type t_inf(t_infSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type cluster(clusterSEXP);
-    Rcpp::traits::input_parameter< size_t >::type i(iSEXP);
+    Rcpp::traits::input_parameter< int >::type i(iSEXP);
     rcpp_result_gen = Rcpp::wrap(cpp_find_all_descendents(alpha, t_inf, cluster, i));
     return rcpp_result_gen;
 END_RCPP_RETURN_ERROR
@@ -197,13 +197,13 @@ RcppExport SEXP _measlesoutbreaker_cpp_find_all_tree(SEXP alphaSEXP, SEXP t_infS
     return rcpp_result_gen;
 }
 // cpp_find_local_cases
-Rcpp::IntegerVector cpp_find_local_cases(Rcpp::IntegerVector alpha, Rcpp::IntegerVector cluster, size_t i);
+Rcpp::IntegerVector cpp_find_local_cases(Rcpp::IntegerVector alpha, Rcpp::IntegerVector cluster, int i);
 static SEXP _measlesoutbreaker_cpp_find_local_cases_try(SEXP alphaSEXP, SEXP clusterSEXP, SEXP iSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type cluster(clusterSEXP);
-    Rcpp::traits::input_parameter< size_t >::type i(iSEXP);
+    Rcpp::traits::input_parameter< int >::type i(iSEXP);
     rcpp_result_gen = Rcpp::wrap(cpp_find_local_cases(alpha, cluster, i));
     return rcpp_result_gen;
 END_RCPP_RETURN_ERROR
@@ -233,13 +233,13 @@ RcppExport SEXP _measlesoutbreaker_cpp_find_local_cases(SEXP alphaSEXP, SEXP clu
     return rcpp_result_gen;
 }
 // cpp_swap_cases
-Rcpp::List cpp_swap_cases(Rcpp::List param, Rcpp::IntegerVector cluster, size_t i);
+Rcpp::List cpp_swap_cases(Rcpp::List param, Rcpp::IntegerVector cluster, int i);
 static SEXP _measlesoutbreaker_cpp_swap_cases_try(SEXP paramSEXP, SEXP clusterSEXP, SEXP iSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< Rcpp::List >::type param(paramSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type cluster(clusterSEXP);
-    Rcpp::traits::input_parameter< size_t >::type i(iSEXP);
+    Rcpp::traits::input_parameter< int >::type i(iSEXP);
     rcpp_result_gen = Rcpp::wrap(cpp_swap_cases(param, cluster, i));
     return rcpp_result_gen;
 END_RCPP_RETURN_ERROR
@@ -967,11 +967,11 @@ static int _measlesoutbreaker_RcppExport_validate(const char* sig) {
     if (signatures.empty()) {
         signatures.insert("std::vector<int>(*cpp_are_possible_ancestors)(Rcpp::IntegerVector,Rcpp::IntegerVector,Rcpp::StringVector,Rcpp::IntegerVector,size_t)");
         signatures.insert("Rcpp::List(*cpp_log_like)(Rcpp::NumericVector,Rcpp::NumericMatrix,double,double,double,Rcpp::String,int)");
-        signatures.insert("Rcpp::IntegerVector(*cpp_find_descendents)(Rcpp::IntegerVector,Rcpp::IntegerVector,size_t)");
-        signatures.insert("std::vector<int>(*cpp_find_all_descendents)(Rcpp::IntegerVector,Rcpp::IntegerVector,Rcpp::IntegerVector,size_t)");
+        signatures.insert("Rcpp::IntegerVector(*cpp_find_descendents)(Rcpp::IntegerVector,Rcpp::IntegerVector,int)");
+        signatures.insert("std::vector<int>(*cpp_find_all_descendents)(Rcpp::IntegerVector,Rcpp::IntegerVector,Rcpp::IntegerVector,int)");
         signatures.insert("Rcpp::IntegerVector(*cpp_find_all_tree)(Rcpp::IntegerVector,Rcpp::IntegerVector,Rcpp::IntegerVector,size_t)");
-        signatures.insert("Rcpp::IntegerVector(*cpp_find_local_cases)(Rcpp::IntegerVector,Rcpp::IntegerVector,size_t)");
-        signatures.insert("Rcpp::List(*cpp_swap_cases)(Rcpp::List,Rcpp::IntegerVector,size_t)");
+        signatures.insert("Rcpp::IntegerVector(*cpp_find_local_cases)(Rcpp::IntegerVector,Rcpp::IntegerVector,int)");
+        signatures.insert("Rcpp::List(*cpp_swap_cases)(Rcpp::List,Rcpp::IntegerVector,int)");
         signatures.insert("double(*cpp_ll_timing_infections)(Rcpp::List,Rcpp::List,SEXP,Rcpp::RObject)");
         signatures.insert("double(*cpp_ll_timing_sampling)(Rcpp::List,Rcpp::List,SEXP,Rcpp::RObject)");
         signatures.insert("double(*cpp_ll_space)(Rcpp::List,Rcpp::List,Rcpp::List,SEXP,Rcpp::RObject)");
