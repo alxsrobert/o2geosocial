@@ -409,12 +409,12 @@ Rcpp::List cpp_move_ancestors(Rcpp::List param, Rcpp::List data, Rcpp::List conf
   
   for (size_t i = 0; i < N; i++) {
     // Only NA ancestries are considered
-    if (alpha[i] == NA_INTEGER & move_alpha[i] == TRUE){
+    if (alpha[i] == NA_INTEGER && move_alpha[i] == TRUE){
       Rcpp::IntegerVector cluster_i = cluster_list[cluster_vec[i]-1];
 
       // Draw the new ancestor, can not already be an ancestor
       std::vector<int> possible_ances;
-      for (size_t j = 0; j<cluster_i.size(); j++){
+      for (int j = 0; j < cluster_i.size(); j++){
         j_clust = cluster_i[j]-1;
         if (alpha[j_clust] != NA_INTEGER){
           possible_ances.push_back(j_clust+1);
@@ -586,7 +586,7 @@ Rcpp::List cpp_move_kappa(Rcpp::List param, Rcpp::List data, Rcpp::List config,
   Rcpp::IntegerVector new_kappa = new_param["kappa"];
   
   size_t N = static_cast<size_t>(data["N"]);
-  size_t K = static_cast<size_t>(config["max_kappa"]);
+  int K = config["max_kappa"];
   size_t jump;
   
   double old_loglike = 0.0, new_loglike = 0.0, p_accept = 0.0;

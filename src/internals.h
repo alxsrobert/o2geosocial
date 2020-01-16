@@ -11,14 +11,14 @@ Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix dist
 
 size_t cpp_pick_possible_ancestor(Rcpp::IntegerVector t_inf, Rcpp::IntegerVector alpha, Rcpp::StringVector genotype, Rcpp::IntegerVector cluster, size_t i);
 
-Rcpp::IntegerVector cpp_find_descendents(Rcpp::IntegerVector alpha, Rcpp::IntegerVector cluster, size_t i);
+Rcpp::IntegerVector cpp_find_descendents(Rcpp::IntegerVector alpha, Rcpp::IntegerVector cluster, int i);
 
-std::vector<int> cpp_find_all_descendents(Rcpp::IntegerVector alpha, Rcpp::IntegerVector t_inf, Rcpp::IntegerVector cluster, size_t i);
+std::vector<int> cpp_find_all_descendents(Rcpp::IntegerVector alpha, Rcpp::IntegerVector t_inf, Rcpp::IntegerVector cluster, int i);
 
 Rcpp::IntegerVector cpp_find_all_tree(Rcpp::IntegerVector alpha, Rcpp::IntegerVector cluster, size_t i);
 
-Rcpp::IntegerVector cpp_find_local_cases(Rcpp::IntegerVector alpha, Rcpp::IntegerVector cluster, size_t i);
+Rcpp::IntegerVector cpp_find_local_cases(Rcpp::IntegerVector alpha, Rcpp::IntegerVector cluster, int i);
 
-Rcpp::List cpp_swap_cases(Rcpp::List param, Rcpp::IntegerVector cluster, size_t i);
+Rcpp::List cpp_swap_cases(Rcpp::List param, Rcpp::IntegerVector cluster, int i);
 
 #endif

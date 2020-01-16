@@ -181,8 +181,7 @@ Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix dist
           
         probs2(j, k) = 0;
         for(l = 0; l<size_pop; l++){
-          if(distance(j,l) < thresh &
-             distance(l,k) < thresh){
+          if(distance(j,l) < thresh && distance(l,k) < thresh){
               if(spatial == "exponential"){
                 probs2(j, k) += 
                   exp(-b*distance(j,l)) * population_a[l]* exp(-b*distance(l,k))/
@@ -225,8 +224,7 @@ Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix dist
 // [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export()]]
 Rcpp::IntegerVector cpp_find_descendents(Rcpp::IntegerVector alpha, 
-                                         Rcpp::IntegerVector cluster, 
-                                         size_t i) {
+                                         Rcpp::IntegerVector cluster, int i) {
   size_t counter = 0, n = 0;
   size_t length_cluster = cluster.size();
 
@@ -257,7 +255,7 @@ Rcpp::IntegerVector cpp_find_descendents(Rcpp::IntegerVector alpha,
 std::vector<int> cpp_find_all_descendents(Rcpp::IntegerVector alpha, 
                                           Rcpp::IntegerVector t_inf, 
                                           Rcpp::IntegerVector cluster,
-                                          size_t i) {
+                                          int i) {
   // Find how many descendents in total
   int n = alpha.size();
   std::vector<int> all_descents;
@@ -268,7 +266,7 @@ std::vector<int> cpp_find_all_descendents(Rcpp::IntegerVector alpha,
   int j_clust;
   // For every case in cluster, we go up the ancestry, until we find out if 
   // i is the ancestor. If so, j_clust is added to the list of descendents
-  for (int j=0; j<length_cluster; j++){
+  for (size_t j=0; j<length_cluster; j++){
     j_clust = cluster[j]-1;
     if(t_inf[j_clust] >= t_ref){
       k = j_clust+1;
@@ -328,14 +326,13 @@ Rcpp::IntegerVector cpp_find_all_tree(Rcpp::IntegerVector alpha,
 // [[Rcpp::export()]]
 Rcpp::IntegerVector cpp_find_local_cases(Rcpp::IntegerVector alpha,
                                          Rcpp::IntegerVector cluster,
-                                         size_t i) {
+                                         int i) {
   // determine descendents of 'i':
   Rcpp::IntegerVector desc_i = cpp_find_descendents(alpha, cluster, i);
   size_t n = desc_i.size() + 1; // +1 is to count 'i' itself
   
   // determine descendents of 'alpha[i]':
-  Rcpp::IntegerVector desc_alpha_i = cpp_find_descendents(alpha,cluster,
-                                                          (size_t) alpha[i-1]);
+  Rcpp::IntegerVector desc_alpha_i = cpp_find_descendents(alpha,cluster, alpha[i-1]);
   if (alpha[i-1] != NA_INTEGER) {
     n += desc_alpha_i.size();
   }
@@ -348,7 +345,7 @@ Rcpp::IntegerVector cpp_find_local_cases(Rcpp::IntegerVector alpha,
   out[counter++] = i;
   
   // 'descendents of 'i'
-  for (size_t j = 0; j < desc_i.size(); j++) {
+  for (int j = 0; j < desc_i.size(); j++) {
     out[counter++] = desc_i[j];
   }
   
@@ -357,7 +354,7 @@ Rcpp::IntegerVector cpp_find_local_cases(Rcpp::IntegerVector alpha,
     out[counter++] = alpha[i-1];
     
     // ... and its descendents
-    for (size_t j = 0; j < desc_alpha_i.size(); j++) {
+    for (int j = 0; j < desc_alpha_i.size(); j++) {
       if ( desc_alpha_i[j] != i) {
         out[counter++] = desc_alpha_i[j];
       }
@@ -393,7 +390,7 @@ Rcpp::IntegerVector cpp_find_local_cases(Rcpp::IntegerVector alpha,
 
 // [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export()]]
-Rcpp::List cpp_swap_cases(Rcpp::List param, Rcpp::IntegerVector cluster, size_t i) {
+Rcpp::List cpp_swap_cases(Rcpp::List param, Rcpp::IntegerVector cluster, int i) {
   Rcpp::IntegerVector alpha_in = param["alpha"];
   Rcpp::IntegerVector t_inf_in = param["t_inf"];
   Rcpp::IntegerVector kappa_in = param["kappa"];
@@ -417,7 +414,7 @@ Rcpp::List cpp_swap_cases(Rcpp::List param, Rcpp::IntegerVector cluster, size_t 
   
   // escape if ancestor of the case is imported, i.e. alpha[x-1] is NA
   
-  size_t x = (size_t) alpha_in[i-1];
+  int x = alpha_in[i-1];
   //if (alpha_in[x-1] == NA_INTEGER) {
   // return out;
   //}
