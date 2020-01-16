@@ -34,7 +34,7 @@ double cpp_ll_timing_infections(Rcpp::List data, Rcpp::List param, SEXP i,
     Rcpp::IntegerVector t_inf = param["t_inf"];
     Rcpp::IntegerVector kappa = param["kappa"];
     Rcpp::NumericMatrix w_dens = data["log_w_dens"];
-    size_t K = w_dens.nrow();
+    int K = w_dens.nrow();
     size_t L = w_dens.ncol();
     size_t delay;
     size_t length_i;
