@@ -97,7 +97,7 @@
 #' ## load data
 #' x <- toy_outbreak
 #' data <- outbreaker_data(dates = x$cases$Date, age_group = x$cases$age_group, 
-#' postcode = x$cases$county)
+#' region = x$cases$county)
 #'
 #' ## modify config settings
 #' config <- create_config(move_alpha = FALSE, n_iter = 2e5, sample_every = 1000)

@@ -16,10 +16,10 @@
 #' integer numbers. The value of age group corresponds to the position of this age
 #' group in a_dens.}
 #' 
-#' \item{postcode}{a vector indicating the postcode of the cases, provided as
-#' integer numbers or characters. If numeric, the value of the postcode corresponds 
-#' to the position of the postcode in the distance matrix and the population vector.
-#' Otherwise, the value corresponds to the postcode and will be matched to the distance
+#' \item{region}{a vector indicating the region of the cases, provided as
+#' integer numbers or characters. If numeric, the value of the region corresponds 
+#' to the position of the region in the distance matrix and the population vector.
+#' Otherwise, the value corresponds to the region and will be matched to the distance
 #' matrix and the population vector.}
 #' 
 #' \item{w_dens}{a vector of numeric values indicating the generation time
@@ -62,12 +62,12 @@
 #'
 #' x <- toy_outbreak
 #' outbreaker_data(dates = x$cases$Date, age_group = x$cases$age_group, 
-#' postcode = x$cases$county)
+#' region = x$cases$county)
 #'
 outbreaker_data <- function(..., data = list(...)) {
   
   ## SET DEFAULTS ##
-  defaults <- list(dates = NULL, postcode = NULL, age_group = NULL,
+  defaults <- list(dates = NULL, region = NULL, age_group = NULL,
                    w_dens = NULL, f_dens = NULL, a_dens = NULL, N = 0L,
                    max_range = NA, can_be_ances = NULL, log_w_dens = NULL, 
                    log_f_dens = NULL, log_a_dens = NULL,genotype = NULL, 
@@ -240,8 +240,8 @@ outbreaker_data <- function(..., data = list(...)) {
     data$import <- rep(FALSE, data$N)
   }
   
-  ## CHECK POSTCODE
-  if (!is.null(data$postcode)) {
+  ## CHECK region
+  if (!is.null(data$region)) {
     ## CHECK POPULATION
     if(!is.null(data$population)){
       if(any(!is.numeric(data$population) || data$population<0))
@@ -271,28 +271,28 @@ outbreaker_data <- function(..., data = list(...)) {
     if(any(names(data$population) != colnames(data$distance)))
       data$distance <- data$distance[names(data$population), names(data$population)]
     
-    if(!is.double(data$postcode)){
-      if(!is.character(data$postcode))
-        stop("Postcode is nor an integer, nor a character vector")
+    if(!is.double(data$region)){
+      if(!is.character(data$region))
+        stop("region is nor an integer, nor a character vector")
       else{
-        if(any(!is.element(data$postcode, names(data$population))))
-          stop("Some postcodes are not in the population")
+        if(any(!is.element(data$region, names(data$population))))
+          stop("Some regions are not in the population")
         data$population <- 
-          c(data$population[c(unique(data$postcode))],
+          c(data$population[c(unique(data$region))],
             data$population[!is.element(names(data$population),
-                                        data$postcode)])
+                                        data$region)])
 
         
         data$distance <- data$distance[names(data$population),
                                        names(data$population)]
-        data$postcode <- as.numeric(factor(data$postcode, 
-                                           levels = unique(data$postcode)))
+        data$region <- as.numeric(factor(data$region, 
+                                           levels = unique(data$region)))
       }
     } else{      
-      if(length(data$population)<max(data$postcode))
-        stop("The length of the population vector is lower than the maximum value of the postcode vector")
-      if(any(dim(data$distance)<max(data$postcode)))
-        stop("The dimension of the distance matrix is lower than the maximum value of the postcode vector")
+      if(length(data$population)<max(data$region))
+        stop("The length of the population vector is lower than the maximum value of the region vector")
+      if(any(dim(data$distance)<max(data$region)))
+        stop("The dimension of the distance matrix is lower than the maximum value of the region vector")
     }
   }
   

@@ -36,8 +36,8 @@ pre_clustering <- function(data, config){
       pot_infect <- pot_infect[which(data$genotype[pot_infect] == "Not attributed" |
                                        data$genotype[pot_infect] == data$genotype[i])]
     if(!is.null(config$gamma)){
-      dist_indiv <- data$distance[, data$postcode[i]]
-      dist_indiv <- dist_indiv[data$postcode[pot_infect]]
+      dist_indiv <- data$distance[, data$region[i]]
+      dist_indiv <- dist_indiv[data$region[pot_infect]]
       pot_infect <- pot_infect[which(dist_indiv < config$gamma)]
     }
     return(c(pot_infect))

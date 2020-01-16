@@ -73,7 +73,7 @@
 #' ## load data
 #' x <- toy_outbreak
 #' data <- outbreaker_data(dates = x$cases$sample, age_group = x$cases$age_group,
-#' postcode = x$cases$county)
+#' region = x$cases$county)
 #' 
 #' res_null <- outbreaker(data = data,
 #'                        config = null_config,

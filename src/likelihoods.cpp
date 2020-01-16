@@ -155,8 +155,8 @@ double cpp_ll_timing_sampling(Rcpp::List data, Rcpp::List param, size_t i,
 
 // ---------------------------
 
-// This likelihood corresponds to the probability of observing infection postcode
-// of cases given the infection postcode of their ancestors.
+// This likelihood corresponds to the probability of observing infection region
+// of cases given the infection region of their ancestors.
 double cpp_ll_space(Rcpp::List data, Rcpp::List config, 
                     Rcpp::List param, SEXP i,
                     Rcpp::RObject custom_function) {
@@ -169,7 +169,7 @@ double cpp_ll_space(Rcpp::List data, Rcpp::List config,
     bool move_a = config["move_b"]; // these are just pointers
     Rcpp::IntegerVector t_inf = param["t_inf"];
     Rcpp::IntegerVector kappa = param["kappa"];
-    Rcpp::IntegerVector postcode = data["postcode"];
+    Rcpp::IntegerVector region = data["region"];
     Rcpp::IntegerVector population = data["population"];
     Rcpp::List log_s_dens;
     if(move_a == true || move_b == true)
@@ -181,8 +181,8 @@ double cpp_ll_space(Rcpp::List data, Rcpp::List config,
     double out = 0.0;
 
     int size_pop = population.size();
-    int postcode_j;
-    int postcode_index;
+    int region_j;
+    int region_index;
 
     if (i == R_NilValue) {
       for (int j = 0; j < N; j++) {
@@ -190,10 +190,10 @@ double cpp_ll_space(Rcpp::List data, Rcpp::List config,
           if (kappa[j] < 1 || kappa[j] > size_pop) {
             return  R_NegInf;
           }
-          postcode_j = postcode[j];
-          postcode_index = postcode[alpha[j]-1];
+          region_j = region[j];
+          region_index = region[alpha[j]-1];
           Rcpp::NumericMatrix spatial_j = log_s_dens[kappa[j]-1];
-          out += spatial_j(postcode_index-1, postcode_j-1);
+          out += spatial_j(region_index-1, region_j-1);
           
         }
       }
@@ -207,10 +207,10 @@ double cpp_ll_space(Rcpp::List data, Rcpp::List config,
           if (kappa[j] < 1 || kappa[j] > size_pop) {
             return  R_NegInf;
           }
-          postcode_j = postcode[j];
-          postcode_index = postcode[alpha[j]-1];
+          region_j = region[j];
+          region_index = region[alpha[j]-1];
           Rcpp::NumericMatrix spatial_j = log_s_dens[kappa[j]-1];
-          out += spatial_j(postcode_index-1, postcode_j-1);
+          out += spatial_j(region_index-1, region_j-1);
         }
       } 
     }

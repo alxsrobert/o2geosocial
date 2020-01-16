@@ -59,7 +59,7 @@
 #' \dontrun{
 #' ## run outbreaker
 #' out <- outbreaker(data = list(dates = x$cases$Date, age_group = x$cases$age_group, 
-#' postcode = x$cases$county),
+#' region = x$cases$county),
 #' config = list(n_iter = 2e4, sample_every = 200))
 #' plot(out)
 #' as.data.frame(out)

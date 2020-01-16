@@ -32,7 +32,7 @@ Rcpp::List cpp_move_a(Rcpp::List param, Rcpp::List data, Rcpp::List config,
   double gamma = config["gamma"];
   
   Rcpp::String spatial = config["spatial_method"];
-  Rcpp::IntegerVector postcode = data["postcode"];
+  Rcpp::IntegerVector region = data["region"];
   Rcpp::NumericMatrix distance = data["distance"];
   Rcpp::NumericVector population = data["population"];
   Rcpp::NumericVector limits = config["prior_a"];
@@ -98,7 +98,7 @@ Rcpp::List cpp_move_b(Rcpp::List param, Rcpp::List data, Rcpp::List config,
   Rcpp::NumericVector limits = config["prior_b"];
   
   Rcpp::String spatial = config["spatial_method"];
-  Rcpp::IntegerVector postcode = data["postcode"];
+  Rcpp::IntegerVector region = data["region"];
   
   Rcpp::List new_log_s_dens = new_param["log_s_dens"];
   Rcpp::NumericMatrix probs = new_log_s_dens[0];
