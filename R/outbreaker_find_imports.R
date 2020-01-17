@@ -8,7 +8,7 @@
 ## and an arbitrary threshold ('config$outlier.threshold'), and mark these cases as
 ## imported, i.e. for which the ancestor will be 'NA'.
 
-
+#' @importFrom stats quantile
 outbreaker_find_imports <- function(moves, data, param_current,
                                     param_store, config,
                                     likelihoods) {
@@ -53,8 +53,8 @@ outbreaker_find_imports <- function(moves, data, param_current,
                       ), numeric(1))
         if(config_imports$verbatim == TRUE) 
           message(paste0("Finding import, Iteration number: ", i, "/",
-                         config_imports$n_iter_import,
-                         "|| likelihood = ", sum(influences_imports[counter,]) %>% round(2)))
+                         config_imports$n_iter_import, "|| likelihood = ", 
+                         round(sum(influences_imports[counter,]), 2)))
         counter <- counter + 1L
       }
     } # end of the chain

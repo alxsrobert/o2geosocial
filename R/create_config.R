@@ -120,8 +120,10 @@
 #'
 #' @param data an optional list of data items as returned by
 #'     \code{outbreaker_data}; if provided, this allows for further checks of
-#'     the outbreaker setings.
-#'
+#'     the outbreaker settings.
+#'     
+#' @param ... a list of config items to be processed (see description)
+#' 
 #' @seealso \code{\link{outbreaker_data}} to check and process data for outbreaker
 #'
 #' @author Initial version by Thibaut Jombart, rewritten by Alexis Robert (\email{alexis.robert@lshtm.ac.uk})
@@ -183,7 +185,6 @@ create_config <- function (..., data = NULL)
   }
   if(config$gamma == 0 || is.null(config$gamma)){
     config$gamma <- Inf
-    warning("gamma was set to max values")
   }
   if(!is.null(config$delta)){
     if(config$delta <= 0)
@@ -195,7 +196,6 @@ create_config <- function (..., data = NULL)
   }
   if(config$delta == 0 || is.null(config$delta)){
     config$delta <- Inf
-    warning("delta was set to max values")
   }
   if (is.numeric(config$init_tree)) {
     config$init_alpha <- as.integer(config$init_tree)
@@ -436,7 +436,7 @@ create_config <- function (..., data = NULL)
   }
   
   if((config$move_a == TRUE || config$move_b == TRUE) && 
-     config$max_kappa > 2){
+     config$max_kappa > 2 && config$move_alpha == TRUE){
     warning("If spatial kernel parameters are estimated, maximum missing generation is 1")
     config$max_kappa <- 2
   }
@@ -513,7 +513,7 @@ create_config <- function (..., data = NULL)
     }
     else {
       max_like_delay <- which.max(data$f_dens)
-      if (!is.finite(max_like_delay)) {
+      if (!is.finite(max_like_delay) || length(max_like_delay) == 0) {
         max_like_delay <- 1L
       }
       config$init_t_inf <- as.integer(data$dates - max_like_delay)

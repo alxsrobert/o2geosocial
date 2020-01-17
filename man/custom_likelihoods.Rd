@@ -68,26 +68,28 @@ f_null <- function(data, param) {
   return(0.0)
 }
 
+
 null_model <- custom_likelihoods(timing_sampling = f_null,
-                                timing_infections = f_null,
-                                reporting = f_null,
-                                space = f_null,
-                                age = f_null)
+                                 reporting = f_null,
+                                 space = f_null,
+                                 age = f_null)
 
 null_config <- list(find_import = FALSE,
-                    n_iter = 200,
+                    n_iter = 200, gamma = 300,
                     sample_every = 1)
 
 ## load data
-x <- toy_outbreak
-data <- outbreaker_data(dates = x$cases$sample, age_group = x$cases$age_group,
-postcode = x$cases$county)
+data("toy_outbreak")
+dt_cases <- toy_outbreak$cases
+dt_cases <- dt_cases[order(dt_cases$Date), ]
+data <- outbreaker_data(dates = dt_cases$Date, age_group = dt_cases$age_group,
+                        region = dt_cases$county, population = toy_outbreak$population, 
+                        distance = toy_outbreak$distance)
 
 res_null <- outbreaker(data = data,
                        config = null_config,
                        likelihoods = null_model)
 
-## visualise ancestries to see if all transmission trees have been explored
 plot(res_null, type = "alpha")
 }
 \author{

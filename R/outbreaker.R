@@ -84,7 +84,7 @@ outbreaker <- function(data = outbreaker_data(),
   ## CHECK / PROCESS CONFIG ##
   config <- create_config(config, data = data)
   
-  ## ADD SPATIAL LIKELIHOOD TO DATA IF NO INFERENCE OF SPATIAL KERNEL ##
+  ## ADD SPATIAL LIKELIHOOD TO DATA ##
   data$log_s_dens <- config$function_s_dens(data, config)
   
   

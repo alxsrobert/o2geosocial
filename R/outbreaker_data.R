@@ -244,7 +244,7 @@ outbreaker_data <- function(..., data = list(...)) {
   if (!is.null(data$region)) {
     ## CHECK POPULATION
     if(!is.null(data$population)){
-      if(any(!is.numeric(data$population) || data$population<0))
+      if(any(!is.numeric(data$population)) || any(data$population<0))
         stop("The vector population can only include positive numeric values")
     } else
       stop("The population vector is null")

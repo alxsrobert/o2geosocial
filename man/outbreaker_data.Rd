@@ -29,10 +29,10 @@ Cases must be ordering by ascending onset date.}
 integer numbers. The value of age group corresponds to the position of this age
 group in a_dens.}
 
-\item{postcode}{a vector indicating the postcode of the cases, provided as
-integer numbers or characters. If numeric, the value of the postcode corresponds 
-to the position of the postcode in the distance matrix and the population vector.
-Otherwise, the value corresponds to the postcode and will be matched to the distance
+\item{region}{a vector indicating the region of the cases, provided as
+integer numbers or characters. If numeric, the value of the region corresponds 
+to the position of the region in the distance matrix and the population vector.
+Otherwise, the value corresponds to the region and will be matched to the distance
 matrix and the population vector.}
 
 \item{w_dens}{a vector of numeric values indicating the generation time
@@ -67,7 +67,7 @@ considered in the study.}
 
 x <- toy_outbreak
 outbreaker_data(dates = x$cases$Date, age_group = x$cases$age_group, 
-postcode = x$cases$county)
+region = x$cases$county)
 
 }
 \author{

@@ -55,8 +55,7 @@ std::vector<int> cpp_are_possible_ancestors(Rcpp::IntegerVector t_inf,
   int j = 0;
   int j_clust;
   // Find if there's a genotype reported in i's descendents
-  while(gen_ref == "Not attributed" &&
-        j<n_desc){
+  while(gen_ref == "Not attributed" && j<n_desc){
     gen_ref = genotype[all_descendents[j]-1];
     ++j;
   }
@@ -82,7 +81,6 @@ std::vector<int> cpp_are_possible_ancestors(Rcpp::IntegerVector t_inf,
         // all cases from j_clust's tree who got infected before i are potential
         // infectors
         if(new_gen == gen_ref){
-          
           new_all_descendents = cpp_find_all_descendents(alpha, t_inf, 
                                                          cluster, j_clust+1);
           new_n_desc = new_all_descendents.size();

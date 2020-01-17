@@ -7,9 +7,11 @@
 create_config(..., data = NULL)
 }
 \arguments{
+\item{...}{a list of config items to be processed (see description)}
+
 \item{data}{an optional list of data items as returned by
 \code{outbreaker_data}; if provided, this allows for further checks of
-the outbreaker setings.}
+the outbreaker settings.}
 }
 \description{
 This function defines settings.  It takes a list of named
@@ -97,9 +99,6 @@ parameter.}
 \item{sd_b}{the standard deviation for the Normal proposal for the second spatial 
 parameter.}
 
-\item{min_date}{earliest infection date possible, expressed as days since the
-first sampling.}
-
 \item{find_import}{a logical indicating whether the import status of cases should
 be estimated.}
 
@@ -127,6 +126,7 @@ parameter of the uniform prior for the first spatial parameter 'a'.}
 
 \item{prior_b}{a numeric vector of length 2 indicating the first and second
 parameter of the uniform prior for the second spatial parameter 'b'.}
+\item{verbatim}{Logical, should the number of iteration be printed.}
 
 }
 }
