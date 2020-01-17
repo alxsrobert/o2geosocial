@@ -261,7 +261,7 @@ Rcpp::List cpp_move_t_inf(Rcpp::List param, Rcpp::List data,
   for (size_t i = 0; i < N; i++) {
     Rcpp::IntegerVector cluster_i = cluster_list[cluster_vec[i]-1];
     local_cases = cpp_find_descendents(param["alpha"], cluster_i, i+1);
-    
+    int n_loc = local_cases.size();
     // loglike with current value
     old_loc_loglike = cpp_ll_timing(data, param, i+1, list_custom_ll); // term for case 'i' with offset
     
@@ -272,12 +272,21 @@ Rcpp::List cpp_move_t_inf(Rcpp::List param, Rcpp::List data,
     
     // proposal (+/- 1)
     new_t_inf[i] += unif_rand() > 0.5 ? 1 : -1; // new proposed value
-    
+    // Check the new proposed value is correct
+    if(alpha[i] != NA_INTEGER)
+      if(new_t_inf[i] < new_t_inf[alpha[i] - 1])
+        new_t_inf[i] = t_inf[i];
+
+    if (n_loc> 0)
+      for(int k = 0; k < n_loc; k++)
+        if(new_t_inf[local_cases[k] - 1] < new_t_inf[i])
+          new_t_inf[i] = t_inf[i];
+
     // loglike with new value
     new_loc_loglike = cpp_ll_timing(data, new_param, i+1, list_custom_ll); // term for case 'i' with offset
     
     // term descendents of 'i'
-    if (local_cases.size() > 0) {
+    if (n_loc> 0) {
       new_loc_loglike += cpp_ll_timing(data, new_param, local_cases, list_custom_ll);
     }
     
@@ -337,11 +346,11 @@ Rcpp::List cpp_move_alpha(Rcpp::List param, Rcpp::List data, Rcpp::List config,
     if (alpha[i] != NA_INTEGER && sum(t_inf_i < t_inf[i]) > 0) { 
       possible_ancestors = cpp_are_possible_ancestors(t_inf, alpha, genotype, 
                                                       cluster_i, i+1);
+      
       if (possible_ancestors.size()>0){
         // loglike with current value
         // old_loglike = cpp_ll_all(data, param, R_NilValue);
         old_loglike = cpp_ll_all(data, config, param, i+1, list_custom_ll); // offset
-
         // proposal (+/- 1)
         new_alpha[i] = possible_ancestors[unif_rand() * possible_ancestors.size()];
         // loglike with current value
@@ -500,6 +509,7 @@ Rcpp::List cpp_move_swap_cases(Rcpp::List param, Rcpp::List data,
   Rcpp::IntegerVector move_alpha = config["move_alpha"]; // pointer to config$move_alpha
   Rcpp::List swapinfo; // contains alpha, kappa and t_inf
   Rcpp::IntegerVector local_cases;
+  int gamma = config["gamma"];
   
   Rcpp::List cluster_list = data["cluster"];
   Rcpp::IntegerVector cluster_vec = data["is_cluster"];
@@ -514,7 +524,7 @@ Rcpp::List cpp_move_swap_cases(Rcpp::List param, Rcpp::List data,
     Rcpp::IntegerVector cluster_i = cluster_list[cluster_vec[i]-1];
     t_inf_i = t_inf[cluster_i-1];
     // only non-NA ancestries are moved, if there is at least 1 choice
-    if (alpha[i] != NA_INTEGER && sum(t_inf_i < t_inf[i] + t_inf_i > t_inf[i]-30) > 0 &&
+    if (alpha[i] != NA_INTEGER && sum(t_inf_i < t_inf[i] + t_inf_i > t_inf[i]-gamma) > 0 &&
         move_alpha[alpha[i]-1] == TRUE) {
       // The local likelihood is defined as the likelihood computed for the
       // cases affected by the swap; these include:
@@ -523,15 +533,13 @@ Rcpp::List cpp_move_swap_cases(Rcpp::List param, Rcpp::List data,
       // - the descendents of 'i'
       // - 'alpha[i]'
       // - the descendents of 'alpha[i]' (other than 'i')
-      
       local_cases = cpp_find_local_cases(param["alpha"], cluster_i, i+1);
-      
       
       // loglike with current parameters
       
       old_loglike = cpp_ll_all(data, config, param, local_cases, list_custom_ll); // offset
       
-      
+
       // proposal: swap case 'i' and its ancestor
       
       swapinfo = cpp_swap_cases(param, cluster_i, i+1);
@@ -546,7 +554,6 @@ Rcpp::List cpp_move_swap_cases(Rcpp::List param, Rcpp::List data,
       
       
       // acceptance term
-      
       p_accept = exp(new_loglike - old_loglike);
       
       
@@ -561,10 +568,6 @@ Rcpp::List cpp_move_swap_cases(Rcpp::List param, Rcpp::List data,
   }
   return param;
 }
-
-
-
-
 
 
 // ---------------------------
