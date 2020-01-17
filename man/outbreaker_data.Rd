@@ -65,9 +65,12 @@ considered in the study.}
 }
 \examples{
 
-x <- toy_outbreak
-outbreaker_data(dates = x$cases$Date, age_group = x$cases$age_group, 
-region = x$cases$county)
+data("toy_outbreak")
+dt_cases <- toy_outbreak$cases
+dt_cases <- dt_cases[order(dt_cases$Date), ]
+data <- outbreaker_data(dates = dt_cases$Date, age_group = dt_cases$age_group,
+                        region = dt_cases$county, population = toy_outbreak$population, 
+                        distance = toy_outbreak$distance)
 
 }
 \author{

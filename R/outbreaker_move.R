@@ -40,7 +40,6 @@ outbreaker_move <- function(moves, data, param_current,
     for (j in seq_len(J)) {
       ## move parameters
       param_current <- moves[[j]](param_current)
-
     }
     ## store outputs and influence if needed
     if ((i %% config$sample_every) == 0) {
@@ -48,8 +47,7 @@ outbreaker_move <- function(moves, data, param_current,
                                            config, likelihoods, priors, i)
       if(config$verbatim == TRUE){
         influence_i <- - vapply(seq_len(data$N), function(case) 
-          (cpp_ll_all(data = data,config = config,
-                      param = param_current, i = case,
+          (cpp_ll_all(data = data,config = config, param = param_current, i = case,
                       custom_functions = likelihoods)
           ), numeric(1))
         message(paste0("Iteration number: ", i, "/", config$n_iter,
@@ -57,6 +55,7 @@ outbreaker_move <- function(moves, data, param_current,
       }
       if(config$find_import == TRUE){
         counter <- i / config$sample_every + 1
+        if(config$sample_every == 1) counter <- i / config$sample_every
         influences[counter,] <- - vapply(seq_len(data$N), function(case) 
           (cpp_ll_all(data = data,config = config,
                       param = param_current, i = case,
@@ -65,7 +64,7 @@ outbreaker_move <- function(moves, data, param_current,
       }
     }
   } # end of the chain
-  
+
   if(config$find_import == TRUE){
     ## Remove unlikely transmission links
     # Define threshold
@@ -81,8 +80,7 @@ outbreaker_move <- function(moves, data, param_current,
     # In cases where the likelihood in worst than the threshold, the transmission link is removed
     bad_ancestor_matrix[bad_ancestor_matrix == FALSE] <- NA
     bad_ancestor_list <- split(x = t(bad_ancestor_matrix), 
-                               rep(1:(n_measures+1), 
-                                   each = data$N))
+                               rep(1:(n_measures + 1), each = data$N))
     # Update alpha and kappa
     param_store$alpha <- Map("*", param_store$alpha, bad_ancestor_list)
     param_store$kappa <- Map("*", param_store$kappa, bad_ancestor_list)

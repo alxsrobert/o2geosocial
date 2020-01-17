@@ -161,7 +161,7 @@ create_config <- function (..., data = NULL)
 
                    n_iter = 10000, sample_every = 50, 
                    
-                   max_kappa = 5, find_import = TRUE, outlier_threshold = 0.05, 
+                   max_kappa = 2, find_import = TRUE, outlier_threshold = 0.05, 
                    outlier_relative = FALSE,
                    n_iter_import = 5000, sample_every_import = 50, 
                    burnin = 10000, verbatim = FALSE, function_s_dens = calc_s_dens)
@@ -378,9 +378,6 @@ create_config <- function (..., data = NULL)
   if (!is.function(config$function_s_dens)) {
     stop("function_s_dens should be a function")
   }
-  if (config$n_iter_import < 1000) {
-    stop("n_iter is smaller than 1000")
-  }
   if (!is.finite(config$n_iter_import)) {
     stop("n_iter_import is infinite or NA")
   }
@@ -435,8 +432,7 @@ create_config <- function (..., data = NULL)
     if(!is.logical(config$verbatim)) stop("verbatim should be a logical value")
   }
   
-  if((config$move_a == TRUE || config$move_b == TRUE) && 
-     config$max_kappa > 2 && config$move_alpha == TRUE){
+  if((config$move_a == TRUE || config$move_b == TRUE) && config$max_kappa > 2){
     warning("If spatial kernel parameters are estimated, maximum missing generation is 1")
     config$max_kappa <- 2
   }

@@ -64,7 +64,7 @@
 #' ## SPECIFYING PRIOR PARAMETERS
 #' ## - this will need to be passed to outbreaker
 #' default_config <- create_config()
-#' new_config <- create_config(prior_mu = 1e-5,
+#' new_config <- create_config(prior_a = c(0,5), prior_b = c(0,5),
 #'                         prior_pi = c(2, 1))
 #'
 #' ## - to check the prior manually, default settings:

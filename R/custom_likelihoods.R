@@ -62,13 +62,13 @@
 #' 
 #' 
 #' null_model <- custom_likelihoods(timing_sampling = f_null,
-# '                                 timing_infections = f_null,
+#'                                  timing_infections = f_null,
 #'                                  reporting = f_null,
 #'                                  space = f_null,
 #'                                  age = f_null)
 #'
 #' null_config <- list(find_import = FALSE,
-#'                     n_iter = 200, gamma = 300,
+#'                     n_iter = 200, gamma = 100, delta = 30,
 #'                     sample_every = 1)
 #'
 #' ## load data

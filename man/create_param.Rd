@@ -100,8 +100,8 @@ data("toy_outbreak")
 dt_cases <- toy_outbreak$cases
 dt_cases <- dt_cases[order(dt_cases$Date), ]
 data <- outbreaker_data(dates = dt_cases$Date, age_group = dt_cases$age_group,
-region = dt_cases$county, population = toy_outbreak$population, 
-distance = toy_outbreak$distance)
+                        region = dt_cases$county, population = toy_outbreak$population, 
+                        distance = toy_outbreak$distance)
 
 ## modify config settings
 config <- create_config(move_alpha = FALSE, n_iter = 2e5, sample_every = 1000)

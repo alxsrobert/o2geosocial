@@ -32,7 +32,6 @@ outbreaker_mcmc_shape <- function(param, data) {
   param$kappa <- matrix(unlist(param$kappa), ncol = data$N, byrow = TRUE)
   colnames(param$kappa) <- paste("kappa", seq_len(data$N), sep=".")
 
-
   ## shape data.frame and convert ##
   param <- data.frame(step = param$step,
                       post = param$post, like = param$like, prior = param$prior,

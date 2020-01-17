@@ -58,17 +58,19 @@
 #'
 #' \dontrun{
 #' ## run outbreaker
-#' out <- outbreaker(data = list(dates = x$cases$Date, age_group = x$cases$age_group, 
-#' region = x$cases$county),
-#' config = list(n_iter = 2e4, sample_every = 200))
+#' data("toy_outbreak")
+#' dt_cases <- toy_outbreak$cases
+#' dt_cases <- dt_cases[order(dt_cases$Date), ]
+#' data <- outbreaker_data(dates = dt_cases$Date, age_group = dt_cases$age_group,
+#'                         region = dt_cases$county, population = toy_outbreak$population, 
+#'                         distance = toy_outbreak$distance, a_dens = toy_outbreak$age_contact,
+#'                         f_dens = dgamma(x = 1:300, scale = 0.43, shape = 27),
+#'                         w_dens = dnorm(x = 1:300, mean = 11.7, sd = 2.0))
+#' out <- outbreaker(data = data, config = list(n_iter = 200, sample_every = 5,
+#'                                              n_iter_import = 100, sample_every_import = 5,
+#'                                              gamma = 100, delta = 30, burnin = 20))
 #' plot(out)
-#' as.data.frame(out)
 #'
-#' ## run outbreaker, no DNA sequences
-#' out2 <- outbreaker(data = list(dates = dat$onset, w_dens = w),
-#' config = list(n_iter = 2e4, sample_every = 200))
-#' plot(out2)
-#' as.data.frame(out2)
 #'
 #' }
 outbreaker <- function(data = outbreaker_data(),
