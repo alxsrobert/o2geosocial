@@ -24,6 +24,7 @@
 #' @keywords datasets
 #'
 #' @examples
+#' data("toy_outbreak")
 #' names(toy_outbreak)
 #' toy_outbreak
 #' 
