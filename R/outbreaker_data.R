@@ -270,16 +270,16 @@ outbreaker_data <- function(..., data = list(...)) {
     if(length(match.arg(names(data$population), 
                         colnames(data$distance), 
                         several.ok = TRUE)) != length(data$population))
-      stop("The vector population should have the same name as the distance matrix")
+      stop("The vector population should have the same names as the distance matrix")
     if(any(names(data$population) != colnames(data$distance)))
       data$distance <- data$distance[names(data$population), names(data$population)]
     
     if(!is.double(data$region)){
       if(!is.character(data$region))
-        stop("region is nor an integer, nor a character vector")
+        stop("region is not an integer, nor a character vector")
       else{
         if(any(!is.element(data$region, names(data$population))))
-          stop("Some regions are not in the population")
+          stop("Some regions are not in the population vector")
         data$population <- 
           c(data$population[c(unique(data$region))],
             data$population[!is.element(names(data$population),
