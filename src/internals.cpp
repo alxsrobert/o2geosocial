@@ -127,80 +127,91 @@ std::vector<int> cpp_are_possible_ancestors(Rcpp::IntegerVector t_inf,
 Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix distance,
                         double a, double b, double gamma, Rcpp::String spatial,
                         int nb_cases) {
-
   int size_pop = population.size();
   Rcpp::NumericVector population_a(size_pop);
+  Rcpp::NumericVector sum_pop(size_pop);
+  Rcpp::NumericMatrix nb_move(size_pop, size_pop);
+  double thresh_dist = gamma;
+  double thresh_prob = (0.001);
+  
   // log_s_dens with no missing generation
   Rcpp::NumericMatrix probs(nb_cases, nb_cases);
   // log_s_dens with one missing generation
   Rcpp::NumericMatrix probs2(nb_cases, nb_cases);
-  Rcpp::NumericVector sum_pop(size_pop);
+  double probs_k_l, probs_l_j;
   
   int j, k, l;
   
   for(k = 0; k<size_pop; k++)
     population_a[k] = pow(population[k], a);
-  double thresh = gamma;
   // When the distance between two counties is above thresh, we consider the 
   // chances of connection are null. This significantly speeds up the function
   // by reducing the number of elements of the matrix that need to be calculated.
   if(spatial == "exponential"){
     for(k = 0; k<size_pop; k++){
       for(j = 0; j<size_pop; j++){
-        if(distance(j,k) < thresh && j>k){
-          sum_pop[j] += population_a[k]*exp(-b*distance(k,j));
-          sum_pop[k] += population_a[j]*exp(-b*distance(j,k));
+        if(distance(j,k) < thresh_dist && j>k){
+          nb_move(k, j) = population_a[k]*exp(-b*distance(k,j));
+          nb_move(j, k) = nb_move(k,j) * population_a[j] / population_a[k];
+          sum_pop[j] += nb_move(k, j);
+          sum_pop[k] += nb_move(j, k);
         } else if(j == k){
-          sum_pop[k] += population_a[j];
+          nb_move(k, j) = population_a[k];
+          sum_pop[k] += nb_move(k, j);
         }
       }
     }
   } else if(spatial == "inverse"){
     for(k = 0; k<size_pop; k++){
       for(j = 0; j<size_pop; j++){
-        if(distance(j,k) < thresh && j>k){
-          sum_pop[j] += population_a[j]/pow(1+distance(j,k), b);
-          sum_pop[k] += population_a[j]/pow(1+distance(j,k), b);
+        if(distance(j,k) < thresh_dist && j>k){
+          nb_move(k, j) = population_a[k]*pow(1+distance(j,k), b);
+          nb_move(j, k) = nb_move(k,j) * population_a[j] / population_a[k];
+          sum_pop[j] += nb_move(k, j);
+          sum_pop[k] += nb_move(j, k);
         } else if(j == k){
-          sum_pop[k] += population_a[j];
+          nb_move(k, j) = population_a[k];
+          sum_pop[k] += nb_move(k, j);
         }
       }
     }
   }
-
+  
   for(k = 0; k<nb_cases; k++){
     for(j = 0; j<nb_cases; j++){
-      if(distance(j,k) < thresh){
-        if(spatial == "exponential"){
-          probs(j, k) = (population_a[j] * 
-            exp(-b*distance(j,k)) / sum_pop[k]); 
-        } else if(spatial == "inverse")
-          probs(j, k) = (population_a[j] * pow(1+distance(j,k), b)/ sum_pop[k]);
-          
-        probs2(j, k) = 0;
-        for(l = 0; l<size_pop; l++){
-          if(distance(j,l) < thresh && distance(l,k) < thresh){
-              if(spatial == "exponential"){
-                probs2(j, k) += 
-                  exp(-b*distance(j,l)) * population_a[l]* exp(-b*distance(l,k))/
-                    sum_pop[l]; 
-              } else if(spatial == "inverse")
-                probs2(j, k) += pow(1+distance(j,k), b)*population_a[l]*
-                  pow(1+distance(j,k), b)/ sum_pop[l];
+      if(distance(k, j) < thresh_dist){
+        if(probs(k, j) == 0) probs(k, j) = nb_move(k, j) / sum_pop[j];
+        if(probs(k, j) >= thresh_prob){
+          for(l = 0; l < size_pop; l++){
+            if(distance(k, l) < thresh_dist && distance(l, j) < thresh_dist){
+              if(l < nb_cases){
+                if(probs(k, l) == 0) probs(k, l) = nb_move(k, l) / sum_pop[l];
+                if(probs(l, j) == 0) probs(l, j) = nb_move(l, j) / sum_pop[j];
+                probs2(k, j) += probs(k, l) * probs(l, j);
+              } else {
+                probs_k_l = nb_move(k, l) / sum_pop[l];
+                probs_l_j = nb_move(l, j) / sum_pop[j];
+                probs2(k, j) += probs_k_l * probs_l_j;
+              }
+            }
           }
         }
-        probs(j, k) = log(probs(j, k));
-        probs2(j, k) = log(probs2(j, k));
-      }
-      else{
-        probs(j, k) = -1000;
-        probs2(j, k) = -1000;
       }
     }
   }
-
-  Rcpp::List new_log_s_dens = Rcpp::List::create(probs, probs2);
+  for(k = 0; k<nb_cases; k++){
+    for(j = 0; j<nb_cases; j++){
+      if(distance(k, j) < thresh_dist){
+        probs(k, j) = log(probs(k, j));
+        probs2(k, j) = log(probs2(k, j));
+      } else{
+        probs(k, j) = -1000;
+        probs2(k, j) = -1000;
+      }
+    }
+  }
   
+  Rcpp::List new_log_s_dens = Rcpp::List::create(probs, probs2);
   return(new_log_s_dens);
 }
 
