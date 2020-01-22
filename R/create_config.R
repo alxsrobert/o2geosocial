@@ -461,9 +461,7 @@ create_config <- function (..., data = NULL)
         count <- 1
         for(j in nb_gen_sec){
           count_gen <- count
-          if(any(is.na(config$init_alpha) & 
-                 data$is_cluster == X & 
-                 data$genotype == j & 
+          if(any(is.na(config$init_alpha) & data$is_cluster == X & data$genotype == j & 
                  data$dates <= min(data$dates[which(data$is_cluster == X & 
                                                    !is.na(config$init_alpha) &
                                                    data$genotype == j)]))){
@@ -473,13 +471,21 @@ create_config <- function (..., data = NULL)
                     gen_clust[count_gen] == j)){
               count_gen <- count_gen + 1
             }
-            if(gen_clust[count] == "Not attributed" )
-              count <- count_gen + 1
+            if(gen_clust[count] == "Not attributed" ) count <- count_gen + 1
           }
-          config$init_alpha[data$is_cluster == X &
-                              !is.na(config$init_alpha) &
-                              data$genotype == j] <- which(is.na(config$init_alpha) &
-                                                             data$is_cluster == X)[count_gen]
+          if(data$dates[which(is.na(config$init_alpha) &
+                               data$is_cluster == X)[count_gen]] >
+             min(data$dates[data$is_cluster == X & !is.na(config$init_alpha) &
+                                              data$genotype == j])){
+            new_ances <- which(data$is_cluster == X & !is.na(config$init_alpha) &
+                                             data$genotype == j)[1]
+            config$init_alpha[new_ances] <- NA
+            config$init_alpha[data$is_cluster == X & !is.na(config$init_alpha) &
+                                data$genotype == j] <- new_ances
+          } else 
+            config$init_alpha[data$is_cluster == X & !is.na(config$init_alpha) &
+                                data$genotype == j] <- which(is.na(config$init_alpha) &
+                                                               data$is_cluster == X)[count_gen]
         }
         for (k in which(data$is_cluster == X &
                          !is.na(config$init_alpha) &
