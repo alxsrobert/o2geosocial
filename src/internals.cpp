@@ -202,8 +202,10 @@ Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix dist
   for(k = 0; k<nb_cases; k++){
     for(j = 0; j<nb_cases; j++){
       if(distance(k, j) < thresh_dist){
+        if(probs(k, j) < thresh_prob) probs2(k, j) = log(probs2(k, j)); else
+          probs2(k, j) = -1000;
         probs(k, j) = log(probs(k, j));
-        probs2(k, j) = log(probs2(k, j));
+
       } else{
         probs(k, j) = -1000;
         probs2(k, j) = -1000;
