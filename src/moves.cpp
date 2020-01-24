@@ -28,50 +28,32 @@ Rcpp::List cpp_move_a(Rcpp::List param, Rcpp::List data, Rcpp::List config,
                       Rcpp::RObject custom_prior = R_NilValue) {
   // Import
   Rcpp::List new_param = clone(param);
-  Rcpp::NumericVector b = param["b"]; // these are just pointers
-  double gamma = config["gamma"];
-  
-  Rcpp::String spatial = config["spatial_method"];
-  Rcpp::IntegerVector region = data["region"];
-  Rcpp::NumericMatrix distance = data["distance"];
-  Rcpp::NumericVector population = data["population"];
   Rcpp::NumericVector limits = config["prior_a"];
-  
-  Rcpp::List new_log_s_dens = new_param["log_s_dens"];
-  
   Rcpp::NumericVector new_a = new_param["a"]; // these are just pointers
-  Rcpp::NumericMatrix probs = new_log_s_dens[0];
-
-  int nb_cases = pow(probs.size(), 0.5);
-
+  
   double sd_a = static_cast<double>(config["sd_a"]);
   
   double old_logpost = 0.0, new_logpost = 0.0, p_accept = 0.0;
   
   // Move new_a
   // proposal (normal distribution with SD: config$sd_a)
-
-  new_a[0] += R::rnorm(0.0, sd_a); // new proposed value
   
+  new_a[0] += R::rnorm(0.0, sd_a); // new proposed value
   if (new_a[0] < limits[0] || new_a[0] > limits[1]) {
     return param;
   }
-  new_param["log_s_dens"] = cpp_log_like(population, distance, new_a[0], b[0], gamma,
-                               spatial, nb_cases);
-  
   // compute likelihoods
   old_logpost = cpp_ll_space(data, config, param, R_NilValue, custom_ll);
   new_logpost = cpp_ll_space(data, config, new_param, R_NilValue, custom_ll);
-
+  
   
   // compute priors
-  
   old_logpost += cpp_prior_a(param, config, custom_prior);
   new_logpost += cpp_prior_a(new_param, config, custom_prior);
   // acceptance term
   
   p_accept = exp(new_logpost - old_logpost);
-
+  
   
   // acceptance: the new value is already in a, so we only act if the move is
   // rejected, in which case we restore the previous ('old') value
@@ -79,7 +61,7 @@ Rcpp::List cpp_move_a(Rcpp::List param, Rcpp::List data, Rcpp::List config,
   if (p_accept < unif_rand()) { // reject new values
     return param;
   }
-
+  
   return new_param;
 }
 
@@ -91,23 +73,10 @@ Rcpp::List cpp_move_b(Rcpp::List param, Rcpp::List data, Rcpp::List config,
                       Rcpp::RObject custom_prior = R_NilValue) {
   // Import
   Rcpp::List new_param = clone(param);
-  Rcpp::NumericVector a = param["a"]; // these are just pointers
-  double gamma = config["gamma"];
-  Rcpp::NumericVector population = data["population"];
-  Rcpp::NumericMatrix distance = data["distance"];
   Rcpp::NumericVector limits = config["prior_b"];
-  
-  Rcpp::String spatial = config["spatial_method"];
-  Rcpp::IntegerVector region = data["region"];
-  
-  Rcpp::List new_log_s_dens = new_param["log_s_dens"];
-  Rcpp::NumericMatrix probs = new_log_s_dens[0];
-
   Rcpp::NumericVector new_b = new_param["b"]; // these are just pointers
   
   
-  int nb_cases = pow(probs.size(), 0.5);
-
   double sd_b = static_cast<double>(config["sd_b"]);
   
   double old_logpost = 0.0, new_logpost = 0.0, p_accept = 0.0;
@@ -121,9 +90,6 @@ Rcpp::List cpp_move_b(Rcpp::List param, Rcpp::List data, Rcpp::List config,
   if (new_b[0] < limits[0] || new_b[0] > limits[1]) {
     return param;
   }
-  
-  new_param["log_s_dens"] = cpp_log_like(population, distance, a[0], new_b[0], gamma,
-                               spatial, nb_cases);
   
   //compute likelihoods
   old_logpost = cpp_ll_space(data, config, param, R_NilValue, custom_ll);

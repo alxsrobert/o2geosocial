@@ -164,7 +164,7 @@ create_config <- function (..., data = NULL)
                    max_kappa = 2, find_import = TRUE, outlier_threshold = 0.05, 
                    outlier_relative = FALSE,
                    n_iter_import = 5000, sample_every_import = 50, 
-                   burnin = 10000, verbatim = FALSE, function_s_dens = calc_s_dens)
+                   burnin = 10000, verbatim = FALSE)
   config <- modify_defaults(defaults, config)
   if (is.character(config$init_tree)) {
     config$init_tree <- match.arg(config$init_tree, c("star"))
@@ -374,9 +374,6 @@ create_config <- function (..., data = NULL)
   }
   if (!is.numeric(config$n_iter_import)) {
     stop("n_iter_import is not a numeric value")
-  }
-  if (!is.function(config$function_s_dens)) {
-    stop("function_s_dens should be a function")
   }
   if (!is.finite(config$n_iter_import)) {
     stop("n_iter_import is infinite or NA")

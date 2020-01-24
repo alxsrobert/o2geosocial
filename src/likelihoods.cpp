@@ -163,27 +163,25 @@ double cpp_ll_space(Rcpp::List data, Rcpp::List config,
   int N = static_cast<int>(data["N"]);
   if(N < 2) return 0.0;
   if (custom_function == R_NilValue) {
-    // printf("yo0");
     Rcpp::IntegerVector alpha = param["alpha"];
-    bool move_b = config["move_a"]; // these are just pointers
-    bool move_a = config["move_b"]; // these are just pointers
     Rcpp::IntegerVector t_inf = param["t_inf"];
     Rcpp::IntegerVector kappa = param["kappa"];
     Rcpp::IntegerVector region = data["region"];
-    Rcpp::IntegerVector population = data["population"];
-    Rcpp::List log_s_dens;
-    if(move_a == true || move_b == true)
-      log_s_dens = param["log_s_dens"];
-    else
-      log_s_dens = data["log_s_dens"];
-    
-    
-    double out = 0.0;
-
+    Rcpp::String spatial = config["spatial_method"];
+    Rcpp::NumericVector population = data["population"];
+    Rcpp::NumericMatrix distance = data["distance"];
     int size_pop = population.size();
+    double a = param["a"];
+    double b = param["b"];
+    double gamma = config["gamma"];
+    Rcpp::List movement = cpp_log_like(population, distance, a, b, gamma, spatial);
+    Rcpp::NumericMatrix nb_move = movement[0];
+    Rcpp::NumericVector sum_pop = movement[1];
+    double out = 0.0;
     int region_j;
     int region_index;
-
+    double probs_gen_2;
+    double probs_gen_1;
     if (i == R_NilValue) {
       for (int j = 0; j < N; j++) {
         if (alpha[j] != NA_INTEGER) {
@@ -192,9 +190,18 @@ double cpp_ll_space(Rcpp::List data, Rcpp::List config,
           }
           region_j = region[j];
           region_index = region[alpha[j]-1];
-          Rcpp::NumericMatrix spatial_j = log_s_dens[kappa[j]-1];
-          out += spatial_j(region_index-1, region_j-1);
-          
+          if(kappa[j] == 1){
+            probs_gen_1 = nb_move(region_index-1, region_j-1) / sum_pop[region_j-1];
+            if(probs_gen_1 <= 0) out += -1000;
+            else out += log(probs_gen_1);
+          } else if(kappa[j] == 2){
+            for(int k = 0; k < size_pop; k++)
+              probs_gen_2 += nb_move(region_index-1, k) / sum_pop[k] * 
+                nb_move(k, region_j - 1) / sum_pop[region_j-1];
+            if(probs_gen_2 == 0) out += -1000;
+            else out += log(probs_gen_2);
+            probs_gen_2 = 0;
+          }
         }
       }
     }
@@ -209,8 +216,18 @@ double cpp_ll_space(Rcpp::List data, Rcpp::List config,
           }
           region_j = region[j];
           region_index = region[alpha[j]-1];
-          Rcpp::NumericMatrix spatial_j = log_s_dens[kappa[j]-1];
-          out += spatial_j(region_index-1, region_j-1);
+          if(kappa[j] == 1){
+            probs_gen_1 = nb_move(region_index-1, region_j-1) / sum_pop[region_j-1];
+            if(probs_gen_1 == 0) out += -1000;
+            else out += log(probs_gen_1);
+          } else if(kappa[j] == 2){
+            for(int k = 0; k < size_pop; k++)
+              probs_gen_2 += nb_move(region_index-1, k) / sum_pop[k] * 
+                nb_move(k, region_j - 1) / sum_pop[region_j-1];
+            if(probs_gen_2 == 0) out += -1000;
+            else out += log(probs_gen_2);
+            probs_gen_2 = 0;
+          }
         }
       } 
     }
