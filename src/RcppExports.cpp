@@ -819,6 +819,237 @@ RcppExport SEXP _measlesoutbreaker_cpp_move_kappa(SEXP paramSEXP, SEXP dataSEXP,
     UNPROTECT(1);
     return rcpp_result_gen;
 }
+// cpp_log_like_ref
+Rcpp::List cpp_log_like_ref(Rcpp::NumericVector population, Rcpp::NumericMatrix distance, double a, double b, double gamma, Rcpp::String spatial, int nb_cases);
+static SEXP _measlesoutbreaker_cpp_log_like_ref_try(SEXP populationSEXP, SEXP distanceSEXP, SEXP aSEXP, SEXP bSEXP, SEXP gammaSEXP, SEXP spatialSEXP, SEXP nb_casesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type population(populationSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type distance(distanceSEXP);
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    Rcpp::traits::input_parameter< double >::type gamma(gammaSEXP);
+    Rcpp::traits::input_parameter< Rcpp::String >::type spatial(spatialSEXP);
+    Rcpp::traits::input_parameter< int >::type nb_cases(nb_casesSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_log_like_ref(population, distance, a, b, gamma, spatial, nb_cases));
+    return rcpp_result_gen;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _measlesoutbreaker_cpp_log_like_ref(SEXP populationSEXP, SEXP distanceSEXP, SEXP aSEXP, SEXP bSEXP, SEXP gammaSEXP, SEXP spatialSEXP, SEXP nb_casesSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_measlesoutbreaker_cpp_log_like_ref_try(populationSEXP, distanceSEXP, aSEXP, bSEXP, gammaSEXP, spatialSEXP, nb_casesSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        Rf_error(CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
+}
+// new_cpp_log_like
+Rcpp::List new_cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix distance, double a, double b, double gamma, Rcpp::String spatial);
+static SEXP _measlesoutbreaker_new_cpp_log_like_try(SEXP populationSEXP, SEXP distanceSEXP, SEXP aSEXP, SEXP bSEXP, SEXP gammaSEXP, SEXP spatialSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type population(populationSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type distance(distanceSEXP);
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    Rcpp::traits::input_parameter< double >::type gamma(gammaSEXP);
+    Rcpp::traits::input_parameter< Rcpp::String >::type spatial(spatialSEXP);
+    rcpp_result_gen = Rcpp::wrap(new_cpp_log_like(population, distance, a, b, gamma, spatial));
+    return rcpp_result_gen;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _measlesoutbreaker_new_cpp_log_like(SEXP populationSEXP, SEXP distanceSEXP, SEXP aSEXP, SEXP bSEXP, SEXP gammaSEXP, SEXP spatialSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_measlesoutbreaker_new_cpp_log_like_try(populationSEXP, distanceSEXP, aSEXP, bSEXP, gammaSEXP, spatialSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        Rf_error(CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
+}
+// cpp_new_ll_space
+double cpp_new_ll_space(Rcpp::List data, Rcpp::List config, Rcpp::List param, SEXP i, Rcpp::RObject custom_function);
+static SEXP _measlesoutbreaker_cpp_new_ll_space_try(SEXP dataSEXP, SEXP configSEXP, SEXP paramSEXP, SEXP iSEXP, SEXP custom_functionSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type config(configSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type param(paramSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type i(iSEXP);
+    Rcpp::traits::input_parameter< Rcpp::RObject >::type custom_function(custom_functionSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_new_ll_space(data, config, param, i, custom_function));
+    return rcpp_result_gen;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _measlesoutbreaker_cpp_new_ll_space(SEXP dataSEXP, SEXP configSEXP, SEXP paramSEXP, SEXP iSEXP, SEXP custom_functionSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_measlesoutbreaker_cpp_new_ll_space_try(dataSEXP, configSEXP, paramSEXP, iSEXP, custom_functionSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        Rf_error(CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
+}
+// new_move_a
+Rcpp::List new_move_a(Rcpp::List param, Rcpp::List data, Rcpp::List config, Rcpp::RObject custom_ll, Rcpp::RObject custom_prior);
+static SEXP _measlesoutbreaker_new_move_a_try(SEXP paramSEXP, SEXP dataSEXP, SEXP configSEXP, SEXP custom_llSEXP, SEXP custom_priorSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type param(paramSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type config(configSEXP);
+    Rcpp::traits::input_parameter< Rcpp::RObject >::type custom_ll(custom_llSEXP);
+    Rcpp::traits::input_parameter< Rcpp::RObject >::type custom_prior(custom_priorSEXP);
+    rcpp_result_gen = Rcpp::wrap(new_move_a(param, data, config, custom_ll, custom_prior));
+    return rcpp_result_gen;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _measlesoutbreaker_new_move_a(SEXP paramSEXP, SEXP dataSEXP, SEXP configSEXP, SEXP custom_llSEXP, SEXP custom_priorSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_measlesoutbreaker_new_move_a_try(paramSEXP, dataSEXP, configSEXP, custom_llSEXP, custom_priorSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        Rf_error(CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
+}
+// cpp_ll_space_ref
+double cpp_ll_space_ref(Rcpp::List data, Rcpp::List config, Rcpp::List param, SEXP i, Rcpp::RObject custom_function);
+static SEXP _measlesoutbreaker_cpp_ll_space_ref_try(SEXP dataSEXP, SEXP configSEXP, SEXP paramSEXP, SEXP iSEXP, SEXP custom_functionSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type config(configSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type param(paramSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type i(iSEXP);
+    Rcpp::traits::input_parameter< Rcpp::RObject >::type custom_function(custom_functionSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_ll_space_ref(data, config, param, i, custom_function));
+    return rcpp_result_gen;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _measlesoutbreaker_cpp_ll_space_ref(SEXP dataSEXP, SEXP configSEXP, SEXP paramSEXP, SEXP iSEXP, SEXP custom_functionSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_measlesoutbreaker_cpp_ll_space_ref_try(dataSEXP, configSEXP, paramSEXP, iSEXP, custom_functionSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        Rf_error(CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
+}
+// cpp_move_a_ref
+Rcpp::List cpp_move_a_ref(Rcpp::List param, Rcpp::List data, Rcpp::List config, Rcpp::RObject custom_ll, Rcpp::RObject custom_prior);
+static SEXP _measlesoutbreaker_cpp_move_a_ref_try(SEXP paramSEXP, SEXP dataSEXP, SEXP configSEXP, SEXP custom_llSEXP, SEXP custom_priorSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type param(paramSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type config(configSEXP);
+    Rcpp::traits::input_parameter< Rcpp::RObject >::type custom_ll(custom_llSEXP);
+    Rcpp::traits::input_parameter< Rcpp::RObject >::type custom_prior(custom_priorSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_move_a_ref(param, data, config, custom_ll, custom_prior));
+    return rcpp_result_gen;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _measlesoutbreaker_cpp_move_a_ref(SEXP paramSEXP, SEXP dataSEXP, SEXP configSEXP, SEXP custom_llSEXP, SEXP custom_priorSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_measlesoutbreaker_cpp_move_a_ref_try(paramSEXP, dataSEXP, configSEXP, custom_llSEXP, custom_priorSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        Rf_error(CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
+}
 // cpp_prior_pi
 double cpp_prior_pi(Rcpp::List param, Rcpp::List config, Rcpp::RObject custom_function);
 static SEXP _measlesoutbreaker_cpp_prior_pi_try(SEXP paramSEXP, SEXP configSEXP, SEXP custom_functionSEXP) {
@@ -986,6 +1217,12 @@ static int _measlesoutbreaker_RcppExport_validate(const char* sig) {
         signatures.insert("Rcpp::List(*cpp_move_ancestors)(Rcpp::List,Rcpp::List,Rcpp::List,Rcpp::RObject)");
         signatures.insert("Rcpp::List(*cpp_move_swap_cases)(Rcpp::List,Rcpp::List,Rcpp::List,Rcpp::RObject)");
         signatures.insert("Rcpp::List(*cpp_move_kappa)(Rcpp::List,Rcpp::List,Rcpp::List,Rcpp::RObject)");
+        signatures.insert("Rcpp::List(*cpp_log_like_ref)(Rcpp::NumericVector,Rcpp::NumericMatrix,double,double,double,Rcpp::String,int)");
+        signatures.insert("Rcpp::List(*new_cpp_log_like)(Rcpp::NumericVector,Rcpp::NumericMatrix,double,double,double,Rcpp::String)");
+        signatures.insert("double(*cpp_new_ll_space)(Rcpp::List,Rcpp::List,Rcpp::List,SEXP,Rcpp::RObject)");
+        signatures.insert("Rcpp::List(*new_move_a)(Rcpp::List,Rcpp::List,Rcpp::List,Rcpp::RObject,Rcpp::RObject)");
+        signatures.insert("double(*cpp_ll_space_ref)(Rcpp::List,Rcpp::List,Rcpp::List,SEXP,Rcpp::RObject)");
+        signatures.insert("Rcpp::List(*cpp_move_a_ref)(Rcpp::List,Rcpp::List,Rcpp::List,Rcpp::RObject,Rcpp::RObject)");
         signatures.insert("double(*cpp_prior_pi)(Rcpp::List,Rcpp::List,Rcpp::RObject)");
         signatures.insert("double(*cpp_prior_a)(Rcpp::List,Rcpp::List,Rcpp::RObject)");
         signatures.insert("double(*cpp_prior_b)(Rcpp::List,Rcpp::List,Rcpp::RObject)");
@@ -1018,6 +1255,12 @@ RcppExport SEXP _measlesoutbreaker_RcppExport_registerCCallable() {
     R_RegisterCCallable("measlesoutbreaker", "_measlesoutbreaker_cpp_move_ancestors", (DL_FUNC)_measlesoutbreaker_cpp_move_ancestors_try);
     R_RegisterCCallable("measlesoutbreaker", "_measlesoutbreaker_cpp_move_swap_cases", (DL_FUNC)_measlesoutbreaker_cpp_move_swap_cases_try);
     R_RegisterCCallable("measlesoutbreaker", "_measlesoutbreaker_cpp_move_kappa", (DL_FUNC)_measlesoutbreaker_cpp_move_kappa_try);
+    R_RegisterCCallable("measlesoutbreaker", "_measlesoutbreaker_cpp_log_like_ref", (DL_FUNC)_measlesoutbreaker_cpp_log_like_ref_try);
+    R_RegisterCCallable("measlesoutbreaker", "_measlesoutbreaker_new_cpp_log_like", (DL_FUNC)_measlesoutbreaker_new_cpp_log_like_try);
+    R_RegisterCCallable("measlesoutbreaker", "_measlesoutbreaker_cpp_new_ll_space", (DL_FUNC)_measlesoutbreaker_cpp_new_ll_space_try);
+    R_RegisterCCallable("measlesoutbreaker", "_measlesoutbreaker_new_move_a", (DL_FUNC)_measlesoutbreaker_new_move_a_try);
+    R_RegisterCCallable("measlesoutbreaker", "_measlesoutbreaker_cpp_ll_space_ref", (DL_FUNC)_measlesoutbreaker_cpp_ll_space_ref_try);
+    R_RegisterCCallable("measlesoutbreaker", "_measlesoutbreaker_cpp_move_a_ref", (DL_FUNC)_measlesoutbreaker_cpp_move_a_ref_try);
     R_RegisterCCallable("measlesoutbreaker", "_measlesoutbreaker_cpp_prior_pi", (DL_FUNC)_measlesoutbreaker_cpp_prior_pi_try);
     R_RegisterCCallable("measlesoutbreaker", "_measlesoutbreaker_cpp_prior_a", (DL_FUNC)_measlesoutbreaker_cpp_prior_a_try);
     R_RegisterCCallable("measlesoutbreaker", "_measlesoutbreaker_cpp_prior_b", (DL_FUNC)_measlesoutbreaker_cpp_prior_b_try);
@@ -1049,6 +1292,12 @@ static const R_CallMethodDef CallEntries[] = {
     {"_measlesoutbreaker_cpp_move_ancestors", (DL_FUNC) &_measlesoutbreaker_cpp_move_ancestors, 4},
     {"_measlesoutbreaker_cpp_move_swap_cases", (DL_FUNC) &_measlesoutbreaker_cpp_move_swap_cases, 4},
     {"_measlesoutbreaker_cpp_move_kappa", (DL_FUNC) &_measlesoutbreaker_cpp_move_kappa, 4},
+    {"_measlesoutbreaker_cpp_log_like_ref", (DL_FUNC) &_measlesoutbreaker_cpp_log_like_ref, 7},
+    {"_measlesoutbreaker_new_cpp_log_like", (DL_FUNC) &_measlesoutbreaker_new_cpp_log_like, 6},
+    {"_measlesoutbreaker_cpp_new_ll_space", (DL_FUNC) &_measlesoutbreaker_cpp_new_ll_space, 5},
+    {"_measlesoutbreaker_new_move_a", (DL_FUNC) &_measlesoutbreaker_new_move_a, 5},
+    {"_measlesoutbreaker_cpp_ll_space_ref", (DL_FUNC) &_measlesoutbreaker_cpp_ll_space_ref, 5},
+    {"_measlesoutbreaker_cpp_move_a_ref", (DL_FUNC) &_measlesoutbreaker_cpp_move_a_ref, 5},
     {"_measlesoutbreaker_cpp_prior_pi", (DL_FUNC) &_measlesoutbreaker_cpp_prior_pi, 3},
     {"_measlesoutbreaker_cpp_prior_a", (DL_FUNC) &_measlesoutbreaker_cpp_prior_a, 3},
     {"_measlesoutbreaker_cpp_prior_b", (DL_FUNC) &_measlesoutbreaker_cpp_prior_b, 3},
