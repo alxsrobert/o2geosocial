@@ -85,6 +85,9 @@ number of generations before the last sampled ancestor for each case.}
 
  \item \code{b}{The value of the second spatial parameter (distance).}
  
+ \item \code{log_s_dens}{The spatial likelihood matrix, calculated at each step
+ from a and b if move_a == TRUE or move_b == TRUE.}
+
 }
 }
 \description{

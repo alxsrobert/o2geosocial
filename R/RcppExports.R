@@ -5,8 +5,8 @@ cpp_are_possible_ancestors <- function(t_inf, alpha, genotype, cluster, i) {
     .Call(`_measlesoutbreaker_cpp_are_possible_ancestors`, t_inf, alpha, genotype, cluster, i)
 }
 
-cpp_log_like <- function(population, distance, a, b, gamma, spatial) {
-    .Call(`_measlesoutbreaker_cpp_log_like`, population, distance, a, b, gamma, spatial)
+cpp_log_like <- function(population, distance, a, b, gamma, spatial, nb_cases) {
+    .Call(`_measlesoutbreaker_cpp_log_like`, population, distance, a, b, gamma, spatial, nb_cases)
 }
 
 cpp_find_descendents <- function(alpha, cluster, i) {
@@ -87,30 +87,6 @@ cpp_move_swap_cases <- function(param, data, config, list_custom_ll = NULL) {
 
 cpp_move_kappa <- function(param, data, config, list_custom_ll = NULL) {
     .Call(`_measlesoutbreaker_cpp_move_kappa`, param, data, config, list_custom_ll)
-}
-
-cpp_log_like_ref <- function(population, distance, a, b, gamma, spatial, nb_cases) {
-    .Call(`_measlesoutbreaker_cpp_log_like_ref`, population, distance, a, b, gamma, spatial, nb_cases)
-}
-
-new_cpp_log_like <- function(population, distance, a, b, gamma, spatial) {
-    .Call(`_measlesoutbreaker_new_cpp_log_like`, population, distance, a, b, gamma, spatial)
-}
-
-cpp_new_ll_space <- function(data, config, param, i, custom_function) {
-    .Call(`_measlesoutbreaker_cpp_new_ll_space`, data, config, param, i, custom_function)
-}
-
-new_move_a <- function(param, data, config, custom_ll = NULL, custom_prior = NULL) {
-    .Call(`_measlesoutbreaker_new_move_a`, param, data, config, custom_ll, custom_prior)
-}
-
-cpp_ll_space_ref <- function(data, config, param, i, custom_function) {
-    .Call(`_measlesoutbreaker_cpp_ll_space_ref`, data, config, param, i, custom_function)
-}
-
-cpp_move_a_ref <- function(param, data, config, custom_ll = NULL, custom_prior = NULL) {
-    .Call(`_measlesoutbreaker_cpp_move_a_ref`, param, data, config, custom_ll, custom_prior)
 }
 
 cpp_prior_pi <- function(param, config, custom_function = NULL) {

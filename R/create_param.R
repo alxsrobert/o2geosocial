@@ -87,6 +87,9 @@
 #'
 #'  \item \code{b}{The value of the second spatial parameter (distance).}
 #'  
+#'  \item \code{log_s_dens}{The spatial likelihood matrix, calculated at each step
+#'  from a and b if move_a == TRUE or move_b == TRUE.}
+#'
 #' }
 #'
 #' @examples
@@ -140,12 +143,15 @@ create_param <- function(data = outbreaker_data(),
   class(store) <- c("outbreaker_store", "list")
   
   if(config$move_a == T | config$move_b == T){
-
+    current_log_s_dens <- data$log_s_dens
+    data$log_s_dens <- NULL
+    
     current  <- list(
       alpha = current_alpha, 
       t_inf = current_t_inf, 
       kappa = current_kappa, pi = current_pi, 
-      a = current_a, b = current_b
+      a = current_a, b = current_b,
+      log_s_dens = current_log_s_dens
     )
   } else
     current  <- list(
