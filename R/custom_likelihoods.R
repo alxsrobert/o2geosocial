@@ -148,7 +148,7 @@ custom_likelihoods <- function(...) {
   
   if (!all(two_args)) {
     culprits <- likelihoods_names[!two_args]
-    msg <- paste0("The following likelihoods dont' have two arguments: ",
+    msg <- paste0("The following likelihoods don't have two arguments: ",
                   paste(culprits, collapse = ", "))
     stop(msg)
   }
