@@ -163,27 +163,27 @@ double cpp_ll_space(Rcpp::List data, Rcpp::List config,
   int N = static_cast<int>(data["N"]);
   if(N < 2) return 0.0;
   if (custom_function == R_NilValue) {
-    // printf("yo0");
     Rcpp::IntegerVector alpha = param["alpha"];
-    bool move_b = config["move_a"]; // these are just pointers
-    bool move_a = config["move_b"]; // these are just pointers
+    Rcpp::String spatial = config["spatial_method"];
     Rcpp::IntegerVector t_inf = param["t_inf"];
     Rcpp::IntegerVector kappa = param["kappa"];
     Rcpp::IntegerVector region = data["region"];
-    Rcpp::IntegerVector population = data["population"];
-    Rcpp::List log_s_dens;
-    if(move_a == true || move_b == true)
-      log_s_dens = param["log_s_dens"];
-    else
-      log_s_dens = data["log_s_dens"];
+    Rcpp::NumericVector population = data["population"];
+    double a = param["a"];
+    double b = param["b"];
+    double gamma = config["gamma"];
+    Rcpp::NumericMatrix distance = data["distance"];
+    Rcpp::List list_s_dens = param["log_s_dens"];
+    Rcpp::NumericMatrix spatial_1 = list_s_dens[0];
+    Rcpp::NumericVector sum_pop = list_s_dens[1];
     
+    int size_pop = population.size();
+    int region_j, region_index;
     
     double out = 0.0;
-
-    int size_pop = population.size();
-    int region_j;
-    int region_index;
-
+    double probs_gen2, pop_a1,  pop_a2; 
+    double dist_b1 = 0.0;
+    double dist_b2 = 0.0;
     if (i == R_NilValue) {
       for (int j = 0; j < N; j++) {
         if (alpha[j] != NA_INTEGER) {
@@ -192,9 +192,28 @@ double cpp_ll_space(Rcpp::List data, Rcpp::List config,
           }
           region_j = region[j];
           region_index = region[alpha[j]-1];
-          Rcpp::NumericMatrix spatial_j = log_s_dens[kappa[j]-1];
-          out += spatial_j(region_index-1, region_j-1);
-          
+          if(kappa[j] == 1){
+            out += spatial_1(region_index-1, region_j-1);
+          } else {
+            for(int k = 0; k < size_pop; k++){
+              if(distance(region_index-1, k) < gamma &&
+                 distance(k, region_j - 1) < gamma){
+                pop_a1 = pow(population[region_index-1], a);
+                pop_a2 = pow(population[k], a);
+                if(spatial == "exponential"){
+                  dist_b1 = exp(-b*distance(region_index-1, k));
+                  dist_b2 = exp(-b*distance(k, region_j-1));
+                } else if(spatial == "inverse"){
+                  dist_b1 = pow(distance(region_index-1, k), b);
+                  dist_b2 = pow(distance(k, region_j-1), b);
+                }
+                probs_gen2 += (pop_a1 * dist_b1 /sum_pop[k]) * 
+                  (pop_a2 * dist_b2 / sum_pop[region_j - 1]);
+              }
+            }
+            out += log(probs_gen2);
+            probs_gen2 = 0;
+          }
         }
       }
     }
@@ -209,8 +228,25 @@ double cpp_ll_space(Rcpp::List data, Rcpp::List config,
           }
           region_j = region[j];
           region_index = region[alpha[j]-1];
-          Rcpp::NumericMatrix spatial_j = log_s_dens[kappa[j]-1];
-          out += spatial_j(region_index-1, region_j-1);
+          if(kappa[j] == 1){
+            out += spatial_1(region_index-1, region_j-1);
+          } else {
+            for(int k = 0; k < size_pop; k++){
+              pop_a1 = pow(population[region_index-1], a);
+              pop_a2 = pow(population[k], a);
+              if(spatial == "exponential"){
+                dist_b1 = exp(-b*distance(region_index-1, k));
+                dist_b2 = exp(-b*distance(k, region_j-1));
+              } else if(spatial == "inverse"){
+                dist_b1 = pow(distance(region_index-1, k), b);
+                dist_b2 = pow(distance(k, region_j-1), b);
+              }
+              probs_gen2 += (pop_a1 * dist_b1 /sum_pop[k]) * 
+                (pop_a2 * dist_b2 / sum_pop[region_j - 1]);
+            }
+            out += log(probs_gen2);
+            probs_gen2 = 0;
+          }
         }
       } 
     }
