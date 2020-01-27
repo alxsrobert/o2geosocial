@@ -308,9 +308,9 @@ outbreaker_data <- function(..., data = list(...)) {
                                   ances_ID = c(can_be_ances))
     dt_can_be_ances[, region_1 := data$region[ID_1]]
     dt_can_be_ances[, region_2 := data$region[ID_2]]
-    dt_can_be_ances_reg <- dt_can_be_ances[, c(ances_region = sum(ances_ID)),
+    dt_can_be_ances_reg <- dt_can_be_ances[, sum(ances_ID),
                                            by= c("region_1", "region_2")]
-    data$can_be_ances_reg <- matrix(dt_can_be_ances_reg$ances_region > 0, 
+    data$can_be_ances_reg <- matrix(dt_can_be_ances_reg$V1 > 0, 
                                     length(unique(data$region)),
                                     length(unique(data$region)))
     
