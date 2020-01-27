@@ -163,7 +163,6 @@ double cpp_ll_space(Rcpp::List data, Rcpp::List config,
   int N = static_cast<int>(data["N"]);
   if(N < 2) return 0.0;
   if (custom_function == R_NilValue) {
-    // printf("yo0");
     Rcpp::IntegerVector alpha = param["alpha"];
     bool move_b = config["move_a"]; // these are just pointers
     bool move_a = config["move_b"]; // these are just pointers
@@ -194,7 +193,6 @@ double cpp_ll_space(Rcpp::List data, Rcpp::List config,
           region_index = region[alpha[j]-1];
           Rcpp::NumericMatrix spatial_j = log_s_dens[kappa[j]-1];
           out += spatial_j(region_index-1, region_j-1);
-          
         }
       }
     }

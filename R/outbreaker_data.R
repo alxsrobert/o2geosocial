@@ -72,7 +72,7 @@ outbreaker_data <- function(..., data = list(...)) {
   ## SET DEFAULTS ##
   defaults <- list(dates = NULL, region = NULL, age_group = NULL,
                    w_dens = NULL, f_dens = NULL, a_dens = NULL, N = 0L,
-                   max_range = NA, can_be_ances = NULL, log_w_dens = NULL, 
+                   max_range = NA, can_be_ances_reg = NULL, log_w_dens = NULL, 
                    log_f_dens = NULL, log_a_dens = NULL,genotype = NULL, 
                    is_cluster = NULL, cluster = NULL, population = NULL, 
                    distance = NULL, import = NULL
@@ -119,11 +119,6 @@ outbreaker_data <- function(..., data = list(...)) {
       return(diff(range(data$dates[which(data$is_cluster == X)])))
     }))
     ## get temporal ordering constraint:
-    ## canBeAnces[i,j] is 'i' can be ancestor of 'j'
-    data$can_be_ances <- outer(data$dates,
-                               data$dates,
-                               FUN="<") # strict < is needed as we impose w(0)=0
-    diag(data$can_be_ances) <- FALSE
   }
   
   ## CHECK AGE GROUP
@@ -139,12 +134,6 @@ outbreaker_data <- function(..., data = list(...)) {
     data$max_range <- max(sapply(unique(data$is_cluster), function(X){
       return(diff(range(data$dates[which(data$is_cluster == X)])))
     }))
-    ## get temporal ordering constraint:
-    ## canBeAnces[i,j] is 'i' can be ancestor of 'j'
-    data$can_be_ances <- outer(data$dates,
-                               data$dates,
-                               FUN="<") # strict < is needed as we impose w(0)=0
-    diag(data$can_be_ances) <- FALSE
   }
   
   ## CHECK W_DENS
@@ -262,8 +251,6 @@ outbreaker_data <- function(..., data = list(...)) {
         stop("distance has to be a square matrix")
       if(any(rownames(data$distance) != colnames(data$distance)))
         stop("The rownames and colnames of the matrix distance should be the same")
-      # if(any(diag(data$distance) !=0))
-      #   stop("distance between the same county should be 0")
     }else
       stop("The distance matrix is null")
     
@@ -297,10 +284,34 @@ outbreaker_data <- function(..., data = list(...)) {
       if(any(dim(data$distance)<max(data$region)))
         stop("The dimension of the distance matrix is lower than the maximum value of the region vector")
     }
+    can_be_ances <- sapply(seq_len(data$N), function(X){
+      can_be_ances_X <- rep(FALSE, data$N)
+      if(data$import[X] == TRUE) return(can_be_ances_X)
+      can_be_ances_X[data$cluster[[data$is_cluster[X]]]] <- TRUE
+      can_be_ances_X[X] <- FALSE
+      if(!is.null(data$f_dens) & !is.null(data$dates)){
+        unlik_f_dens <- which(data$log_f_dens[-1] < -20 &
+                                diff(data$log_f_dens) < 0)[1]
+        can_be_ances_X[data$dates[X] > data$dates + unlik_f_dens] <- FALSE
+      }
+      if(data$genotype[X] != "Not attributed"){
+        can_be_ances_X[data$genotype != data$genotype[X] &
+                         data$genotype != "Not attributed"] <- FALSE        
+      }
+      return(can_be_ances_X)
+    })
+    dt_can_be_ances <- data.table(ID_1 = rep(seq_len(data$N), data$N),
+                                  ID_2 = rep(seq_len(data$N), each = data$N),
+                                  ances_ID = c(can_be_ances))
+    dt_can_be_ances[, region_1 := data$region[ID_1]]
+    dt_can_be_ances[, region_2 := data$region[ID_2]]
+    dt_can_be_ances_reg <- dt_can_be_ances[, .(ances_region = sum(ances_ID)),
+                                           by=.(region_1, region_2)]
+    data$can_be_ances_reg <- matrix(dt_can_be_ances_reg$ances_region > 0, 
+                                    length(unique(data$region)),
+                                    length(unique(data$region)))
+    
   }
-  
-  
-  
   
   ## output is a list of checked data
   return(data)
