@@ -56,6 +56,8 @@
 #'
 #' @author Initial version by Thibaut Jombart, rewritten by Alexis Robert (\email{alexis.robert@lshtm.ac.uk})
 #'
+#' @import data.table
+#' 
 #' @export
 #'
 #' @examples
@@ -300,13 +302,14 @@ outbreaker_data <- function(..., data = list(...)) {
       }
       return(can_be_ances_X)
     })
+    ID_1 <- ID_2 <- region_1 <- region_2 <- ances_ID <- NULL
     dt_can_be_ances <- data.table(ID_1 = rep(seq_len(data$N), data$N),
                                   ID_2 = rep(seq_len(data$N), each = data$N),
                                   ances_ID = c(can_be_ances))
     dt_can_be_ances[, region_1 := data$region[ID_1]]
     dt_can_be_ances[, region_2 := data$region[ID_2]]
-    dt_can_be_ances_reg <- dt_can_be_ances[, .(ances_region = sum(ances_ID)),
-                                           by=.(region_1, region_2)]
+    dt_can_be_ances_reg <- dt_can_be_ances[, c(ances_region = sum(ances_ID)),
+                                           by= c("region_1", "region_2")]
     data$can_be_ances_reg <- matrix(dt_can_be_ances_reg$ances_region > 0, 
                                     length(unique(data$region)),
                                     length(unique(data$region)))

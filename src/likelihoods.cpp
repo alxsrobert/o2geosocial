@@ -164,19 +164,11 @@ double cpp_ll_space(Rcpp::List data, Rcpp::List config,
   if(N < 2) return 0.0;
   if (custom_function == R_NilValue) {
     Rcpp::IntegerVector alpha = param["alpha"];
-    bool move_b = config["move_a"]; // these are just pointers
-    bool move_a = config["move_b"]; // these are just pointers
-    Rcpp::IntegerVector t_inf = param["t_inf"];
     Rcpp::IntegerVector kappa = param["kappa"];
     Rcpp::IntegerVector region = data["region"];
     Rcpp::IntegerVector population = data["population"];
-    Rcpp::List log_s_dens;
-    if(move_a == true || move_b == true)
-      log_s_dens = param["log_s_dens"];
-    else
-      log_s_dens = data["log_s_dens"];
-    
-    
+    Rcpp::List log_s_dens = param["log_s_dens"];
+
     double out = 0.0;
 
     int size_pop = population.size();
@@ -241,7 +233,6 @@ double cpp_ll_age(Rcpp::List data, Rcpp::List param, SEXP i,
   if (custom_function == R_NilValue) {
     
     Rcpp::IntegerVector alpha = param["alpha"];
-    Rcpp::IntegerVector t_inf = param["t_inf"];
     Rcpp::IntegerVector kappa = param["kappa"];
     Rcpp::IntegerVector age_group = data["age_group"];
     Rcpp::List age_dens = data["log_a_dens"];

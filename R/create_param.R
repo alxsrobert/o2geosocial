@@ -143,8 +143,8 @@ create_param <- function(data = outbreaker_data(),
   class(store) <- c("outbreaker_store", "list")
   
   if(config$move_a == T | config$move_b == T){
-    current_log_s_dens <- data$log_s_dens
-    data$log_s_dens <- NULL
+    ## ADD SPATIAL LIKELIHOOD TO PARAM ##
+    current_log_s_dens <- config$function_s_dens(data, config)
     
     current  <- list(
       alpha = current_alpha, 
@@ -153,13 +153,7 @@ create_param <- function(data = outbreaker_data(),
       a = current_a, b = current_b,
       log_s_dens = current_log_s_dens
     )
-  } else
-    current  <- list(
-      alpha = current_alpha, 
-      t_inf = current_t_inf, 
-      kappa = current_kappa, pi = current_pi, 
-      a = current_a, b = current_b
-    )
+  } 
   
   class(current) <- c("outbreaker_param", "list")
   

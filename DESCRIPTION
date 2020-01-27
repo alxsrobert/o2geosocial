@@ -15,7 +15,8 @@ Imports:
     ape,
     ggplot2,
     magrittr,
-    visNetwork
+    visNetwork,
+    data.table
 Depends: R(>= 2.10)
 LinkingTo: Rcpp
 RoxygenNote: 7.0.2

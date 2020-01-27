@@ -86,10 +86,6 @@ outbreaker <- function(data = outbreaker_data(),
   ## CHECK / PROCESS CONFIG ##
   config <- create_config(config, data = data)
   
-  ## ADD SPATIAL LIKELIHOOD TO DATA ##
-  data$log_s_dens <- config$function_s_dens(data, config)
-  
-  
   ## PRE CLUSTERING OF THE CASES
   pre_clust <- pre_clustering(data = data, config = config)
   data <- outbreaker_data(data = pre_clust[["data"]])
