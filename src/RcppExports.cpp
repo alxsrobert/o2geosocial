@@ -47,26 +47,27 @@ RcppExport SEXP _measlesoutbreaker_cpp_are_possible_ancestors(SEXP t_infSEXP, SE
     return rcpp_result_gen;
 }
 // cpp_log_like
-Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix distance, double a, double b, double gamma, Rcpp::String spatial, int nb_cases);
-static SEXP _measlesoutbreaker_cpp_log_like_try(SEXP populationSEXP, SEXP distanceSEXP, SEXP aSEXP, SEXP bSEXP, SEXP gammaSEXP, SEXP spatialSEXP, SEXP nb_casesSEXP) {
+Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix distance, Rcpp::NumericMatrix ances, double a, double b, double gamma, Rcpp::String spatial, int nb_cases);
+static SEXP _measlesoutbreaker_cpp_log_like_try(SEXP populationSEXP, SEXP distanceSEXP, SEXP ancesSEXP, SEXP aSEXP, SEXP bSEXP, SEXP gammaSEXP, SEXP spatialSEXP, SEXP nb_casesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type population(populationSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type distance(distanceSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type ances(ancesSEXP);
     Rcpp::traits::input_parameter< double >::type a(aSEXP);
     Rcpp::traits::input_parameter< double >::type b(bSEXP);
     Rcpp::traits::input_parameter< double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< Rcpp::String >::type spatial(spatialSEXP);
     Rcpp::traits::input_parameter< int >::type nb_cases(nb_casesSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_log_like(population, distance, a, b, gamma, spatial, nb_cases));
+    rcpp_result_gen = Rcpp::wrap(cpp_log_like(population, distance, ances, a, b, gamma, spatial, nb_cases));
     return rcpp_result_gen;
 END_RCPP_RETURN_ERROR
 }
-RcppExport SEXP _measlesoutbreaker_cpp_log_like(SEXP populationSEXP, SEXP distanceSEXP, SEXP aSEXP, SEXP bSEXP, SEXP gammaSEXP, SEXP spatialSEXP, SEXP nb_casesSEXP) {
+RcppExport SEXP _measlesoutbreaker_cpp_log_like(SEXP populationSEXP, SEXP distanceSEXP, SEXP ancesSEXP, SEXP aSEXP, SEXP bSEXP, SEXP gammaSEXP, SEXP spatialSEXP, SEXP nb_casesSEXP) {
     SEXP rcpp_result_gen;
     {
         Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(_measlesoutbreaker_cpp_log_like_try(populationSEXP, distanceSEXP, aSEXP, bSEXP, gammaSEXP, spatialSEXP, nb_casesSEXP));
+        rcpp_result_gen = PROTECT(_measlesoutbreaker_cpp_log_like_try(populationSEXP, distanceSEXP, ancesSEXP, aSEXP, bSEXP, gammaSEXP, spatialSEXP, nb_casesSEXP));
     }
     Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
     if (rcpp_isInterrupt_gen) {
@@ -966,7 +967,7 @@ static int _measlesoutbreaker_RcppExport_validate(const char* sig) {
     static std::set<std::string> signatures;
     if (signatures.empty()) {
         signatures.insert("std::vector<int>(*cpp_are_possible_ancestors)(Rcpp::IntegerVector,Rcpp::IntegerVector,Rcpp::StringVector,Rcpp::IntegerVector,size_t)");
-        signatures.insert("Rcpp::List(*cpp_log_like)(Rcpp::NumericVector,Rcpp::NumericMatrix,double,double,double,Rcpp::String,int)");
+        signatures.insert("Rcpp::List(*cpp_log_like)(Rcpp::NumericVector,Rcpp::NumericMatrix,Rcpp::NumericMatrix,double,double,double,Rcpp::String,int)");
         signatures.insert("Rcpp::IntegerVector(*cpp_find_descendents)(Rcpp::IntegerVector,Rcpp::IntegerVector,int)");
         signatures.insert("std::vector<int>(*cpp_find_all_descendents)(Rcpp::IntegerVector,Rcpp::IntegerVector,Rcpp::IntegerVector,int)");
         signatures.insert("Rcpp::IntegerVector(*cpp_find_all_tree)(Rcpp::IntegerVector,Rcpp::IntegerVector,Rcpp::IntegerVector,size_t)");
@@ -1029,7 +1030,7 @@ RcppExport SEXP _measlesoutbreaker_RcppExport_registerCCallable() {
 
 static const R_CallMethodDef CallEntries[] = {
     {"_measlesoutbreaker_cpp_are_possible_ancestors", (DL_FUNC) &_measlesoutbreaker_cpp_are_possible_ancestors, 5},
-    {"_measlesoutbreaker_cpp_log_like", (DL_FUNC) &_measlesoutbreaker_cpp_log_like, 7},
+    {"_measlesoutbreaker_cpp_log_like", (DL_FUNC) &_measlesoutbreaker_cpp_log_like, 8},
     {"_measlesoutbreaker_cpp_find_descendents", (DL_FUNC) &_measlesoutbreaker_cpp_find_descendents, 3},
     {"_measlesoutbreaker_cpp_find_all_descendents", (DL_FUNC) &_measlesoutbreaker_cpp_find_all_descendents, 4},
     {"_measlesoutbreaker_cpp_find_all_tree", (DL_FUNC) &_measlesoutbreaker_cpp_find_all_tree, 4},
