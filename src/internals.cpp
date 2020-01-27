@@ -190,11 +190,11 @@ Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix dist
       if(ances(k, j) == 1 && distance(k,j) <= thresh_dist){
         for(l = 0; l < size_pop; l++){
           if(l < nb_cases){
-            if(probs(k, l) > 0.001 && probs(l, j) > 0.001)
+            if(probs(k, l) > 0.01 && probs(l, j) > 0.01)
               probs2(k,j) += probs(k, l) * probs(l, j);
           }
-          else 
-            if(nb_move(k, l) > 0.001 && nb_move(l, j) > 0.001)
+          else
+            if(nb_move(k, l) > 0.01 && nb_move(l, j) > 0.01)
               probs2(k,j)  += nb_move(k, l) * nb_move(l, j);
         }
       }
