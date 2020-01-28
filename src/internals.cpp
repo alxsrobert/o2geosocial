@@ -138,6 +138,10 @@ Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix dist
   Rcpp::NumericMatrix probs(nb_cases, nb_cases);
   Rcpp::NumericMatrix probs2(nb_cases, nb_cases);
   int j, k, l;
+  double thresh_probs;
+  if(size_pop < 200) thresh_probs = 0;
+  else if(size_pop <1000) thresh_probs = 0.00001;
+  else thresh_probs = 0.0001;
   
   for(k = 0; k<size_pop; k++)
     population_a[k] = pow(population[k], a);
@@ -190,11 +194,13 @@ Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix dist
       if(ances(k, j) == 1 && distance(k,j) <= thresh_dist){
         for(l = 0; l < size_pop; l++){
           if(l < nb_cases){
-            if(probs(k, l) > 0.01 && probs(l, j) > 0.01)
+            if((probs(k, l) * probs(l, j)) > thresh_probs &&
+               distance(k, l) <= thresh_dist && distance(l, j) <= thresh_dist)
               probs2(k,j) += probs(k, l) * probs(l, j);
           }
           else
-            if(nb_move(k, l) > 0.01 && nb_move(l, j) > 0.01)
+            if((nb_move(k, l) * nb_move(l, j)) > thresh_probs &&
+               distance(k, l) <= thresh_dist && distance(l, j) <= thresh_dist)
               probs2(k,j)  += nb_move(k, l) * nb_move(l, j);
         }
       }
