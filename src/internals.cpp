@@ -140,7 +140,7 @@ Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix dist
   int j, k, l;
   double thresh_probs = 0.0;
   if(size_pop <1000) thresh_probs = 0.000001;
-  else(size_pop <3000) thresh_probs = 0.00001;
+  else if(size_pop <3000) thresh_probs = 0.00001;
   
   for(k = 0; k<size_pop; k++)
     population_a[k] = pow(population[k], a);
