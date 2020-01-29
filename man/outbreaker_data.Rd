@@ -68,9 +68,20 @@ considered in the study.}
 data("toy_outbreak")
 dt_cases <- toy_outbreak$cases
 dt_cases <- dt_cases[order(dt_cases$Date), ]
+dt_regions <- toy_outbreak$dt_regions
+all_dist <- geosphere::distGeo(matrix(c(rep(dt_regions$long, nrow(dt_regions)), 
+                                        rep(dt_regions$lat, nrow(dt_regions))), 
+                                      ncol = 2), 
+                               matrix(c(rep(dt_regions$long, each = nrow(dt_regions)), 
+                                        rep(dt_regions$lat, each = nrow(dt_regions))),
+                                      ncol = 2))
+
+dist_mat <- matrix(all_dist/1000, nrow = nrow(dt_regions))
+pop_vect <- dt_regions$population
+names(pop_vect) <- rownames(dist_mat) <- colnames(dist_mat) <- dt_regions$region
 data <- outbreaker_data(dates = dt_cases$Date, age_group = dt_cases$age_group,
-                        region = dt_cases$county, population = toy_outbreak$population, 
-                        distance = toy_outbreak$distance)
+                        region = dt_cases$county, population = pop_vect, 
+                        distance = dist_mat)
 
 }
 \author{

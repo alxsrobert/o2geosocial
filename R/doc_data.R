@@ -9,10 +9,10 @@
 #' 500 cases. It contains the State, onset date,  genotype,  county, age group,
 #' import status, cluster and generation of the cases.
 #'
-#' \item \code{$distance}: A matrix indicating the distance between each county
-#'
-#' \item \code{$population}: A vector indicating the population per county
-#'
+#' \item \code{$dt_regions}: A data table containing the ID, population, longitude 
+#' and latitude of each region. Should be used to compute the distance matrix, using 
+#' the package geosphere.
+#' 
 #' \item \code{$age_contact}: A matrix indicating the number of contacts between 
 #' age groups
 #'

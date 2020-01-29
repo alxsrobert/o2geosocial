@@ -13,6 +13,7 @@ Imports:
     stats,
     grDevices,
     ape,
+    geosphere,
     ggplot2,
     magrittr,
     visNetwork,
