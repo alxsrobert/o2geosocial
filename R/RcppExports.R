@@ -5,8 +5,8 @@ cpp_are_possible_ancestors <- function(t_inf, alpha, genotype, cluster, i) {
     .Call(`_measlesoutbreaker_cpp_are_possible_ancestors`, t_inf, alpha, genotype, cluster, i)
 }
 
-cpp_log_like <- function(population, distance, ances, a, b, gamma, spatial, nb_cases) {
-    .Call(`_measlesoutbreaker_cpp_log_like`, population, distance, ances, a, b, gamma, spatial, nb_cases)
+cpp_log_like <- function(population, distance, ances, a, b, max_kappa, gamma, spatial, nb_cases) {
+    .Call(`_measlesoutbreaker_cpp_log_like`, population, distance, ances, a, b, max_kappa, gamma, spatial, nb_cases)
 }
 
 cpp_find_descendents <- function(alpha, cluster, i) {

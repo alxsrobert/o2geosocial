@@ -30,6 +30,7 @@ Rcpp::List cpp_move_a(Rcpp::List param, Rcpp::List data, Rcpp::List config,
   Rcpp::List new_param = clone(param);
   Rcpp::NumericVector b = param["b"]; // these are just pointers
   double gamma = config["gamma"];
+  int max_kappa = config["max_kappa"];
   
   Rcpp::String spatial = config["spatial_method"];
   Rcpp::IntegerVector region = data["region"];
@@ -58,7 +59,7 @@ Rcpp::List cpp_move_a(Rcpp::List param, Rcpp::List data, Rcpp::List config,
     return param;
   }
   new_param["log_s_dens"] = cpp_log_like(population, distance, can_be_ances_reg,
-                               new_a[0], b[0], gamma, spatial, nb_cases);
+                               new_a[0], b[0], max_kappa, gamma, spatial, nb_cases);
   
   // compute likelihoods
   old_logpost = cpp_ll_space(data, config, param, R_NilValue, custom_ll);
@@ -94,6 +95,7 @@ Rcpp::List cpp_move_b(Rcpp::List param, Rcpp::List data, Rcpp::List config,
   Rcpp::List new_param = clone(param);
   Rcpp::NumericVector a = param["a"]; // these are just pointers
   double gamma = config["gamma"];
+  int max_kappa = config["max_kappa"];
   Rcpp::NumericMatrix can_be_ances_reg = data["can_be_ances_reg"];
   Rcpp::NumericVector population = data["population"];
   Rcpp::NumericMatrix distance = data["distance"];
@@ -125,7 +127,7 @@ Rcpp::List cpp_move_b(Rcpp::List param, Rcpp::List data, Rcpp::List config,
   }
   
   new_param["log_s_dens"] = cpp_log_like(population, distance, can_be_ances_reg,
-                               a[0], new_b[0], gamma, spatial, nb_cases);
+                               a[0], new_b[0], max_kappa, gamma, spatial, nb_cases);
   
   //compute likelihoods
   old_logpost = cpp_ll_space(data, config, param, R_NilValue, custom_ll);
@@ -511,7 +513,7 @@ Rcpp::List cpp_move_swap_cases(Rcpp::List param, Rcpp::List data,
   Rcpp::IntegerVector move_alpha = config["move_alpha"]; // pointer to config$move_alpha
   Rcpp::List swapinfo; // contains alpha, kappa and t_inf
   Rcpp::IntegerVector local_cases;
-  int gamma = config["gamma"];
+  double gamma = config["gamma"];
   
   Rcpp::List cluster_list = data["cluster"];
   Rcpp::IntegerVector cluster_vec = data["is_cluster"];

@@ -45,17 +45,17 @@ namespace measlesoutbreaker {
         return Rcpp::as<std::vector<int> >(rcpp_result_gen);
     }
 
-    inline Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix distance, Rcpp::NumericMatrix ances, double a, double b, double gamma, Rcpp::String spatial, int nb_cases) {
-        typedef SEXP(*Ptr_cpp_log_like)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
+    inline Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix distance, Rcpp::NumericMatrix ances, double a, double b, int max_kappa, double gamma, Rcpp::String spatial, int nb_cases) {
+        typedef SEXP(*Ptr_cpp_log_like)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
         static Ptr_cpp_log_like p_cpp_log_like = NULL;
         if (p_cpp_log_like == NULL) {
-            validateSignature("Rcpp::List(*cpp_log_like)(Rcpp::NumericVector,Rcpp::NumericMatrix,Rcpp::NumericMatrix,double,double,double,Rcpp::String,int)");
+            validateSignature("Rcpp::List(*cpp_log_like)(Rcpp::NumericVector,Rcpp::NumericMatrix,Rcpp::NumericMatrix,double,double,int,double,Rcpp::String,int)");
             p_cpp_log_like = (Ptr_cpp_log_like)R_GetCCallable("measlesoutbreaker", "_measlesoutbreaker_cpp_log_like");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_cpp_log_like(Shield<SEXP>(Rcpp::wrap(population)), Shield<SEXP>(Rcpp::wrap(distance)), Shield<SEXP>(Rcpp::wrap(ances)), Shield<SEXP>(Rcpp::wrap(a)), Shield<SEXP>(Rcpp::wrap(b)), Shield<SEXP>(Rcpp::wrap(gamma)), Shield<SEXP>(Rcpp::wrap(spatial)), Shield<SEXP>(Rcpp::wrap(nb_cases)));
+            rcpp_result_gen = p_cpp_log_like(Shield<SEXP>(Rcpp::wrap(population)), Shield<SEXP>(Rcpp::wrap(distance)), Shield<SEXP>(Rcpp::wrap(ances)), Shield<SEXP>(Rcpp::wrap(a)), Shield<SEXP>(Rcpp::wrap(b)), Shield<SEXP>(Rcpp::wrap(max_kappa)), Shield<SEXP>(Rcpp::wrap(gamma)), Shield<SEXP>(Rcpp::wrap(spatial)), Shield<SEXP>(Rcpp::wrap(nb_cases)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();

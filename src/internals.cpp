@@ -124,7 +124,7 @@ std::vector<int> cpp_are_possible_ancestors(Rcpp::IntegerVector t_inf,
 // [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export()]]
 Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix distance,
-                        Rcpp::NumericMatrix ances, double a, double b, 
+                        Rcpp::NumericMatrix ances, double a, double b, int max_kappa,
                         double gamma, Rcpp::String spatial, int nb_cases) {
   int size_pop = population.size();
   Rcpp::NumericVector population_a(size_pop);
@@ -136,7 +136,6 @@ Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix dist
   // Rcpp::NumericMatrix probs_tot(size_pop, size_pop);
   // log_s_dens with one missing generation
   Rcpp::NumericMatrix probs(nb_cases, nb_cases);
-  Rcpp::NumericMatrix probs2(nb_cases, nb_cases);
   int j, k, l;
   double thresh_probs = 0.0;
   if(size_pop <1000) thresh_probs = 0.000001;
@@ -188,38 +187,48 @@ Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix dist
       }
     }
   }
-  for(k = 0; k<nb_cases; k++){
-    for(j = 0; j<nb_cases; j++){
-      if(ances(k, j) == 1 && distance(k,j) <= thresh_dist){
-        for(l = 0; l < size_pop; l++){
-          if(l < nb_cases){
-            if((probs(k, l) * probs(l, j)) > thresh_probs &&
-               distance(k, l) <= thresh_dist && distance(l, j) <= thresh_dist)
-              probs2(k,j) += probs(k, l) * probs(l, j);
+  if(max_kappa > 1){
+    Rcpp::NumericMatrix probs2(nb_cases, nb_cases);
+    for(k = 0; k<nb_cases; k++){
+      for(j = 0; j<nb_cases; j++){
+        if(ances(k, j) == 1 && distance(k,j) <= thresh_dist){
+          for(l = 0; l < size_pop; l++){
+            if(l < nb_cases){
+              if((probs(k, l) * probs(l, j)) > thresh_probs &&
+                 distance(k, l) <= thresh_dist && distance(l, j) <= thresh_dist)
+                probs2(k,j) += probs(k, l) * probs(l, j);
+            }
+            else
+              if((nb_move(k, l) * nb_move(l, j)) > thresh_probs &&
+                 distance(k, l) <= thresh_dist && distance(l, j) <= thresh_dist)
+                probs2(k,j)  += nb_move(k, l) * nb_move(l, j);
           }
-          else
-            if((nb_move(k, l) * nb_move(l, j)) > thresh_probs &&
-               distance(k, l) <= thresh_dist && distance(l, j) <= thresh_dist)
-              probs2(k,j)  += nb_move(k, l) * nb_move(l, j);
         }
       }
     }
-  }
-  
-  for(k = 0; k<nb_cases; k++){
-    for(j = 0; j<nb_cases; j++){
-      if(ances(k, j) == 1 && distance(k,j) <= thresh_dist){
-        probs2(k, j) = log(probs2(k, j));
-        probs(k, j) = log(probs(k, j));
-      } else if(distance(k,j) > thresh_dist){
-        probs2(k, j) = -1000;
-        probs(k, j) = -1000;
+    for(k = 0; k<nb_cases; k++){
+      for(j = 0; j<nb_cases; j++){
+        if(ances(k, j) == 1 && distance(k,j) <= thresh_dist){
+          probs2(k, j) = log(probs2(k, j));
+          probs(k, j) = log(probs(k, j));
+        } else if(distance(k,j) > thresh_dist){
+          probs2(k, j) = -1000;
+          probs(k, j) = -1000;
+        }
       }
     }
+    Rcpp::List new_log_s_dens = Rcpp::List::create(probs, probs2);
+    return(new_log_s_dens);
+  } else{
+    for(k = 0; k<nb_cases; k++){
+      for(j = 0; j<nb_cases; j++){
+        if(ances(k, j) == 1 && distance(k,j) <= thresh_dist) probs(k, j) = log(probs(k, j));
+        else if(distance(k,j) > thresh_dist) probs(k, j) = -1000;
+      }
+    }
+    Rcpp::List new_log_s_dens = Rcpp::List::create(probs);
+    return(new_log_s_dens);
   }
-  
-  Rcpp::List new_log_s_dens = Rcpp::List::create(probs, probs2);
-  return(new_log_s_dens);
 }
 
 
