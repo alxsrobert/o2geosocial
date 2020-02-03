@@ -1,6 +1,6 @@
 #' Customise priors for outbreaker
 #'
-#' Priors can be specified in several ways in measlesoutbreaker (see details and
+#' Priors can be specified in several ways in o2geosocial (see details and
 #' examples). The most flexible way to specify a prior is to provide a prior
 #' function directly. This function must take an argument 'param', which is a
 #' list which contains all the states of the parameters and augmented data. See
@@ -69,9 +69,9 @@
 #'
 #' ## - to check the prior manually, default settings:
 #' param <- list(mu = 0.001, pi = 0.9)
-#' measlesoutbreaker:::cpp_prior_pi(param, default_config)
+#' o2geosocial:::cpp_prior_pi(param, default_config)
 #'
-#' measlesoutbreaker:::cpp_prior_pi(param, new_config)
+#' o2geosocial:::cpp_prior_pi(param, new_config)
 #'
 #' ## these correspond to:
 #' dexp(0.001, 0.01, log = TRUE)

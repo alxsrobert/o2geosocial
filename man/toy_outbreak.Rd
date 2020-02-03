@@ -10,7 +10,7 @@ toy_outbreak
 }
 \description{
 We generated a data containing 500 cases, from simulated outbreaks across the US,
-used to illustrate \code{measlesoutbreaker}. This list contains the following:
+used to illustrate \code{o2geosocial}. This list contains the following:
 }
 \details{
 \itemize{

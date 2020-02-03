@@ -1,8 +1,8 @@
 #'
-#' Customise likelihood functions for outbreaker
+#' Customise likelihood functions for o2geosocial
 #'
 #' This function is used to specify customised likelihood functions for
-#' outbreaker. Custom functions are specified as a named list or series of
+#' o2geosocial Custom functions are specified as a named list or series of
 #' comma-separated, named arguments, indicating which log-likelihood component
 #' they compute. Values currently available are:
 #'
@@ -99,7 +99,7 @@
 
 ## USING CUSTOM LIKELIHOOD FUNCTIONS
 
-## Likelihood functions in measlesoutbreaker are implemented using Rcpp. However,
+## Likelihood functions in o2geosocial are implemented using Rcpp. However,
 ## these functions can also be replaced by customized functions. These can be
 ## specified by the user, through the '...' argument of
 ## 'custom_likelihoods'. These functions must have 2 arguments:

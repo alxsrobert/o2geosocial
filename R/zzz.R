@@ -1,8 +1,8 @@
 #' @importFrom Rcpp evalCpp
-#' @useDynLib measlesoutbreaker, .registration = TRUE
+#' @useDynLib o2geosocial, .registration = TRUE
 #'
 .onAttach <- function(libname, pkgname) {
-  ## pkg_version <- packageDescription("measlesoutbreaker", fields = "Version")
-  ## startup_txt <- paste("\n   === measlesoutbreaker", pkg_version, "is loaded ===\n")
+  ## pkg_version <- packageDescription("o2geosocial", fields = "Version")
+  ## startup_txt <- paste("\n   === o2geosocial", pkg_version, "is loaded ===\n")
   ## packageStartupMessage(startup_txt)
 }

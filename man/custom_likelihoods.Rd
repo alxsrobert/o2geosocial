@@ -3,7 +3,7 @@
 \name{custom_likelihoods}
 \alias{custom_likelihoods}
 \alias{print.custom_likelihoods}
-\title{Customise likelihood functions for outbreaker}
+\title{Customise likelihood functions for o2geosocial}
 \usage{
 custom_likelihoods(...)
 
@@ -24,7 +24,7 @@ a list of named functions
 }
 \description{
 This function is used to specify customised likelihood functions for
-outbreaker. Custom functions are specified as a named list or series of
+o2geosocial Custom functions are specified as a named list or series of
 comma-separated, named arguments, indicating which log-likelihood component
 they compute. Values currently available are:
 }

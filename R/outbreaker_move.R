@@ -1,6 +1,6 @@
-## #' Movements of augmented data and parameters for measlesoutbreaker
+## #' Movements of augmented data and parameters for o2geosocial
 ## #'
-## #' This function moves all parameters for measlesoutbreaker
+## #' This function moves all parameters for o2geosocial
 ## #'
 ## #' @author Initial version by Thibaut Jombart, rewritten by Alexis Robert (\email{alexis.robert@lshtm.ac.uk})
 ## #'
