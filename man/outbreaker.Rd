@@ -36,15 +36,15 @@ transmission trees of a densely sampled outbreaks.\cr
 \examples{
 
 ## get data
-data(toy_outbreak)
-dat <- toy_outbreak
+data(toy_outbreak_short)
+dat <- toy_outbreak_short
 
 \dontrun{
 ## run outbreaker
-data("toy_outbreak")
-dt_cases <- toy_outbreak$cases
+data("toy_outbreak_short")
+dt_cases <- toy_outbreak_short$cases
 dt_cases <- dt_cases[order(dt_cases$Date), ]
-dt_regions <- toy_outbreak$dt_regions
+dt_regions <- toy_outbreak_short$dt_regions
 all_dist <- geosphere::distGeo(matrix(c(rep(dt_regions$long, nrow(dt_regions)), 
                                         rep(dt_regions$lat, nrow(dt_regions))), 
                                       ncol = 2), 
@@ -58,7 +58,7 @@ names(pop_vect) <- rownames(dist_mat) <- colnames(dist_mat) <- dt_regions$region
 
 data <- outbreaker_data(dates = dt_cases$Date, age_group = dt_cases$age_group,
                         region = dt_cases$county, population = pop_vect, 
-                        distance = dist_mat, a_dens = toy_outbreak$age_contact,
+                        distance = dist_mat, a_dens = toy_outbreak_short$age_contact,
                         f_dens = dgamma(x = 1:300, scale = 0.43, shape = 27),
                         w_dens = dnorm(x = 1:300, mean = 11.7, sd = 2.0))
 out <- outbreaker(data = data, config = list(n_iter = 200, sample_every = 5,

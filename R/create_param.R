@@ -96,10 +96,10 @@
 #' @examples
 #'
 #' ## load data
-#' data("toy_outbreak")
-#' dt_cases <- toy_outbreak$cases
+#' data("toy_outbreak_short")
+#' dt_cases <- toy_outbreak_short$cases
 #' dt_cases <- dt_cases[order(dt_cases$Date), ]
-#' dt_regions <- toy_outbreak$dt_regions
+#' dt_regions <- toy_outbreak_short$dt_regions
 #' all_dist <- geosphere::distGeo(matrix(c(rep(dt_regions$long, nrow(dt_regions)), 
 #'                                         rep(dt_regions$lat, nrow(dt_regions))), 
 #'                                       ncol = 2), 
