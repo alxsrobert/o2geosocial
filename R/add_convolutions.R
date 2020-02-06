@@ -43,11 +43,13 @@ add_convolutions <- function(data, config) {
         data$log_w_dens <- rbind(data$log_w_dens,
                                  convolve_log(data$log_w_dens[i-1,],
                                               rev(data$log_w_dens)
-                                 )[seq_len(ncol(data$log_w_dens))]
-        )
+                                 )[seq_len(ncol(data$log_w_dens))])
       }
     }
   }
+  if(any(is.infinite(data$log_w_dens)))
+    data$log_w_dens[is.na(data$log_w_dens)] <- 
+      data$log_w_dens[is.finite(data$log_w_dens)] %>% min
   
   ## name rows/columns (useful if internal debugging needed)
   if (!is.null(data$log_w_dens)) {
