@@ -19,33 +19,65 @@
 #' @export
 #' @importFrom utils head tail
 #'
-print.outbreaker_chains <- function(x, n_row = 3, n_col = 8, ...) {
-  cat("\n\n ///// outbreaker results ///\n")
-  cat("\nclass: ", class(x))
-  cat("\ndimensions", nrow(x), "rows, ", ncol(x), "columns")
-  
-  ## process names of variables not shown
-  if (ncol(x) > n_col) {
-    ori_names <- names(x)
-    x <- x[, seq_len(min(n_col, ncol(x)))]
+print.outbreaker_chains <- function(x, n_row = 3, n_col = 8, type = "chain", ...) {
+  if(type == "chain"){
+    cat("\n\n ///// outbreaker results ///\n")
+    cat("\nclass: ", class(x))
+    cat("\ndimensions", nrow(x), "rows, ", ncol(x), "columns")
     
-    not_shown <- setdiff(ori_names, names(x))
+    ## process names of variables not shown
+    if (ncol(x) > n_col) {
+      ori_names <- names(x)
+      x <- x[, seq_len(min(n_col, ncol(x)))]
+      
+      not_shown <- setdiff(ori_names, names(x))
+      
+      alpha_txt <- paste(not_shown[range(grep("alpha", not_shown))], collapse=" - ")
+      t_inf_txt <- paste(not_shown[range(grep("t_inf", not_shown))], collapse=" - ")
+      kappa_txt <- paste(not_shown[range(grep("kappa", not_shown))], collapse=" - ")
+      
+      cat("\nancestries not shown:", alpha_txt)
+      cat("\ninfection dates not shown:", t_inf_txt)
+      cat("\nintermediate generations not shown:", kappa_txt)
+    }
     
-    alpha_txt <- paste(not_shown[range(grep("alpha", not_shown))], collapse=" - ")
-    t_inf_txt <- paste(not_shown[range(grep("t_inf", not_shown))], collapse=" - ")
-    kappa_txt <- paste(not_shown[range(grep("kappa", not_shown))], collapse=" - ")
-    
-    cat("\nancestries not shown:", alpha_txt)
-    cat("\ninfection dates not shown:", t_inf_txt)
-    cat("\nintermediate generations not shown:", kappa_txt)
-  }
-  
-  ## heads and tails
-  cat("\n\n/// head //\n")
-  print(head(as.data.frame(x), n_row))
-  cat("\n...")
-  cat("\n/// tail //\n")
-  print(tail(as.data.frame(x), n_row))
+    ## heads and tails
+    cat("\n\n/// head //\n")
+    print(head(as.data.frame(x), n_row))
+    cat("\n...")
+    cat("\n/// tail //\n")
+    print(tail(as.data.frame(x), n_row))
+  } else if(type == "cluster"){
+    ## Summary of cluster size distribution
+    matrix_ances <- t(apply(out[out$step > burnin, grep("alpha", colnames(out))], 
+                            1, function(X){
+                              while(any(!is.na(X[X]))) X[!is.na(X[X])] <- X[X[!is.na(X[X])]]
+                              X[!is.na(X)] <- names(X[X[!is.na(X)]])
+                              X[is.na(X)] <- names(X[is.na(X)])
+                              return(X)
+                            }))
+    max_clust_size <- apply(matrix_ances, 1, table) %>% unlist %>% max
+    # table_tot: Cluster size distribution
+    table_tot <- t(apply(matrix_ances, 1, function(X){
+      table_clust <- numeric(max_clust_size)
+      names(table_clust) <- 1:max_clust_size
+      table_clust[names(table(table(X)))] <- table(table(X))
+      return(table_clust)
+    }))
+    if (ncol(table_tot) > n_col) {
+      cat("\n Biggest cluster:", max_clust_size)
+      cat("\n Cluster not shown:", n_col, "to", ncol(table_tot))
+      table_tot <- table_tot[, seq_len(min(n_col, ncol(table_tot)))]
+    }
+    if((n_row * 2) < nrow(table_tot)){
+      cat("\n\n/// head //\n")
+      print(head(as.data.frame(table_tot), n_row))
+      cat("\n...")
+      cat("\n/// tail //\n")
+      print(tail(as.data.frame(table_tot), n_row))
+    } else
+      print(as.data.frame(table_tot))
+  } else stop("type should be chain or cluster")
 }
 
 
@@ -309,7 +341,7 @@ plot.outbreaker_chains <- function(x, y = "post",
 #' @param object an \code{outbreaker_chains} object as returned by \code{outbreaker}.
 #' @export
 #' @importFrom stats median
-summary.outbreaker_chains <- function(object, burnin = 0, ...) {
+summary.outbreaker_chains <- function(object, burnin = 0, group_cluster = NULL, ...) {
   ## check burnin ##
   x <- object
   if (burnin > max(x$step)) {
@@ -377,5 +409,36 @@ summary.outbreaker_chains <- function(object, burnin = 0, ...) {
   out$tree <- as.data.frame(out$tree)
   rownames(out$tree) <- NULL
   
+  ## Summary of cluster size distribution
+  matrix_ances <- t(apply(x[x$step > burnin, grep("alpha", colnames(x))], 
+                          1, function(X){
+                            while(any(!is.na(X[X]))) X[!is.na(X[X])] <- X[X[!is.na(X[X])]]
+                            X[!is.na(X)] <- names(X[X[!is.na(X)]])
+                            X[is.na(X)] <- names(X[is.na(X)])
+                            return(X)
+                          }))
+  max_clust_size <- apply(matrix_ances, 1, table) %>% unlist %>% max
+  if(!is.null(group_cluster)) {
+    max_clust_size <- max(max_clust_size, group_cluster)
+    if(max_clust_size != max(group_cluster)) group_cluster = c(group_cluster, max_clust_size)
+  }
+  # table_tot: Cluster size distribution
+  table_tot <- t(apply(matrix_ances, 1, function(X){
+    table_clust <- numeric(max_clust_size)
+    names(table_clust) <- 1:max_clust_size
+    table_clust[names(table(table(X)))] <- table(table(X))
+    return(table_clust)
+  }))
+  if(!is.null(group_cluster)) {
+    group_cluster[which.max(group_cluster)] <- group_cluster[which.max(group_cluster)] + 1
+    aggreg_vector <- sapply(seq_len(max_clust_size), function(X) sum(X > group_cluster))
+    aggreg_clust_size <- t(aggregate(t(table_tot), by = list(aggreg_vector), sum)[,-1])
+    colnames(aggreg_clust_size) <- sapply(seq_len(length(group_cluster) - 1), function(X){
+      if(group_cluster[X] == group_cluster[X+1] -1) return(as.character(group_cluster[X] + 1)) else
+        return(paste0(group_cluster[X] + 1, " - ", group_cluster[X + 1]))
+    })
+    out$cluster <- apply(aggreg_clust_size, 2, summary)
+  } else 
+    out$cluster <- apply(table_tot, 2, summary)
   return(out)
 }
