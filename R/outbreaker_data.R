@@ -299,7 +299,10 @@ outbreaker_data <- function(..., data = list(...)) {
     can_be_ances <- sapply(seq_len(data$N), function(X){
       can_be_ances_X <- rep(FALSE, data$N)
       if(data$import[X] == TRUE) return(can_be_ances_X)
-      can_be_ances_X[data$cluster[[data$is_cluster[X]]]] <- TRUE
+      if(!is.null(data$cluster)){
+        can_be_ances_X[data$cluster[[data$is_cluster[X]]]] <- TRUE        
+      } else can_be_ances_X <- TRUE
+
       can_be_ances_X[X] <- FALSE
       if(!is.null(data$f_dens) & !is.null(data$dates)){
         unlik_f_dens <- which(data$log_f_dens[-1] < -20 &
