@@ -307,7 +307,12 @@ outbreaker_data <- function(..., data = list(...)) {
       if(!is.null(data$f_dens) & !is.null(data$dates)){
         unlik_f_dens <- which(data$log_f_dens[-1] < -20 &
                                 diff(data$log_f_dens) < 0)[1]
-        can_be_ances_X[data$dates[X] > data$dates + unlik_f_dens] <- FALSE
+        can_be_ances_X[data$dates[X] + unlik_f_dens < data$dates] <- FALSE
+      }
+      if(!is.null(data$w_dens) & !is.null(data$dates)){
+        unlik_w_dens <- which(data$log_w_dens[-1] < -40 &
+                                diff(data$log_w_dens[1,]) < 0)[1]
+        can_be_ances_X[data$dates[X] - unlik_w_dens < data$dates] <- FALSE
       }
       if(data$genotype[X] != "Not attributed"){
         can_be_ances_X[data$genotype != data$genotype[X] &
