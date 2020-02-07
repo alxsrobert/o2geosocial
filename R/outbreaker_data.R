@@ -301,7 +301,7 @@ outbreaker_data <- function(..., data = list(...)) {
       if(data$import[X] == TRUE) return(can_be_ances_X)
       if(!is.null(data$cluster)){
         can_be_ances_X[data$cluster[[data$is_cluster[X]]]] <- TRUE        
-      } else can_be_ances_X <- TRUE
+      } else can_be_ances_X[1:data$N] <- TRUE
 
       can_be_ances_X[X] <- FALSE
       if(!is.null(data$f_dens) & !is.null(data$dates)){
