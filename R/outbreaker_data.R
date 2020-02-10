@@ -303,7 +303,6 @@ outbreaker_data <- function(..., data = list(...)) {
         can_be_ances_X[data$cluster[[data$is_cluster[X]]]] <- TRUE        
       } else can_be_ances_X[1:data$N] <- TRUE
 
-      can_be_ances_X[X] <- FALSE
       if(!is.null(data$f_dens) & !is.null(data$dates)){
         unlik_f_dens <- which(data$log_f_dens[-1] < -20 &
                                 diff(data$log_f_dens) < 0)[1]
