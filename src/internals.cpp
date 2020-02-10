@@ -211,7 +211,7 @@ Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix dist
         if(ances(k, j) == 1 && distance(k,j) <= thresh_dist){
           probs2(k, j) = log(probs2(k, j));
           probs(k, j) = log(probs(k, j));
-        } else if(distance(k,j) > thresh_dist){
+        } else{
           probs2(k, j) = -1000;
           probs(k, j) = -1000;
         }
