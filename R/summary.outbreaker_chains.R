@@ -49,14 +49,14 @@ print.outbreaker_chains <- function(x, n_row = 3, n_col = 8, type = "chain", ...
     print(tail(as.data.frame(x), n_row))
   } else if(type == "cluster"){
     ## Summary of cluster size distribution
-    matrix_ances <- t(apply(out[out$step > burnin, grep("alpha", colnames(out))], 
+    matrix_ances <- t(apply(x[, grep("alpha", colnames(x))], 
                             1, function(X){
                               while(any(!is.na(X[X]))) X[!is.na(X[X])] <- X[X[!is.na(X[X])]]
                               X[!is.na(X)] <- names(X[X[!is.na(X)]])
                               X[is.na(X)] <- names(X[is.na(X)])
                               return(X)
                             }))
-    max_clust_size <- apply(matrix_ances, 1, table) %>% unlist %>% max
+    max_clust_size <- max(unlist(apply(matrix_ances, 1, table)))
     # table_tot: Cluster size distribution
     table_tot <- t(apply(matrix_ances, 1, function(X){
       table_clust <- numeric(max_clust_size)
@@ -339,8 +339,11 @@ plot.outbreaker_chains <- function(x, y = "post",
 
 #' @rdname outbreaker_chains
 #' @param object an \code{outbreaker_chains} object as returned by \code{outbreaker}.
+#' @param group_cluster a numeric \code{vector} indicating the breaks to aggregate the
+#' cluster size distribution.
 #' @export
 #' @importFrom stats median
+#' @importFrom stats aggregate
 summary.outbreaker_chains <- function(object, burnin = 0, group_cluster = NULL, ...) {
   ## check burnin ##
   x <- object
@@ -417,10 +420,11 @@ summary.outbreaker_chains <- function(object, burnin = 0, group_cluster = NULL, 
                             X[is.na(X)] <- names(X[is.na(X)])
                             return(X)
                           }))
-  max_clust_size <- apply(matrix_ances, 1, table) %>% unlist %>% max
+  max_clust_size <- max(unlist(apply(matrix_ances, 1, table)))
   if(!is.null(group_cluster)) {
     max_clust_size <- max(max_clust_size, group_cluster)
     if(max_clust_size != max(group_cluster)) group_cluster = c(group_cluster, max_clust_size)
+    if(min(group_cluster) != 0) group_cluster <- c(0, group_cluster)
   }
   # table_tot: Cluster size distribution
   table_tot <- t(apply(matrix_ances, 1, function(X){

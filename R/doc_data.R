@@ -1,7 +1,7 @@
 #' Simulated outbreaks
 #'
 #' We generated two datasets used to illustrate \code{o2geosocial}. 
-#' The first one (toy_outbreak_long) contains 1000 cases, from simulated outbreaks 
+#' The first one (toy_outbreak_long) contains 1940 cases, from simulated outbreaks 
 #' nationwide between 2010 and 2017. The list contains the following:
 #'
 #' \itemize{

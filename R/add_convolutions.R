@@ -49,7 +49,7 @@ add_convolutions <- function(data, config) {
   }
   if(any(is.infinite(data$log_w_dens)))
     data$log_w_dens[is.na(data$log_w_dens)] <- 
-      data$log_w_dens[is.finite(data$log_w_dens)] %>% min
+      min(data$log_w_dens[is.finite(data$log_w_dens)])
   
   ## name rows/columns (useful if internal debugging needed)
   if (!is.null(data$log_w_dens)) {
