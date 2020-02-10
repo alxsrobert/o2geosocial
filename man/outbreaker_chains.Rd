@@ -7,7 +7,7 @@
 \alias{summary.outbreaker_chains}
 \title{Basic methods for processing outbreaker results}
 \usage{
-\method{print}{outbreaker_chains}(x, n_row = 3, n_col = 8, ...)
+\method{print}{outbreaker_chains}(x, n_row = 3, n_col = 8, type = "chain", ...)
 
 \method{plot}{outbreaker_chains}(
   x,
@@ -19,7 +19,7 @@
   ...
 )
 
-\method{summary}{outbreaker_chains}(object, burnin = 0, ...)
+\method{summary}{outbreaker_chains}(object, burnin = 0, group_cluster = NULL, ...)
 }
 \arguments{
 \item{x}{an \code{outbreaker_chains} object as returned by \code{outbreaker}.}
@@ -28,12 +28,12 @@
 
 \item{n_col}{the number of columns to display; defaults to 8.}
 
+\item{type}{a character string indicating the kind of plot to be used (see details)}
+
 \item{...}{further arguments to be passed to other methods}
 
 \item{y}{a character string indicating which element of an
 \code{outbreaker_chains} object to plot}
-
-\item{type}{a character string indicating the kind of plot to be used (see details)}
 
 \item{burnin}{the number of iterations to be discarded as burnin}
 
@@ -44,6 +44,9 @@ ancestries to be plotted; only used if 'type' is 'network'}
 provided in the same order used for dates of symptom onset)}
 
 \item{object}{an \code{outbreaker_chains} object as returned by \code{outbreaker}.}
+
+\item{group_cluster}{a numeric \code{vector} indicating the breaks to aggregate the
+cluster size distribution.}
 }
 \description{
 Several methods are defined for instances of the class
