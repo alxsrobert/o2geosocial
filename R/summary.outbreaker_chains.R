@@ -14,6 +14,9 @@
 #' @param x an \code{outbreaker_chains} object as returned by \code{outbreaker}.
 #' @param n_row the number of rows to display in head and tail; defaults to 3.
 #' @param n_col the number of columns to display; defaults to 8.
+#' @param type a character string indicating the kind of data to be printed, if 
+#' "chain", then the output of the outbreaker function will be printed ; 
+#' if "cluster" then the cluster size distribution at every iteration will be printed.
 #' @param ... further arguments to be passed to other methods
 #'
 #' @export
@@ -98,10 +101,9 @@ print.outbreaker_chains <- function(x, n_row = 3, n_col = 8, type = "chain", ...
 #'
 #' @param labels a vector of length N indicating the case labels (must be
 #'   provided in the same order used for dates of symptom onset)
-#'
-## #' @param dens_all a logical indicating if the overal density computed over
-## all runs should be displayed; defaults to TRUE #' @param col the colors to be
-## used for different runs
+#'   
+#' @param group_cluster a numeric \code{vector} indicating the breaks to aggregate the
+#' cluster size distribution.
 #'
 #' @export
 #'
@@ -125,20 +127,25 @@ print.outbreaker_chains <- function(x, n_row = 3, n_col = 8, type = "chain", ...
 #'
 #' \item \code{kappa} to visualise the distributions generations between cases and their
 #' ancestor/infector
+#' 
+#' \item \code{cluster} to visualise the cluster size distribution, grouped by
+#' the value in group_cluster
 #'
 #' }
 #'
 #' @importFrom ggplot2 ggplot geom_line geom_point geom_histogram geom_density
 #'   geom_violin aes aes_string coord_flip labs guides scale_size_area
-#'   scale_x_discrete scale_y_discrete scale_color_manual scale_fill_manual
+#'   scale_x_discrete scale_y_discrete scale_color_manual scale_fill_manual 
+#'   geom_bar geom_errorbar
 #'
 #' @importFrom grDevices xyTable
 #' @importFrom graphics plot
 #'
 plot.outbreaker_chains <- function(x, y = "post",
-                                   type = c("trace", "hist", "density",
+                                   type = c("trace", "hist", "density", "cluster",
                                             "alpha", "t_inf", "kappa", "network"),
-                                   burnin = 0, min_support = 0.1, labels = NULL, ...) {
+                                   burnin = 0, min_support = 0.1, labels = NULL, 
+                                   group_cluster = NULL, ...) {
   
   ## CHECKS ##
   type <- match.arg(type)
@@ -146,12 +153,7 @@ plot.outbreaker_chains <- function(x, y = "post",
     stop(paste(y,"is not a column of x"))
   }
   
-  ## THIS IS JUST TO APPEASE R CMD check
-  
-  ## hopefully cran will avoid spurious warnings along the lines of "no
-  ## visible binding for global variable" when using ggplot2::aes(...)
-  ##
-  frequency <- NULL
+  frequency <- low <- med <- up <- categ <- NULL
   
   ## GET DATA TO PLOT ##
   if (burnin > max(x$step)) {
@@ -177,7 +179,7 @@ plot.outbreaker_chains <- function(x, y = "post",
       labs(x = y, title = paste("density:",y))
   }
   
-  if (type=="alpha") {
+  if (type =="alpha") {
     alpha <- as.matrix(x[,grep("alpha", names(x))])
     colnames(alpha) <- seq_len(ncol(alpha))
     from <- as.vector(alpha)
@@ -223,7 +225,7 @@ plot.outbreaker_chains <- function(x, y = "post",
       guides(colour = FALSE)
   }
   
-  if (type=="t_inf") {
+  if (type =="t_inf") {
     get_t_inf_lab <- function(labels = NULL) {
       N <- ncol(t_inf)
       if(is.null(labels)) labels <- 1:N
@@ -254,7 +256,7 @@ plot.outbreaker_chains <- function(x, y = "post",
       scale_x_discrete(labels = tmp$t_inf_lab)
   }
   
-  if (type=="kappa") {
+  if (type == "kappa") {
     get_kappa_lab <- function(labels = NULL) {
       N <- ncol(kappa)
       if(is.null(labels)) labels <- 1:N
@@ -283,7 +285,7 @@ plot.outbreaker_chains <- function(x, y = "post",
            y = NULL)
   }
   
-  if (type=="network") {
+  if (type == "network") {
     ## extract edge info: ancestries
     alpha <- x[, grep("alpha",names(x)), drop = FALSE]
     from <- unlist(alpha)
@@ -330,6 +332,49 @@ plot.outbreaker_chains <- function(x, y = "post",
     out <- visNetwork::visEdges(out, arrows = list(
       to = list(enabled = TRUE, scaleFactor = 0.2)),
       color = list(highlight = "red"))
+    
+  }
+  
+  if (type == "cluster"){
+    matrix_ances <- t(apply(x[x$step > burnin, grep("alpha", colnames(x))], 1, function(X){
+      while(any(!is.na(X[X]))) X[!is.na(X[X])] <- X[X[!is.na(X[X])]]
+      X[!is.na(X)] <- names(X[X[!is.na(X)]])
+      X[is.na(X)] <- names(X[is.na(X)])
+      return(X)
+    }))
+    max_clust_size <- max(unlist(apply(matrix_ances, 1, table)))
+    if(!is.null(group_cluster)) {
+      max_clust_size <- max(max_clust_size, group_cluster)
+      if(max_clust_size != max(group_cluster)) group_cluster = c(group_cluster, max_clust_size)
+      if(min(group_cluster) != 0) group_cluster <- c(0, group_cluster)
+    }
+    # table_tot: Cluster size distribution
+    table_tot <- t(apply(matrix_ances, 1, function(X){
+      table_clust <- numeric(max_clust_size)
+      names(table_clust) <- 1:max_clust_size
+      table_clust[names(table(table(X)))] <- table(table(X))
+      return(table_clust)
+    }))
+    if(!is.null(group_cluster)) {
+      group_cluster[which.max(group_cluster)] <- group_cluster[which.max(group_cluster)] + 1
+      aggreg_vector <- sapply(seq_len(max_clust_size), function(X) sum(X > group_cluster))
+      aggreg_clust_size <- t(aggregate(t(table_tot), by = list(aggreg_vector), sum)[,-1])
+      colnames(aggreg_clust_size) <- sapply(seq_len(length(group_cluster) - 1), function(X){
+        if(group_cluster[X] == group_cluster[X+1] -1) return(as.character(group_cluster[X] + 1)) else
+          return(paste0(group_cluster[X] + 1, " - ", group_cluster[X + 1]))
+      })
+      cluster_size_tot <- t(apply(aggreg_clust_size, 2, function(X) 
+        quantile(X, probs = c(0.025, 0.5, 0.975))))
+    } else 
+      cluster_size_tot <- t(apply(table_tot, 2, function(X)
+        quantile(X, probs = c(0.025, 0.5, 0.975))))
+    out_dat <- cbind.data.frame(rownames(cluster_size_tot), cluster_size_tot, stringsAsFactors=FALSE)
+    colnames(out_dat) <- c("categ", "low", "med", "up")
+    out <- ggplot(out_dat) + geom_bar(aes(x = categ, y = med), stat = "identity") +
+      geom_errorbar(aes(x = categ, ymin=low, ymax=up), width=.2) +
+      guides(fill = FALSE) +
+      labs(y = 'Number of clusters', x = "Cluster size") +
+      scale_x_discrete(labels = out_dat$categ)
     
   }
   

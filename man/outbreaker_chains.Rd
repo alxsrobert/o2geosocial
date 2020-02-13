@@ -12,10 +12,11 @@
 \method{plot}{outbreaker_chains}(
   x,
   y = "post",
-  type = c("trace", "hist", "density", "alpha", "t_inf", "kappa", "network"),
+  type = c("trace", "hist", "density", "cluster", "alpha", "t_inf", "kappa", "network"),
   burnin = 0,
   min_support = 0.1,
   labels = NULL,
+  group_cluster = NULL,
   ...
 )
 
@@ -43,10 +44,10 @@ ancestries to be plotted; only used if 'type' is 'network'}
 \item{labels}{a vector of length N indicating the case labels (must be
 provided in the same order used for dates of symptom onset)}
 
-\item{object}{an \code{outbreaker_chains} object as returned by \code{outbreaker}.}
-
 \item{group_cluster}{a numeric \code{vector} indicating the breaks to aggregate the
 cluster size distribution.}
+
+\item{object}{an \code{outbreaker_chains} object as returned by \code{outbreaker}.}
 }
 \description{
 Several methods are defined for instances of the class
@@ -74,6 +75,9 @@ log-likelihood by default)
 
 \item \code{kappa} to visualise the distributions generations between cases and their
 ancestor/infector
+
+\item \code{cluster} to visualise the cluster size distribution, grouped by
+the value in group_cluster
 
 }
 }
