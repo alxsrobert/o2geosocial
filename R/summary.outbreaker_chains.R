@@ -368,14 +368,14 @@ plot.outbreaker_chains <- function(x, y = "post",
     } else 
       cluster_size_tot <- t(apply(table_tot, 2, function(X)
         quantile(X, probs = c(0.025, 0.5, 0.975))))
-    out_dat <- cbind.data.frame(rownames(cluster_size_tot), cluster_size_tot, stringsAsFactors=FALSE)
+    out_dat <- cbind.data.frame(rownames(cluster_size_tot), cluster_size_tot, 
+                                stringsAsFactors=FALSE)
     colnames(out_dat) <- c("categ", "low", "med", "up")
-    out <- ggplot(out_dat) + geom_bar(aes(x = categ, y = med), stat = "identity") +
+    out <- ggplot(out_dat) + geom_bar(aes(x = factor(categ, levels = categ), 
+                                          y = med), stat = "identity") +
       geom_errorbar(aes(x = categ, ymin=low, ymax=up), width=.2) +
-      guides(fill = FALSE) +
-      labs(y = 'Number of clusters', x = "Cluster size") +
-      scale_x_discrete(labels = out_dat$categ)
-    
+      guides(fill = FALSE) + labs(y = 'Number of clusters', x = "Cluster size")
+
   }
   
   return(out)
