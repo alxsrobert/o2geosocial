@@ -433,7 +433,8 @@ summary.outbreaker_chains <- function(object, burnin = 0, group_cluster = NULL, 
   
   ## function to get most frequent item
   f1 <- function(x) {
-    as.integer(names(sort(table(x, exclude = NULL), decreasing = TRUE)[1]))
+    if(length(table(x)) > 0) as.integer(names(sort(table(x), decreasing = TRUE)[1]))
+    else NA
   }
   out$tree$from <- apply(alpha, 2, f1)
   out$tree$to <- seq_len(ncol(alpha))
@@ -447,6 +448,12 @@ summary.outbreaker_chains <- function(object, burnin = 0, group_cluster = NULL, 
     (sort(table(x, exclude = NULL), decreasing = TRUE)/length(x))[1]
   }
   out$tree$support <- apply(alpha, 2, f2)
+  
+  ## Import probability ##
+  f3 <- function(x) {
+    (length(which(is.na(x)))/length(x))[1]
+  }
+  out$tree$import <- apply(alpha, 2, f3)
   
   ## summary of kappa ##
   kappa <- as.matrix(x[,grep("kappa", names(x))])
