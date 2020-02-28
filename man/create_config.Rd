@@ -24,12 +24,11 @@ Acceptables arguments for ... are:
 
 \describe{
 
-\item{init_tree}{the tree used to initialize the MCMC. Can be either a
-character string indicating how this tree should be computed, or a vector of
+\item{init_tree}{the tree used to initialize the MCMC. Can be a vector of
 integers corresponding to the tree itself, where the i-th value corresponds
 to the index of the ancestor of 'i' (i.e., \code{init.tree[i]} is the
-ancestor of case \code{i}). The only accepted character string is 
-"star" (all cases coalesce to the first case).}
+ancestor of case \code{i}). Otherwise it should be defined as the character 
+string "star" (all cases coalesce to the first case).}
 
 \item{spatial_method}{a character string indicating the mthod used to
 evaluate the spatial likelihood. Can be either "exponential" or "power-law".}
@@ -50,9 +49,6 @@ defaults to 1.}
 \item{init_alpha}{a vector of integers indicating the initial values of
 alpha, where the i-th value indicates the ancestor of case 'i'; defaults to
 \code{NULL}, in which ancestries are defined from \code{init_tree}.}
-
-\item{init_kappa}{a vector of integers indicating the initial values of kappa; 
-defaults to 1.}
 
 \item{init_t_inf}{a vector of integers indicating the initial values of
 \code{t_inf}, i.e. dates of infection; defaults to \code{NULL}, in which case

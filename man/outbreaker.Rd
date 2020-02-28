@@ -57,7 +57,7 @@ pop_vect <- dt_regions$population
 names(pop_vect) <- rownames(dist_mat) <- colnames(dist_mat) <- dt_regions$region
 
 data <- outbreaker_data(dates = dt_cases$Date, age_group = dt_cases$age_group,
-                        region = dt_cases$county, population = pop_vect, 
+                        region = dt_cases$Cens_tract, population = pop_vect, 
                         distance = dist_mat, a_dens = toy_outbreak_short$age_contact,
                         f_dens = dgamma(x = 1:300, scale = 0.43, shape = 27),
                         w_dens = dnorm(x = 1:300, mean = 11.7, sd = 2.0))
