@@ -9,12 +9,11 @@
 #'
 #' \describe{
 #'
-#' \item{init_tree}{the tree used to initialize the MCMC. Can be either a
-#' character string indicating how this tree should be computed, or a vector of
+#' \item{init_tree}{the tree used to initialize the MCMC. Can be a vector of
 #' integers corresponding to the tree itself, where the i-th value corresponds
 #' to the index of the ancestor of 'i' (i.e., \code{init.tree[i]} is the
-#' ancestor of case \code{i}). The only accepted character string is 
-#' "star" (all cases coalesce to the first case).}
+#' ancestor of case \code{i}). Otherwise it should be defined as the character 
+#' string "star" (all cases coalesce to the first case).}
 #'
 #' \item{spatial_method}{a character string indicating the mthod used to
 #' evaluate the spatial likelihood. Can be either "exponential" or "power-law".}
@@ -35,9 +34,6 @@
 #' \item{init_alpha}{a vector of integers indicating the initial values of
 #' alpha, where the i-th value indicates the ancestor of case 'i'; defaults to
 #' \code{NULL}, in which ancestries are defined from \code{init_tree}.}
-#'
-#' \item{init_kappa}{a vector of integers indicating the initial values of kappa; 
-#' defaults to 1.}
 #'
 #' \item{init_t_inf}{a vector of integers indicating the initial values of
 #' \code{t_inf}, i.e. dates of infection; defaults to \code{NULL}, in which case
@@ -164,7 +160,7 @@ create_config <- function (..., data = NULL)
                    max_kappa = 2, find_import = TRUE, outlier_threshold = 0.05, 
                    outlier_relative = FALSE,
                    n_iter_import = 5000, sample_every_import = 50, 
-                   burnin = 10000, verbatim = FALSE, function_s_dens = calc_s_dens)
+                   burnin = 10000, verbatim = FALSE)
   config <- modify_defaults(defaults, config)
   if (is.character(config$init_tree)) {
     config$init_tree <- match.arg(config$init_tree, c("star"))
@@ -374,9 +370,6 @@ create_config <- function (..., data = NULL)
   }
   if (!is.numeric(config$n_iter_import)) {
     stop("n_iter_import is not a numeric value")
-  }
-  if (!is.function(config$function_s_dens)) {
-    stop("function_s_dens should be a function")
   }
   if (!is.finite(config$n_iter_import)) {
     stop("n_iter_import is infinite or NA")

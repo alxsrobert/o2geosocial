@@ -112,7 +112,7 @@
 #' names(pop_vect) <- rownames(dist_mat) <- colnames(dist_mat) <- dt_regions$region
 #' 
 #' data <- outbreaker_data(dates = dt_cases$Date, age_group = dt_cases$age_group,
-#'                         region = dt_cases$county, population = pop_vect, 
+#'                         region = dt_cases$Cens_tract, population = pop_vect, 
 #'                         distance = dist_mat)
 #'
 #' ## modify config settings
@@ -156,8 +156,10 @@ create_param <- function(data = outbreaker_data(),
   class(store) <- c("outbreaker_store", "list")
   
   ## ADD SPATIAL LIKELIHOOD TO PARAM ##
-  current_log_s_dens <- config$function_s_dens(data, config)
-  
+  current_log_s_dens <- rep(list(matrix(-Inf, nrow = length(unique(data$region)), 
+                                        ncol = length(unique(data$region)))),
+                            config$max_kappa)
+
   current  <- list(
     alpha = current_alpha, 
     t_inf = current_t_inf, 
