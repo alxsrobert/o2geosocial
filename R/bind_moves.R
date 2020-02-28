@@ -57,7 +57,7 @@ bind_moves <- function(moves = custom_moves(), config, data,
     out$a <- bind_to_function(out$a,
                               data = data,
                               config = config,
-                              # custom_ll = likelihoods,
+                              custom_ll = likelihoods,
                               custom_prior = priors$a
     )
   }
@@ -69,7 +69,7 @@ bind_moves <- function(moves = custom_moves(), config, data,
     out$b <- bind_to_function(out$b,
                               data = data,
                               config = config,
-                              # custom_ll = likelihoods,
+                              custom_ll = likelihoods,
                               custom_prior = priors$b
     )
   }
