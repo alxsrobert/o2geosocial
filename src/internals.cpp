@@ -166,7 +166,7 @@ Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix dist
         }
       }
     }
-  } else if(spatial == "inverse"){
+  } else if(spatial == "power-law"){
     for(k = 0; k<size_pop; k++){
       for(j = 0; j<size_pop; j++){
         if(distance(j,k) < thresh_dist && j>k){
