@@ -1,9 +1,17 @@
 Package: o2geosocial
 Type: Package
-Title: Inference and reconstruction of measles transmission chains
+Title: Inference and Reconstruction of Measles Transmission Chains
 Version: 1.0
-Date: 2019-06-03
-Author: Alexis Robert
+Date: 2020-04-22
+Authors@R: c(person("Alexis", "Robert",
+                    email = "alexis.robert@lshtm.ac.uk",
+		    role = c("aut", "cre")),
+	     person("Sebastian", "Funk",
+	            email = "sebastian.funk@lshtm.ac.uk",
+		    role = c("aut")),
+		    person("Adam J", "Kucharski",
+	            email = "adam.kucharski@lshtm.ac.uk",
+		    role = c("aut")))
 Maintainer: Alexis Robert <alexis.robert@lshtm.ac.uk>
 Description: Bayesian reconstruction of transmission chains combining routinely-collected surveillance data such as genotype, age specific social contacts, distance between cases, onset date. (Robert A, Kucharski AJ, Gastanaduy PA, Paul P, Funk S, under review (2020)).
 License: MIT + file LICENSE
@@ -18,6 +26,7 @@ Imports:
     magrittr,
     visNetwork,
     data.table
+LazyData: true  
 Depends: R(>= 2.10)
 LinkingTo: Rcpp
 RoxygenNote: 7.1.0
