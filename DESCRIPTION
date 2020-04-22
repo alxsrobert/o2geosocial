@@ -4,7 +4,7 @@ Title: Inference and reconstruction of measles transmission chains
 Version: 1.0
 Date: 2019-06-03
 Author: Alexis Robert
-Maintainer: Alexis Robert <alexis3.robert3@gmail.com>
+Maintainer: Alexis Robert <alexis.robert@lshtm.ac.uk>
 Description: Bayesian reconstruction of transmission chains combining routinely-collected surveillance data such as genotype, age specific social contacts, distance between cases, onset date. (Robert A, Kucharski AJ, Gastanaduy PA, Paul P, Funk S, under review (2020)).
 License: MIT + file LICENSE
 Imports: 
