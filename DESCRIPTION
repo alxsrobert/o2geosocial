@@ -3,17 +3,11 @@ Type: Package
 Title: Inference and Reconstruction of Measles Transmission Chains
 Version: 1.0
 Date: 2020-04-22
-Authors@R: c(person("Alexis", "Robert",
-                    email = "alexis.robert@lshtm.ac.uk",
-		    role = c("aut", "cre")),
-	     person("Sebastian", "Funk",
-	            email = "sebastian.funk@lshtm.ac.uk",
-		    role = c("aut")),
-		    person("Adam J", "Kucharski",
-	            email = "adam.kucharski@lshtm.ac.uk",
-		    role = c("aut")))
+Authors@R: c(person("Alexis", "Robert", email = "alexis.robert@lshtm.ac.uk", role = c("aut", "cre")),
+		    person("Sebastian", "Funk", email = "sebastian.funk@lshtm.ac.uk", role = c("aut")),
+		    person("Adam J", "Kucharski", email = "adam.kucharski@lshtm.ac.uk", role = c("aut")))
 Maintainer: Alexis Robert <alexis.robert@lshtm.ac.uk>
-Description: Bayesian reconstruction of transmission chains combining routinely-collected surveillance data such as genotype, age specific social contacts, distance between cases, onset date. (Robert A, Kucharski AJ, Gastanaduy PA, Paul P, Funk S, under review (2020)).
+Description: Bayesian reconstruction of transmission chains combining routinely-collected surveillance data such as genotype, age specific social contacts, distance between cases, onset date. (Robert A, Kucharski AJ, Gastanaduy PA, Paul P, Funk S. 2020 Preprint: <https://doi.org/10.1101/2020.02.13.20020891> ; under review (2020)).
 License: MIT + file LICENSE
 Imports: 
     Rcpp,
