@@ -4,7 +4,9 @@
 \name{toy_outbreak_short}
 \alias{toy_outbreak_short}
 \title{Simulated outbreaks}
-\format{An object of class \code{list} of length 3.}
+\format{
+An object of class \code{list} of length 3.
+}
 \usage{
 toy_outbreak_short
 }
