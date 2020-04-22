@@ -82,7 +82,7 @@ null_config <- list(find_import = FALSE,
 ## load data
 data("toy_outbreak_short")
 dt_cases <- toy_outbreak_short$cases
-dt_cases <- dt_cases[order(dt_cases$Date), ]
+dt_cases <- dt_cases[order(dt_cases$Date), ][1:20,]
 dt_regions <- toy_outbreak_short$dt_regions
 all_dist <- geosphere::distGeo(matrix(c(rep(dt_regions$long, nrow(dt_regions)), 
                                         rep(dt_regions$lat, nrow(dt_regions))), 
