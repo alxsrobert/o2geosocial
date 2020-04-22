@@ -499,20 +499,22 @@ create_config <- function (..., data = NULL)
         config$init_alpha[unknownAnces] <- NA
       }
     }
-    if (!is.null(config$init_t_inf)) {
+    if (!is.null(config$init_t_inf) && !is.null(data$dates)) {
       if (any(config$init_t_inf >= data$dates, na.rm = TRUE)) {
         msg <- paste0("Initial dates of infection come after ", 
                       "sampling dates / dates of onset.")
         stop(msg)
       }
-    }
-    else {
+    } 
+    else if(!is.null(data$dates)){
       max_like_delay <- which.max(data$f_dens)
       if (!is.finite(max_like_delay) || length(max_like_delay) == 0) {
         max_like_delay <- 1L
       }
       config$init_t_inf <- as.integer(data$dates - max_like_delay)
     }
+    else
+      config$init_t_inf <- NULL
     config$move_alpha <- rep(config$move_alpha, length.out = data$N)
     config$move_t_inf <- rep(config$move_t_inf, length.out = data$N)
     config$move_kappa <- rep(config$move_kappa, length.out = data$N)
@@ -526,7 +528,12 @@ create_config <- function (..., data = NULL)
     
     config$init_alpha <- as.integer(config$init_alpha)
     config$init_t_inf <- as.integer(config$init_t_inf)
-    
+    if(is.null(data$population) || is.null(data$region) || is.null(data$distance)){
+      warning("move_a and move_b are set to FALSE since data$population, data$region or data$distance is null")
+      config$move_a <- FALSE
+      config$move_b <- FALSE
+      config$gamma <- Inf
+    }
     if(all(is.na(config$init_alpha)))
       warning("All cases are currently set as imports")
   }

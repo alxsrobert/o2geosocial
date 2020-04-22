@@ -88,7 +88,7 @@
 #' names(pop_vect) <- rownames(dist_mat) <- colnames(dist_mat) <- dt_regions$region
 #' 
 #' data <- outbreaker_data(dates = dt_cases$Date, age_group = dt_cases$age_group,
-#'                         region = dt_cases$Cens_tract, population = pop_vect, 
+#'                         region = NULL, population = pop_vect, 
 #'                         distance = dist_mat)
 #' 
 #' res_null <- outbreaker(data = data,
