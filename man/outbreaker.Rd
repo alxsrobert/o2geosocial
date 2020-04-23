@@ -37,11 +37,9 @@ transmission trees of a densely sampled outbreaks.\cr
 
 ## get data
 data(toy_outbreak_short)
-dat <- toy_outbreak_short
 
 \dontrun{
 ## run outbreaker
-data("toy_outbreak_short")
 dt_cases <- toy_outbreak_short$cases
 dt_cases <- dt_cases[order(dt_cases$Date), ]
 dt_regions <- toy_outbreak_short$dt_regions
