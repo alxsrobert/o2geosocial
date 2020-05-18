@@ -134,18 +134,10 @@ outbreaker_data <- function(..., data = list(...)) {
   }
   
   ## CHECK AGE GROUP
-  if (!is.null(data$dates)) {
-    if (inherits(data$dates, "Date")) {
-      data$dates <- data$dates-min(data$dates)
+  if (!is.null(data$age_group)) {
+    if (!is.numeric(data$age_group)) {
+      stop("Age group is not numeric")
     }
-    if (inherits(data$dates, "POSIXct")) {
-      data$dates <- difftime(data$dates, min(data$dates), units="days")
-    }
-    data$dates <- as.integer(round(data$dates))
-    data$N <- length(data$dates)
-    data$max_range <- max(sapply(unique(data$is_cluster), function(X){
-      return(diff(range(data$dates[which(data$is_cluster == X)])))
-    }))
   }
   
   ## CHECK W_DENS
