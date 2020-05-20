@@ -207,8 +207,6 @@ outbreaker_data <- function(..., data = list(...)) {
     if(any(data$a_dens < 1e-15)) {
       data$a_dens[data$a_dens<1e-15] <- 1e-15
       data$a_dens <- t(t(data$a_dens)/colSums(data$a_dens))
-      if(any(colSums(data$a_dens))!=1)
-        stop("Sum of each columns in a_dens should be 1")
       warning("Removed trailing zeroes found in a_dens")
     }
 
@@ -257,7 +255,8 @@ outbreaker_data <- function(..., data = list(...)) {
         stop("The rownames and colnames of the matrix distance should be the same")
     }else
       stop("The distance matrix is null")
-    
+    if(!any(is.element(names(data$population), colnames(data$distance))))
+      stop("The vector population should have the same names as the distance matrix")
     if(length(match.arg(names(data$population), 
                         colnames(data$distance), 
                         several.ok = TRUE)) != length(data$population))
