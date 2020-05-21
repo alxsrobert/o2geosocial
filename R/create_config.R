@@ -160,7 +160,7 @@ create_config <- function (..., data = NULL)
                    max_kappa = 2, find_import = TRUE, outlier_threshold = 0.05, 
                    outlier_relative = FALSE,
                    n_iter_import = 5000, sample_every_import = 50, 
-                   burnin = 10000, verbatim = FALSE)
+                   burnin = 1000, verbatim = FALSE)
   config <- modify_defaults(defaults, config)
   if (is.character(config$init_tree)) {
     config$init_tree <- match.arg(config$init_tree, c("star"))
