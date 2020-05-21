@@ -1,7 +1,7 @@
 context("Test function pre_clustering")
 
 ## test pre_clustering ##
-test_that("test: data are processed fine", {
+test_that("test: pre clustering gives expected output", {
   ## skip on CRAN
   skip_on_cran()
   
@@ -41,4 +41,4 @@ test_that("test: data are processed fine", {
   test_clust <- pre_clustering(data = data, config = config)
   expect_true(all(is.na(test_clust$config$init_alpha)))
   
-  }
+  })
