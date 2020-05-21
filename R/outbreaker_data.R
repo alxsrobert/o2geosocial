@@ -39,6 +39,10 @@
 #' 
 #' \item{is_cluster}{an integer vector indicating which group of cases each case
 #'  belongs to.}
+#'  
+#' \item{s_dens}{a matrix of numeric values indicating the initial value of 
+#' the connectivity between region. Only needed if a and b are fixed in the model, 
+#' otherwise NULL.}
 #' 
 #' \item{population}{a double vector indicating the population in every region 
 #' considered in the study.}
@@ -87,7 +91,7 @@ outbreaker_data <- function(..., data = list(...)) {
                    max_range = NA, can_be_ances_reg = NULL, log_w_dens = NULL, 
                    log_f_dens = NULL, log_a_dens = NULL,genotype = NULL, 
                    is_cluster = NULL, cluster = NULL, population = NULL, 
-                   distance = NULL, import = NULL
+                   distance = NULL, import = NULL, s_dens = NULL, log_s_dens = NULL
                    )
   
   ## MODIFY DATA WITH ARGUMENTS ##
@@ -323,6 +327,19 @@ outbreaker_data <- function(..., data = list(...)) {
                                     length(unique(data$region)),
                                     length(unique(data$region)))
     
+  }
+  if (!is.null(data$s_dens)){
+    if(!is.matrix(data$s_dens)) stop("s_dens should be a matrix")
+    if(dim(data$s_dens)[1] != dim(data$s_dens)[2]) stop("s_dens should be a square matrix")
+    if(dim(data$s_dens)[1] < max(data$region)) stop("Some regions are not in the distance matrix")
+    if(any(data$s_dens < 0)) stop("all values in s_dens should be positive")
+    if(any(colSums(data$s_dens) != 1)) 
+      data$s_dens <- t(t(data$s_dens)/ colSums(data$s_dens))
+    if (any(!is.finite(data$s_dens))) {
+      stop("non-finite values detected in s_dens")
+    }
+    
+    data$log_s_dens <- log(data$s_dens)
   }
   
   ## output is a list of checked data

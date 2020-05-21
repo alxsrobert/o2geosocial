@@ -14,6 +14,10 @@
 ## #'
 outbreaker_init_mcmc <- function(data, param_current, param_store, loglike, priors, config) {
   
+  if(config$move_a == FALSE && config$move_b == FALSE && is.null(data$log_s_dens) &&
+     is.null(loglike$space)){
+    stop("Spatial likelihood will be -Inf, either define s_dens in outbreaker_data, or redefine the spatial component of the likelihood")
+  }
   ## COMPUTE INITIAL LIKE/PRIOR/POST ##
   param_store$like[1] <- cpp_ll_all(data, config, param_current, NULL, loglike)
   param_store$prior[1] <- cpp_prior_all(param_current, config, priors)

@@ -117,6 +117,10 @@ outbreaker <- function(data = outbreaker_data(),
   param_store <- outbreaker_init_mcmc(data, param_current, param_store,
                                       loglike, priors, config)
   
+  if(!is.null(data$log_s_dens)){
+    data$log_s_dens <- NULL
+    data$log_dens <- NULL
+  }
   
   ## here we create a list of function for moving parameters
   moves <- bind_moves(moves = moves,

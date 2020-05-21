@@ -52,6 +52,10 @@ groups, reflecting on the infectious potential of a case for a given age group.}
 
 \item{is_cluster}{an integer vector indicating which group of cases each case
  belongs to.}
+ 
+\item{s_dens}{a matrix of numeric values indicating the initial value of 
+the connectivity between region. Only needed if a and b are fixed in the model, 
+otherwise NULL.}
 
 \item{population}{a double vector indicating the population in every region 
 considered in the study.}
