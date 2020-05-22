@@ -141,7 +141,7 @@ create_config <- function (..., data = NULL)
   if (length(config) == 1L && is.list(config[[1]])) {
     config <- config[[1]]
   }
-  defaults <- list(init_tree = c("star"), spatial_method = c("exponential", "power-law"),
+  defaults <- list(init_tree = c("star"), spatial_method = "exponential",
                    gamma = NULL,delta = NULL,
                    init_alpha = NULL, init_kappa = 1, init_t_inf = NULL, 
                    init_pi = 0.9, init_a = 1, init_b = 0.1,
@@ -165,11 +165,13 @@ create_config <- function (..., data = NULL)
   if (is.character(config$init_tree)) {
     config$init_tree <- match.arg(config$init_tree, c("star"))
   }
-  if (is.character(config$spatial_method)) {
+  if (config$spatial_method == "exponential" || config$spatial_method == "power-law") {
     config$spatial_method <- match.arg(config$spatial_method, c("exponential", "power-law"))
-  } else{
+  } else if(!is.null(config$spatial_method) || (is.null(config$spatial_method) &&
+                                                (config$move_a == TRUE || 
+                                                 config$move_b == TRUE))){
     stop("invalid value for spatial_method, spatial_method is either exponential, or power-law.")
-  }
+  } 
   
   if(!is.null(config$gamma)){
     if(config$gamma<= 0)
@@ -194,6 +196,24 @@ create_config <- function (..., data = NULL)
     config$delta <- Inf
   }
   if (is.numeric(config$init_tree)) {
+    tree_ances <- config$init_tree
+    if(!any(is.na(tree_ances))) 
+      stop("There should be an ancestor in the initial tree")
+    i <- 0
+    while(any(!is.na(tree_ances[tree_ances]))){ 
+      tree_ances[!is.na(tree_ances[tree_ances])] <- 
+        tree_ances[tree_ances][!is.na(tree_ances[tree_ances])]
+      i <- i + 1
+      if(i > 20) stop("invalid initial tree")
+    }
+    tree_ances[is.na(tree_ances)] <- which(is.na(tree_ances))
+    genotype_tree <- numeric(length(unique(tree_ances)))
+    nb_gen_rep_per_tree <- sapply(unique(tree_ances), function(X) {
+      gens <- unique(data$genotype[which(tree_ances == X)])
+      return(length(gens[gens != "Not attributed"]))
+    })
+    if(any(nb_gen_rep_per_tree >= 2))
+      stop("There should be one reported genotype per tree at most.")
     config$init_alpha <- as.integer(config$init_tree)
   }
   if (!is.null(config$init_t_inf)) {
@@ -426,7 +446,7 @@ create_config <- function (..., data = NULL)
   }
   
   if((config$move_a == TRUE || config$move_b == TRUE) && config$max_kappa > 2){
-    warning("If spatial kernel parameters are estimated, maximum missing generation is 1")
+    warning("If spatial kernel parameters are estimated, max_kappa is set to 2")
     config$max_kappa <- 2
   }
   if (!is.null(data)) {
@@ -490,7 +510,7 @@ create_config <- function (..., data = NULL)
       
     } else {
       if (length(config$init_alpha) != data$N) {
-        stop("inconvenient length for init_alpha")
+        stop("length of init_alpha or init_tree incorrect")
       }
       unknownAnces <- config$init_alpha < 1 | config$init_alpha > 
         data$N
