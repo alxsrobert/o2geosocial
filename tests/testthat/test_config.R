@@ -7,6 +7,7 @@ test_that("test: settings are processed fine", {
   skip_on_cran()
   
   ## get data
+  data(toy_outbreak_short)
   x <- toy_outbreak_short
   dt_cases <- x$cases
   dt_cases <- dt_cases[order(dt_cases$Date), ]
@@ -60,6 +61,7 @@ test_that("test: initial tree does not mix genotypes", {
   ## skip on CRAN
   skip_on_cran()
   
+  data(toy_outbreak_short)
   x <- toy_outbreak_short
   dt_cases <- x$cases
   dt_cases <- dt_cases[order(dt_cases$Date), ]

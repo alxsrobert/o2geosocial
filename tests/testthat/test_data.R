@@ -7,6 +7,7 @@ test_that("test: data are processed fine", {
   
   
   ## get data
+  data(toy_outbreak_short)
   x <- toy_outbreak_short
   dt_cases <- x$cases
   dt_cases <- dt_cases[order(dt_cases$Date), ]
