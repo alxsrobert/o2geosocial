@@ -6,6 +6,7 @@ test_that("test: pre clustering gives expected output", {
   skip_on_cran()
   
   ## get data
+  data(toy_outbreak_short)
   x <- toy_outbreak_short
   dt_cases <- x$cases
   dt_cases <- dt_cases[order(dt_cases$Date), ]
