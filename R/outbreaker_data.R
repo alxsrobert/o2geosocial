@@ -104,6 +104,7 @@ outbreaker_data <- function(..., data = list(...)) {
     data$is_cluster <- rep(1, length(data$dates))
     cluster_list <- list(1:length(data$is_cluster))
     names(cluster_list) <- 1
+    data$cluster <- cluster_list
   } else{
     if(any(is.na(data$is_cluster)))
       stop("non-finite values detected in is_cluster")
