@@ -1,13 +1,18 @@
 ---
-title: "Vignette o2geosocial"
+title: "o2geosocial"
+author: "Alexis Robert"
+date: "`r Sys.Date()`"
 output:
-  rmarkdown::html_vignette
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 2
 vignette: >
-  %\VignetteIndexEntry{Vignette o2geosocial}
+  %\VignetteIndexEntry{o2geosocial}
   %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+  %\VignetteEncoding{UTF-8}
 
 ---
+
 
 # Abstract 
 
