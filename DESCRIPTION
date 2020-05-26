@@ -14,6 +14,7 @@ Imports:
     methods,
     stats,
     grDevices,
+    knitr,
     ape,
     geosphere,
     ggplot2,
@@ -25,4 +26,8 @@ Depends: R(>= 3.5.0)
 LinkingTo: Rcpp
 RoxygenNote: 7.1.0
 Suggests: 
-    testthat
+    testthat, 
+    sf,
+    socialmixr,
+    rmarkdown
+VignetteBuilder: knitr
