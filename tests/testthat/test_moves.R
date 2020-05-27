@@ -143,9 +143,9 @@ test_that("test: try customization movements", {
                           region = dt_cases$Cens_tract, population = pop_vect, 
                           distance = dist_mat, a_dens = x$age_contact,
                           f_dens = dgamma(x = 1:100, scale = 0.43, shape = 27),
-                          w_dens = w)
+                          w_dens = w, genotype = dt_cases$genotype)
   config <- create_config(data = data, n_iter = 200, burnin = 50,
-                          n_iter_import = 100)
+                          n_iter_import = 100, gamma = 50, delta = 30)
   pre_clust <- pre_clustering(data = data, config = config)
   data <- outbreaker_data(data = pre_clust[["data"]])
   config <- create_config(config = pre_clust[["config"]])
