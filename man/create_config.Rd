@@ -20,7 +20,7 @@ missing, and return a correct list of settings. If no input is given, it
 returns the default settings.
 }
 \details{
-Acceptables arguments for ... are:
+Acceptable arguments for ... are:
 
 \describe{
 
@@ -30,7 +30,7 @@ to the index of the ancestor of 'i' (i.e., \code{init.tree[i]} is the
 ancestor of case \code{i}). Otherwise it should be defined as the character 
 string "star" (all cases coalesce to the first case).}
 
-\item{spatial_method}{a character string indicating the mthod used to
+\item{spatial_method}{a character string indicating the method used to
 evaluate the spatial likelihood. Can be either "exponential" or "power-law".}
 
 \item{gamma}{a double indicating the spatial threshold for pre clustering; 

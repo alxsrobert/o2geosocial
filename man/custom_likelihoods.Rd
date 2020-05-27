@@ -43,7 +43,7 @@ the function \code{cpp_ll_reporting} is used.
 \item \code{space}: the likelihood of spatial distances; by default,
 the function \code{cpp_ll_space} is used.
 
-#' \item \code{age}: the likelihood of theage contacts; by default,
+\item \code{age}: the likelihood of the age contacts; by default,
 the function \code{cpp_ll_age} is used.
 
 }

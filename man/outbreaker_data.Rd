@@ -18,7 +18,7 @@ where arguments are missing, and return a correct list of data input. If no
 input is given, it returns the default settings.
 }
 \details{
-Acceptables arguments for ... are:
+Acceptable arguments for ... are:
 \describe{
 \item{dates}{a vector indicating the collection dates, provided either as
 integer numbers or in a usual date format such as \code{Date} or
