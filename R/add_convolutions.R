@@ -37,7 +37,8 @@ add_convolutions <- function(data, config) {
     ## first compute convolutions on natural scale
     for (i in 2:config$max_kappa) {
       if (!is.null(data$log_a_dens)) {
-        data$log_a_dens[[i]] <- log(exp(data$log_a_dens[[i-1]]) %*% exp(data$log_a_dens[[1]]))
+        data$log_a_dens[[i]] <- log(exp(data$log_a_dens[[i-1]]) %*%
+                                      exp(data$log_a_dens[[1]]))
       }
       if (!is.null(data$log_w_dens)) {
         data$log_w_dens <- rbind(data$log_w_dens,
@@ -53,7 +54,8 @@ add_convolutions <- function(data, config) {
   
   ## name rows/columns (useful if internal debugging needed)
   if (!is.null(data$log_w_dens)) {
-    rownames(data$log_w_dens) <- paste("kappa", seq_len(nrow(data$log_w_dens)), sep="=")
+    rownames(data$log_w_dens) <- paste("kappa", seq_len(nrow(data$log_w_dens)),
+                                       sep="=")
     colnames(data$log_w_dens) <- seq_len(ncol(data$log_w_dens))
   }
   if (!is.null(data$log_a_dens)) {

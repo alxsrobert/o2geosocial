@@ -165,8 +165,10 @@ create_config <- function (..., data = NULL)
   if (is.character(config$init_tree)) {
     config$init_tree <- match.arg(config$init_tree, c("star"))
   }
-  if (config$spatial_method == "exponential" || config$spatial_method == "power-law") {
-    config$spatial_method <- match.arg(config$spatial_method, c("exponential", "power-law"))
+  if (config$spatial_method == "exponential" ||
+      config$spatial_method == "power-law") {
+    config$spatial_method <- match.arg(config$spatial_method, c("exponential", 
+                                                                "power-law"))
   } else if(!is.null(config$spatial_method) || (is.null(config$spatial_method) &&
                                                 (config$move_a == TRUE || 
                                                  config$move_b == TRUE))){
@@ -459,13 +461,15 @@ create_config <- function (..., data = NULL)
         nb_gen <- unique(data$genotype[data$is_cluster == X & 
                                          data$genotype != "Not attributed"])
         gen_clust <- data$genotype[cases_clust][is.na(config$init_alpha[cases_clust])]
-        unique_gen_clust <- gen_clust[gen_clust == "Not attributed" | !duplicated(gen_clust)]
+        unique_gen_clust <- gen_clust[gen_clust == "Not attributed" | 
+                                        !duplicated(gen_clust)]
         while(length(nb_gen) > length(unique_gen_clust)){
           config$init_alpha[data$is_cluster == X & 
                               data$genotype != "Not attributed" &
                               !is.element(data$genotype, unique_gen_clust)][1] <- NA
           gen_clust <- data$genotype[cases_clust][is.na(config$init_alpha[cases_clust])]
-          unique_gen_clust <- gen_clust[gen_clust == "Not attributed" | !duplicated(gen_clust)]
+          unique_gen_clust <- gen_clust[gen_clust == "Not attributed" | 
+                                          !duplicated(gen_clust)]
           
         }
         nb_gen_sec <- unique(data$genotype[data$is_cluster == X & 
@@ -474,7 +478,8 @@ create_config <- function (..., data = NULL)
         count <- 1
         for(j in nb_gen_sec){
           count_gen <- count
-          if(any(is.na(config$init_alpha) & data$is_cluster == X & data$genotype == j & 
+          if(any(is.na(config$init_alpha) & data$is_cluster == X & 
+                 data$genotype == j & 
                  data$dates <= min(data$dates[which(data$is_cluster == X & 
                                                    !is.na(config$init_alpha) &
                                                    data$genotype == j)]))){
@@ -548,7 +553,8 @@ create_config <- function (..., data = NULL)
     
     config$init_alpha <- as.integer(config$init_alpha)
     config$init_t_inf <- as.integer(config$init_t_inf)
-    if(is.null(data$population) || is.null(data$region) || is.null(data$distance)){
+    if(is.null(data$population) || is.null(data$region) ||
+       is.null(data$distance)){
       warning("move_a and move_b are set to FALSE since data$population, data$region or data$distance is null")
       config$move_a <- FALSE
       config$move_b <- FALSE

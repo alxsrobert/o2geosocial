@@ -31,3 +31,4 @@ Suggests:
     socialmixr,
     rmarkdown
 VignetteBuilder: knitr
+BugReports: https://github.com/alxsrobert/o2geosocial/issues
