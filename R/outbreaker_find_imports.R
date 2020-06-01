@@ -10,13 +10,12 @@
 
 #' @importFrom stats quantile
 outbreaker_find_imports <- function(moves, data, param_current,
-                                    param_store, config,
-                                    likelihoods) {
+                                    param_store, config, likelihoods) {
   if (!config$find_import) {
     return(list(param_current = param_current,
                 param_store = param_store))
   }
-  initial_value = param_current
+  initial_value <- param_current
   # If not here: initial value changes wih param_current
   initial_value$alpha <- c(param_store$alpha[[1]])
   ## store initial param values ##

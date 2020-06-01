@@ -208,10 +208,10 @@ create_config <- function (..., data = NULL)
     }
     tree_ances[is.na(tree_ances)] <- which(is.na(tree_ances))
     genotype_tree <- numeric(length(unique(tree_ances)))
-    nb_gen_rep_per_tree <- sapply(unique(tree_ances), function(X) {
+    nb_gen_rep_per_tree <- vapply(unique(tree_ances), function(X) {
       gens <- unique(data$genotype[which(tree_ances == X)])
       return(length(gens[gens != "Not attributed"]))
-    })
+    }, 1)
     if(any(nb_gen_rep_per_tree >= 2))
       stop("There should be one reported genotype per tree at most.")
     config$init_alpha <- as.integer(config$init_tree)

@@ -102,7 +102,7 @@ outbreaker_data <- function(..., data = list(...)) {
   ## CHECK CLUSTER
   if(is.null(data$is_cluster)){
     data$is_cluster <- rep(1, length(data$dates))
-    cluster_list <- list(1:length(data$is_cluster))
+    cluster_list <- list(seq_along(data$is_cluster))
     names(cluster_list) <- 1
     data$cluster <- cluster_list
   } else{
@@ -111,12 +111,12 @@ outbreaker_data <- function(..., data = list(...)) {
     data$is_cluster <- factor(data$is_cluster, levels = unique(data$is_cluster))
     data$is_cluster <- as.numeric(data$is_cluster)
     if(all(data$is_cluster == 1)){
-      cluster_list <- list(1:length(data$is_cluster))
+      cluster_list <- list(seq_along(data$is_cluster))
     } else{
       cluster_list <- sapply(unique(data$is_cluster), function(X) 
         return(which(data$is_cluster == as.numeric(X))))
     }
-    names(cluster_list) <- 1:length(unique(data$is_cluster))
+    names(cluster_list) <- seq_along(unique(data$is_cluster))
     data$cluster <- cluster_list
   }
   
@@ -132,9 +132,9 @@ outbreaker_data <- function(..., data = list(...)) {
       stop("Dates are not sorted, sort cases by onset dates")
     data$dates <- as.integer(round(data$dates))
     data$N <- length(data$dates)
-    data$max_range <- max(sapply(unique(data$is_cluster), function(X){
+    data$max_range <- max(vapply(unique(data$is_cluster), function(X){
       return(diff(range(data$dates[which(data$is_cluster == X)])))
-    }))
+    }, 1))
     ## get temporal ordering constraint:
   }
   
@@ -292,7 +292,7 @@ outbreaker_data <- function(..., data = list(...)) {
       if(any(dim(data$distance)<max(data$region)))
         stop("The dimension of the distance matrix is lower than the maximum value of the region vector")
     }
-    can_be_ances <- sapply(seq_len(data$N), function(X){
+    can_be_ances <- vapply(seq_len(data$N), function(X){
       can_be_ances_X <- rep(FALSE, data$N)
       if(data$import[X] == TRUE) return(can_be_ances_X)
       if(!is.null(data$cluster)){
@@ -315,7 +315,7 @@ outbreaker_data <- function(..., data = list(...)) {
                          data$genotype != "Not attributed"] <- FALSE        
       }
       return(can_be_ances_X)
-    })
+    }, rep(FALSE, data$N))
     ID_1 <- ID_2 <- region_1 <- region_2 <- ances_ID <- NULL
     dt_can_be_ances <- data.table(ID_1 = rep(seq_len(data$N), data$N),
                                   ID_2 = rep(seq_len(data$N), each = data$N),

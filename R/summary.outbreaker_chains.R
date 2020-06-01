@@ -345,7 +345,7 @@ plot.outbreaker_chains <- function(x, y = "post",
     max_clust_size <- max(unlist(apply(matrix_ances, 1, table)))
     if(!is.null(group_cluster)) {
       max_clust_size <- max(max_clust_size, group_cluster)
-      if(max_clust_size != max(group_cluster)) group_cluster = c(group_cluster, max_clust_size)
+      if(max_clust_size != max(group_cluster)) group_cluster <- c(group_cluster, max_clust_size)
       if(min(group_cluster) != 0) group_cluster <- c(0, group_cluster)
     }
     # table_tot: Cluster size distribution
@@ -475,7 +475,7 @@ summary.outbreaker_chains <- function(object, burnin = 0, group_cluster = NULL, 
   max_clust_size <- max(unlist(apply(matrix_ances, 1, table)))
   if(!is.null(group_cluster)) {
     max_clust_size <- max(max_clust_size, group_cluster)
-    if(max_clust_size != max(group_cluster)) group_cluster = c(group_cluster, max_clust_size)
+    if(max_clust_size != max(group_cluster)) group_cluster <- c(group_cluster, max_clust_size)
     if(min(group_cluster) != 0) group_cluster <- c(0, group_cluster)
   }
   # table_tot: Cluster size distribution

@@ -7,7 +7,7 @@ log_sum <- function(u, v){
 }
 
 log_sum_vec <- function(w){
-  total=w[1]
+  total <- w[1]
   if (length(w)<2) return(total)
   
   for (i in 2:length(w)){

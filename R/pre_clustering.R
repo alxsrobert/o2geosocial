@@ -43,14 +43,14 @@ pre_clustering <- function(data, config){
     }
     return(c(pot_infect))
   }
-  infectors <- sapply(1:length(data$dates), function(X) 
+  infectors <- sapply(seq_along(data$dates), function(X) 
     return(find_infector(X, data = data,config = config)))
 
   new_clusters <- rep(NA, length(data$dates))
   count <- 1
   
   ## Cluster groups of potential infectors 
-  for(i in 1:length(data$dates)){
+  for(i in seq_along(data$dates)){
     pot_inf <- infectors[[i]]
     if(any(!is.na(new_clusters[c(pot_inf, i)]))){
       clust_pot_inf <- new_clusters[c(pot_inf, i)]
