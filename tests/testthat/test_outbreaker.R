@@ -2,9 +2,6 @@ context("Test function outbreaker")
 
 ## Test output format ##
 test_that("Output have expected format", {
-  ## skip on CRAN
-  skip_on_cran()
-  
   
   ## get data
   alpha <- c(NA,rep(1,4))
@@ -48,10 +45,6 @@ test_that("Output have expected format", {
 
 ## Test convergence results ##
 test_that("Results work, all component", {
-  ## skip on CRAN
-  skip_on_cran()
-  
-  
   ## get data
   alpha <- c(NA,rep(1,4))
   
@@ -89,9 +82,7 @@ test_that("Results work, all component", {
 
 ## Test convergence results ##
 test_that("Results work, 1 component at the time", {
-  ## skip on CRAN
-  skip_on_cran()
-  
+
   
   ## get data
   alpha <- c(NA,rep(1,4))
@@ -117,21 +108,24 @@ test_that("Results work, 1 component at the time", {
   }
   
   data_time <- outbreaker_data(dates = times, w_dens = w, f_dens = f)
-  config_time <- create_config(data = data_time, move_a = FALSE, move_b = FALSE)
+  config_time <- create_config(data = data_time, move_a = FALSE, move_b = FALSE, 
+                               n_iter = 1000, n_iter_import = 500, burnin = 200)
   like_time <- custom_likelihoods(space = f_null, age = f_null)
   out_time <- outbreaker(data = data_time, config = config_time, 
                          likelihoods = like_time)
   
   data_space <- outbreaker_data(dates = times, region = regions,
                                 population = population,distance = distance)
-  config_space <- create_config(data = data_space)
+  config_space <- create_config(data = data_space, 
+                                n_iter = 1000, n_iter_import = 500, burnin = 200)
   like_space <- custom_likelihoods(timing_sampling = f_null,
                                    timing_infections = f_null, age = f_null)
   out_space <- outbreaker(data = data_space, config = config_space, 
                           likelihoods = like_space)
   
   data_age <- outbreaker_data(dates = times, age_group = age, a_dens = age_dens)
-  config_age <- create_config(data = data_age, move_a = FALSE, move_b = FALSE)
+  config_age <- create_config(data = data_age, move_a = FALSE, move_b = FALSE, 
+                              n_iter = 1000, n_iter_import = 500, burnin = 200)
   like_age <- custom_likelihoods(timing_sampling = f_null,
                                  timing_infections = f_null,
                                  space = f_null)
@@ -139,7 +133,8 @@ test_that("Results work, 1 component at the time", {
   
   data_genotype <- outbreaker_data(dates = times, genotype = genotype,
                                    w_dens = w, f_dens = f)
-  config_genotype <- create_config(data = data_genotype, move_a = FALSE, move_b = FALSE)
+  config_genotype <- create_config(data = data_genotype, move_a = FALSE, move_b = FALSE, 
+                                   n_iter = 1000, n_iter_import = 500, burnin = 200)
   like_genotype <- custom_likelihoods(space = f_null, age = f_null)
   out_genotype <- outbreaker(data = data_genotype, config = config_genotype, 
                              likelihoods = like_genotype)
@@ -149,9 +144,9 @@ test_that("Results work, 1 component at the time", {
   expect_is(out_space, "outbreaker_chains")
   expect_is(out_age, "outbreaker_chains")
   expect_is(out_genotype, "outbreaker_chains")
-  expect_equal(nrow(out_time), 201)
-  expect_equal(nrow(out_space), 201)
-  expect_equal(nrow(out_age), 201)
-  expect_equal(nrow(out_genotype), 201)
+  expect_equal(nrow(out_time), 21)
+  expect_equal(nrow(out_space), 21)
+  expect_equal(nrow(out_age), 21)
+  expect_equal(nrow(out_genotype), 21)
 
 })

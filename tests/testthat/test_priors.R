@@ -1,9 +1,6 @@
 context("Test prior functions")
 
 test_that("Priors in cpp and R give identical results.", {
-  ## skip on CRAN
-  skip_on_cran()
-  
   ## set up param with parameters and basic config
   config <- create_config()
   param <- list(pi = .85, a = .8, b = .1)
@@ -26,9 +23,6 @@ test_that("Priors in cpp and R give identical results.", {
 })
 
 test_that("Customization of prior distributions works well", {
-  ## skip on CRAN
-  skip_on_cran()
-  
   ## set up param with parameters and basic config
   config <- create_config(prior_pi = c(.8, .02),
                           prior_a = c(.9, .1), 

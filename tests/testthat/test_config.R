@@ -3,9 +3,6 @@ context("Test outbreaker config")
 
 ## test settings ##
 test_that("test: settings are processed fine", {
-  ## skip on CRAN
-  skip_on_cran()
-  
   ## get data
   data(toy_outbreak_short)
   x <- toy_outbreak_short
@@ -58,9 +55,6 @@ test_that("test: settings are processed fine", {
 
 ## Test init tree ##
 test_that("test: initial tree does not mix genotypes", {
-  ## skip on CRAN
-  skip_on_cran()
-  
   data(toy_outbreak_short)
   x <- toy_outbreak_short
   dt_cases <- x$cases

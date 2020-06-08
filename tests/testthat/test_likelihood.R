@@ -2,9 +2,6 @@ context("Test function custom_likelihoods")
 
 ## test timing_infections ##
 test_that("test timing_infections: ", {
-  ## skip on CRAN
-  skip_on_cran()
-  
   ## generate data
   times <- 0:4
   alpha <- c(NA,rep(1,4))
@@ -28,9 +25,6 @@ test_that("test timing_infections: ", {
 
 ## test timing_sampling ##
 test_that("test timing_sampling: ", {
-  ## skip on CRAN
-  skip_on_cran()
-  
   ## generate data
   times <- 0:4
   alpha <- c(NA,rep(1,4))
@@ -54,9 +48,6 @@ test_that("test timing_sampling: ", {
 
 ## test age ##
 test_that("test age: ", {
-  ## skip on CRAN
-  skip_on_cran()
-  
   ## generate data
   data(toy_outbreak_short)
   age_dens <- toy_outbreak_short$age_contact
@@ -84,9 +75,6 @@ test_that("test age: ", {
 
 ## test reporting ##
 test_that("test reporting: ", {
-  ## skip on CRAN
-  skip_on_cran()
-  
   ## generate data
   times <- 0:4
   alpha <- c(NA,rep(1,4))
@@ -113,9 +101,6 @@ test_that("test reporting: ", {
 
 ## test space ##
 test_that("test space: ", {
-  ## skip on CRAN
-  skip_on_cran()
-  
   ## generate data
   times <- 0:4
   alpha <- c(NA,rep(1,4))
@@ -149,9 +134,6 @@ test_that("test space: ", {
 
 ## test all ##
 test_that("test all: ", {
-  ## skip on CRAN
-  skip_on_cran()
-  
   ## generate data
   alpha <- c(NA,rep(1,4))
   
@@ -195,9 +177,6 @@ test_that("test all: ", {
 
 ## test sum individual likelihoods ##
 test_that("test indivs: ", {
-  ## skip on CRAN
-  skip_on_cran()
-  
   ## generate data
   alpha <- c(NA,rep(1,4))
   
@@ -276,9 +255,6 @@ test_that("test indivs: ", {
 
 #Custom identical functions
 test_that("Customisation with identical functions", {
-  ## skip on CRAN
-  skip_on_cran()
-  
   ## check custom_likelihoods
   expect_identical(custom_likelihoods(),
                    custom_likelihoods(custom_likelihoods()))
@@ -354,9 +330,6 @@ test_that("Customisation with identical functions", {
 
 #Test -inf
 test_that("Function return -inf if incorrect parameters", {
-  ## skip on CRAN
-  skip_on_cran()
-  
   ## check custom_likelihoods
   expect_identical(custom_likelihoods(),
                    custom_likelihoods(custom_likelihoods()))

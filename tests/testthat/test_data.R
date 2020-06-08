@@ -2,10 +2,6 @@ context("Test function outbreaker_data")
 
 ## test data ##
 test_that("test: data are processed fine", {
-  ## skip on CRAN
-  skip_on_cran()
-  
-  
   ## get data
   data(toy_outbreak_short)
   x <- toy_outbreak_short

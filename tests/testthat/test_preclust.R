@@ -2,9 +2,6 @@ context("Test function pre_clustering")
 
 ## test pre_clustering ##
 test_that("test: pre clustering gives expected output", {
-  ## skip on CRAN
-  skip_on_cran()
-  
   ## get data
   data(toy_outbreak_short)
   x <- toy_outbreak_short

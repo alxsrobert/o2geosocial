@@ -2,9 +2,6 @@ context("Test function custom_moves")
 
 ## Test different moves ##
 test_that("test: try different default movements", {
-  ## skip on CRAN
-  skip_on_cran()
-  
   ## get data
   data(toy_outbreak_short)
   x <- toy_outbreak_short
@@ -66,9 +63,6 @@ test_that("test: try different default movements", {
 
 ## Test binding moves
 test_that("test: try different default movements", {
-  ## skip on CRAN
-  skip_on_cran()
-  
   ## get data
   data(toy_outbreak_short)
   x <- toy_outbreak_short
@@ -118,9 +112,6 @@ test_that("test: try different default movements", {
 
 ## Test customization
 test_that("test: try customization movements", {
-  ## skip on CRAN
-  skip_on_cran()
-  
   ## get data
   data(toy_outbreak_short)
   x <- toy_outbreak_short

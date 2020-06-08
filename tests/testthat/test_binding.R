@@ -2,9 +2,6 @@ context("Test function bind_to_function")
 
 ## test data ##
 test_that("test: ", {
-  ## skip on CRAN
-  skip_on_cran()
-  
   ## get data
   data(toy_outbreak_short)
   x <- toy_outbreak_short
