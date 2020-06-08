@@ -27,8 +27,8 @@ LinkingTo: Rcpp
 RoxygenNote: 7.1.0
 Suggests: 
     testthat, 
-    knitr,
     sf,
+    knitr,
     socialmixr,
     rmarkdown
 VignetteBuilder: knitr
