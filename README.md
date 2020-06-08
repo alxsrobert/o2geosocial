@@ -1,3 +1,6 @@
+[![Travis-CI Build Status](https://travis-ci.org/alxsrobert/o2geosocial.svg?branch=master)](https://travis-ci.org/alxsrobert/o2geosocial)
+
+
 # geosocial-outbreaker: Integrating geographical and social contact data to reconstruct transmission chains
 
 o2geosocial infer probabilistic transmission trees from routinely-collected epidemiological data. It combines the age group, location, onset date and genotype of cases to infer their import status, and their likely infector. o2geosocial is adapted from the R package "outbreaker2" (https://github.com/reconhub/outbreaker2), it is designed to study datasets that do not include genetic sequences but genotype of the cases. o2geosocial will cluster cases from different genotypes in different trees, without computing the genetic distance between cases.
