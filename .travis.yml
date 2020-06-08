@@ -3,5 +3,8 @@ cache: packages
 
 apt_packages:
   - libudunits2-dev
+  - gdal-bin
+  - libgdal1-dev
+
 
 warnings_are_errors: false
