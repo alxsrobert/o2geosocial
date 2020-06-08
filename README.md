@@ -1,4 +1,5 @@
 [![Travis-CI Build Status](https://travis-ci.org/alxsrobert/o2geosocial.svg?branch=master)](https://travis-ci.org/alxsrobert/o2geosocial)
+[![codecov](https://codecov.io/gh/alxsrobert/o2geosocial/branch/master/graph/badge.svg)](https://codecov.io/gh/alxsrobert/o2geosocial)
 
 
 # geosocial-outbreaker: Integrating geographical and social contact data to reconstruct transmission chains
