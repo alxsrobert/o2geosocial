@@ -453,6 +453,8 @@ create_config <- function (..., data = NULL)
   }
   if (!is.null(data)) {
     if (is.character(config$init_tree)) {
+      ## Config$init_tree is not a vector of numeric values (showing the initial trees),
+      ## the function has to generate the initial trees with max 1 genotype reported per tree
       config$init_alpha <- data$import*0
       config$init_alpha[data$import == TRUE] <- NA
       config$init_alpha[!duplicated(data$is_cluster)] <- NA
