@@ -4,7 +4,7 @@ Title: Inference and Reconstruction of Transmission Chains During Outbreaks
 Version: 1.0
 URL: https://github.com/alxsrobert/o2geosocial
 Encoding: UTF-8
-Authors@R: c(person("Alexis", "Robert", email = "alexis.robert@lshtm.ac.uk", role = c("aut", "cre")),
+Authors@R: c(person("Alexis", "Robert", email = "alexis.robert@lshtm.ac.uk", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-4516-2965")),
 		    person("Sebastian", "Funk", email = "sebastian.funk@lshtm.ac.uk", role = c("aut")),
 		    person("Adam J", "Kucharski", email = "adam.kucharski@lshtm.ac.uk", role = c("aut")))
 Maintainer: Alexis Robert <alexis.robert@lshtm.ac.uk>
