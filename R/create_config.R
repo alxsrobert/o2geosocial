@@ -176,23 +176,23 @@ create_config <- function (..., data = NULL)
   } 
   
   if(!is.null(config$gamma)){
+    if(is.na(config$gamma))
+      stop("gamma is NA")
     if(config$gamma<= 0)
       stop("gamma is below 0")
     if(!is.numeric(config$gamma))
-      stop("gamma is not numeric value")
-    if(is.na(config$gamma))
-      stop("gamma is NA")
+      stop("gamma is not numeric")
   }
   if(config$gamma == 0 || is.null(config$gamma)){
     config$gamma <- Inf
   }
   if(!is.null(config$delta)){
+    if(is.na(config$delta))
+      stop("delta is NA")
     if(config$delta <= 0)
       stop("delta is below 0")
     if(!is.numeric(config$delta))
       stop("delta is not numeric")
-    if(is.na(config$delta))
-      stop("delta is NA")
   }
   if(config$delta == 0 || is.null(config$delta)){
     config$delta <- Inf
@@ -248,14 +248,14 @@ create_config <- function (..., data = NULL)
   if (!is.numeric(config$init_pi)) {
     stop("init_pi is not a numeric value")
   }
+  if (!is.finite(config$init_pi)) {
+    stop("init_pi is infinite or NA")
+  }
   if (config$init_pi < 0) {
     stop("init_pi is negative")
   }
   if (config$init_pi > 1) {
     stop("init_pi is greater than 1")
-  }
-  if (!is.finite(config$init_pi)) {
-    stop("init_pi is infinite or NA")
   }
   if(!is.numeric(config$init_a)){
     stop("init_a is not a numeric value")
