@@ -356,8 +356,8 @@ library(ggplot2)
 # Download the ZIP archive in a temporary folder
 temp <- tempfile()
 download.file(
-  "https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_39_tract_500k.zip",
-  temp, method = "libcurl")
+  "http://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_39_tract_500k.zip",
+  temp)
 ```
 
 We then extract the shapefile from the zip archive, read it using the package [*sf*](https://cran.r-project.org/web/packages/sf/index.html) and create one background map for each model.
