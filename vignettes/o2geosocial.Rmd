@@ -245,7 +245,7 @@ print(summary(out1, burnin = burnin)$a)
 print(summary(out1, burnin = burnin)$a)
 ```
 
-### Evaluation of the models
+### Model evaluation
 
 We now use `barplot` to show the median inferred cluster size distribution in `out1` and `out2` and the confidence intervals, and compare it with the reference data.
 
@@ -349,30 +349,16 @@ legend("bottomright", col = grey.colors(3)[1:2], lwd = 3, bty = "n",
 
 In this section, we want to generate two maps to observe the geographical distribution of the importations, and the average number of secondary cases per region in `out1` and `out2`. The maps will be generated using the package [*ggplot2*](https://cran.r-project.org/web/packages/ggplot2/)
 
-First, we download the shapefiles associated to the census tract in Ohio. They will be used to generate the background of the maps, and are available on the website [*census.gov*](https://www2.census.gov). We use the function `download.file()` to import the shapefile into the R session. If, when running `download.file()`, R cannot access the zip file, download the file following the URL link https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_39_tract_500k.zip and create a variable `temp` pointing at the zip file (e.g. `temp <- ~/Downloads/cb_2018_39_tract_500k.zip`). 
+First, we retrieve the boundary files of the census tract in Ohio. They will be used to generate the background of the maps, and are available using the library [*tigris*](https://cran.r-project.org/web/packages/tigris/). The boundary files are also available on the website [*census.gov*](https://www2.census.gov). We import them in a format compatible with the package [*sf*](https://cran.r-project.org/web/packages/sf/index.html) and create one background map for each model.
 
-```{r download_zip, warning = FALSE, fig.width = 6.5, fig.height = 2.5}
+
+```{r import_sf_file, warning = FALSE, fig.width = 6.5, fig.height = 2.5}
 library(ggplot2)
-# Download the ZIP archive in a temporary folder
-temp <- tempfile()
-download.file(
-  "http://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_39_tract_500k.zip",
-  temp)
-```
-
-We then extract the shapefile from the zip archive, read it using the package [*sf*](https://cran.r-project.org/web/packages/sf/index.html) and create one background map for each model.
-
-```{r unzip_shp, warning = FALSE, fig.width = 6.5, fig.height = 2.5}
-# Extract the shapefile into a temporary folder
-unzip(temp, exdir = tempdir())
 # Read the shapefile and create one map for each model
-map1 <- sf::st_read(paste0(tempdir(), "/cb_2018_39_tract_500k.shp"),
-                    quiet = T)
+map1 <- tigris::tracts(state = "Ohio", class = "sf")
 map2 <- map1
 map1$model <- "Model 1"
 map2$model <- "Model 2"
-# Delete the temporary file
-unlink(temp)
 
 ```
 

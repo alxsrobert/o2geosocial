@@ -27,6 +27,7 @@ LinkingTo: Rcpp
 RoxygenNote: 7.1.0
 Suggests: 
     testthat, 
+    tigris,
     sf,
     knitr,
     socialmixr,
