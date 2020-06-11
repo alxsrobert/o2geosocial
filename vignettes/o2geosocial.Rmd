@@ -355,7 +355,7 @@ First, we retrieve the boundary files of the census tract in Ohio. They will be 
 ```{r import_sf_file, message = FALSE, warning = FALSE, fig.width = 6.5, fig.height = 2.5}
 library(ggplot2)
 # Read the shapefile and create one map for each model
-map1 <- tigris::tracts(state = "Ohio", class = "sf")
+map1 <- tigris::tracts(state = "Ohio", class = "sf", progress_bar = FALSE)
 map2 <- map1
 map1$model <- "Model 1"
 map2$model <- "Model 2"
