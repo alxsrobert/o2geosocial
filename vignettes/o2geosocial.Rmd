@@ -352,7 +352,7 @@ In this section, we want to generate two maps to observe the geographical distri
 First, we retrieve the boundary files of the census tract in Ohio. They will be used to generate the background of the maps, and are available using the library [*tigris*](https://cran.r-project.org/web/packages/tigris/). The boundary files are also available on the website [*census.gov*](https://www2.census.gov). We import them in a format compatible with the package [*sf*](https://cran.r-project.org/web/packages/sf/index.html) and create one background map for each model.
 
 
-```{r import_sf_file, warning = FALSE, fig.width = 6.5, fig.height = 2.5}
+```{r import_sf_file, message = FALSE, warning = FALSE, fig.width = 6.5, fig.height = 2.5}
 library(ggplot2)
 # Read the shapefile and create one map for each model
 map1 <- tigris::tracts(state = "Ohio", class = "sf")
