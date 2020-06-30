@@ -12,15 +12,15 @@ toy_outbreak_long
 }
 \description{
 We generated two datasets used to illustrate \code{o2geosocial}. 
-The first one (toy_outbreak_long) contains 1940 cases, from simulated outbreaks 
+The first one (toy_outbreak_long) contains 1,940 cases, from simulated outbreaks 
 nationwide between 2010 and 2017. The list contains the following:
 }
 \details{
 \itemize{
 
 \item \code{$cases}: A data table summarising the epidemiological features of the
-1000 cases. It contains the State, onset date,  genotype,  county, age group,
-import status, cluster and generation of the cases.
+1,940 cases. It contains the ID, State, onset date,  genotype,  county, age group,
+import status, cluster, generation and infector of the cases.
 
 \item \code{$dt_regions}: A data table containing the ID, population, longitude 
 and latitude of each region. Should be used to compute the distance matrix, using 

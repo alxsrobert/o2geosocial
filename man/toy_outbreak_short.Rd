@@ -12,7 +12,7 @@ toy_outbreak_short
 }
 \description{
 Second dataset used to illustrate \code{o2geosocial}. (toy_outbreak_short) is a 
-smaller data set (350 cases), spread across different Census tracks in Ohio 
+smaller data set (75 cases), spread across different Census tracks in Ohio 
 (population and location of each region taken from 
 https://www.census.gov/geographies/reference-files/2010/geo/2010-centers-population.html).
 The list contains the following:
@@ -21,8 +21,8 @@ The list contains the following:
 \itemize{
 
 \item \code{$cases}: A data table summarising the epidemiological features of the
-1000 cases. It contains the State, onset date,  genotype,  county, age group,
-import status, cluster and generation of the cases.
+75 cases. It contains the ID, state, onset date,  genotype, Census tract, age group,
+import status, cluster, generation and infector of the cases.
 
 \item \code{$dt_regions}: A data table containing the ID, population, longitude 
 and latitude of each region. Should be used to compute the distance matrix, using 
