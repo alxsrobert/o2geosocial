@@ -28,7 +28,8 @@ test_that("Output have expected format", {
                           age_group = age, a_dens = age_dens, 
                           w_dens = w, f_dens = f)
   config <- create_config(data = data, init_tree = alpha, init_a = a, init_b = b,
-                          move_a = FALSE, move_b = FALSE)
+                          move_a = FALSE, move_b = FALSE, 
+                          n_iter = 1000, n_iter_import = 500, burnin = 200)
   out <- outbreaker(data, config)
   
   
@@ -37,7 +38,7 @@ test_that("Output have expected format", {
   ## check output
   expect_is(out, "outbreaker_chains")
   expect_is(out_df, "data.frame")
-  expect_equal(nrow(out), 201)
+  expect_equal(nrow(out), 21)
   expect_true(!any(is.na(out_df$post)))
   expect_true(all(out_df[-1,"post"]> -1e30))
   
@@ -69,11 +70,12 @@ test_that("Results work, all component", {
                           population = population,distance = distance,
                           age_group = age, a_dens = age_dens, 
                           w_dens = w, f_dens = f, genotype = genotype)
-  config <- create_config(data = data, init_tree = alpha)
+  config <- create_config(data = data, init_tree = alpha,
+                          n_iter = 1000, n_iter_import = 500, burnin = 200)
   out <- outbreaker(data, config)
   
   out_summary <- summary(out, burnin = config$burnin)
-  expect_true(all(out_summary$post > -40))
+  expect_true(all(out_summary$post > -50))
   expect_true(out_summary$tree[out_summary$tree$to == 2, "support"] > .9)
   expect_true(out_summary$tree[out_summary$tree$to == 2, "from"] == 1)
   expect_true(out_summary$tree[out_summary$tree$to == 5, "generations"] == 2)
@@ -109,7 +111,7 @@ test_that("Results work, 1 component at the time", {
   
   data_time <- outbreaker_data(dates = times, w_dens = w, f_dens = f)
   config_time <- create_config(data = data_time, move_a = FALSE, move_b = FALSE, 
-                               n_iter = 1000, n_iter_import = 500, burnin = 200)
+                               n_iter = 500, n_iter_import = 250, burnin = 100)
   like_time <- custom_likelihoods(space = f_null, age = f_null)
   out_time <- outbreaker(data = data_time, config = config_time, 
                          likelihoods = like_time)
@@ -117,7 +119,7 @@ test_that("Results work, 1 component at the time", {
   data_space <- outbreaker_data(dates = times, region = regions,
                                 population = population,distance = distance)
   config_space <- create_config(data = data_space, 
-                                n_iter = 1000, n_iter_import = 500, burnin = 200)
+                                n_iter = 500, n_iter_import = 250, burnin = 100)
   like_space <- custom_likelihoods(timing_sampling = f_null,
                                    timing_infections = f_null, age = f_null)
   out_space <- outbreaker(data = data_space, config = config_space, 
@@ -125,7 +127,7 @@ test_that("Results work, 1 component at the time", {
   
   data_age <- outbreaker_data(dates = times, age_group = age, a_dens = age_dens)
   config_age <- create_config(data = data_age, move_a = FALSE, move_b = FALSE, 
-                              n_iter = 1000, n_iter_import = 500, burnin = 200)
+                              n_iter = 500, n_iter_import = 250, burnin = 100)
   like_age <- custom_likelihoods(timing_sampling = f_null,
                                  timing_infections = f_null,
                                  space = f_null)
@@ -134,7 +136,7 @@ test_that("Results work, 1 component at the time", {
   data_genotype <- outbreaker_data(dates = times, genotype = genotype,
                                    w_dens = w, f_dens = f)
   config_genotype <- create_config(data = data_genotype, move_a = FALSE, move_b = FALSE, 
-                                   n_iter = 1000, n_iter_import = 500, burnin = 200)
+                                   n_iter = 500, n_iter_import = 250, burnin = 100)
   like_genotype <- custom_likelihoods(space = f_null, age = f_null)
   out_genotype <- outbreaker(data = data_genotype, config = config_genotype, 
                              likelihoods = like_genotype)
@@ -144,9 +146,9 @@ test_that("Results work, 1 component at the time", {
   expect_is(out_space, "outbreaker_chains")
   expect_is(out_age, "outbreaker_chains")
   expect_is(out_genotype, "outbreaker_chains")
-  expect_equal(nrow(out_time), 21)
-  expect_equal(nrow(out_space), 21)
-  expect_equal(nrow(out_age), 21)
-  expect_equal(nrow(out_genotype), 21)
+  expect_equal(nrow(out_time), 11)
+  expect_equal(nrow(out_space), 11)
+  expect_equal(nrow(out_age), 11)
+  expect_equal(nrow(out_genotype), 11)
 
 })
