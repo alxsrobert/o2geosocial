@@ -16,7 +16,7 @@
 #' 
 #' @return
 #' 
-#' A list containing two components \code{$data} and
+#' A named list containing two components \code{$data} and
 #' \code{$config}. \code{data} data items as returned by \code{outbreaker_data}.
 #' \code{config} is a list of settings as returned by \code{create_config}. \cr \cr
 #' 

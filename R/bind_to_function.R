@@ -17,8 +17,6 @@
 #' the 'rodeint' package (\url{https/github.com/richfitz/rodeint/}).
 #'
 #' 
-#' @export
-#' 
 bind_to_function <- function(f, ...) {
   
   ## We isolate the arguments of 'f' and identify those without defaults,

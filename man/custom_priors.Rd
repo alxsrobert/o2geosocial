@@ -17,7 +17,7 @@ corresponds to a 'outbreaker_param' list.}
 \item{x}{an \code{outbreaker_config} object as returned by \code{create_config}.}
 }
 \value{
-A list of custom functions with class \code{custom_priors}. Values
+A named list of custom functions with class \code{custom_priors}. Values
     set to \code{NULL} will be ignored and default functions will be used
     instead.
 }

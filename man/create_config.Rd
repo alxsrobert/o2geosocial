@@ -13,6 +13,9 @@ create_config(..., data = NULL)
 \code{outbreaker_data}; if provided, this allows for further checks of
 the outbreaker settings.}
 }
+\value{
+A named list containing the value of each elements listed in the 'Details' section. This list describes the settings of the \code{outbreaker()} function. The class of this list is set to \code{outbreaker_config}.
+}
 \description{
 This function defines settings.  It takes a list of named
 items as input, performs various checks, set defaults where arguments are
@@ -24,11 +27,11 @@ Acceptable arguments for ... are:
 
 \describe{
 
-\item{init_tree}{the tree used to initialize the MCMC. Can be a vector of
+\item{init_tree}{the tree used to initialize the MCMC. It can be a vector of
 integers corresponding to the tree itself, where the i-th value corresponds
-to the index of the ancestor of 'i' (i.e., \code{init.tree[i]} is the
-ancestor of case \code{i}). Otherwise it should be defined as the character 
-string "star" (all cases coalesce to the first case).}
+to the index of case \code{i}. Otherwise, it should be defined as the character 
+string "star" and the function \code{create_config()} will generate the initial 
+tree.}
 
 \item{spatial_method}{a character string indicating the method used to
 evaluate the spatial likelihood. Can be either "exponential" or "power-law".}

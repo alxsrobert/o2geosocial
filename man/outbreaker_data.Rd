@@ -11,6 +11,9 @@ outbreaker_data(..., data = list(...))
 
 \item{data}{optionally, an existing list of data item as returned by \code{outbreaker_data}.}
 }
+\value{
+A named list containing the value of each elements listed in the 'Details' section. This list describes the data that will be used by the function \code{outbreaker()}.
+}
 \description{
 This function performs various checks on input data given to outbreaker.  It
 takes a list of named items as input, performs various checks, set defaults

@@ -51,7 +51,7 @@
 #'     implementing priors. Each function must have a single argument, which
 #'     corresponds to a 'outbreaker_param' list.
 #'
-#' @return A list of custom functions with class \code{custom_priors}. Values
+#' @return A named list of custom functions with class \code{custom_priors}. Values
 #'     set to \code{NULL} will be ignored and default functions will be used
 #'     instead.
 #'

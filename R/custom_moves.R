@@ -67,7 +67,7 @@
 #' @param ... A list or a series of named, comma-separated functions
 #'     implementing movements of parameters or augmented data.
 #'
-#' @return A list of movement functions with a single argument 'param', with
+#' @return A named list of movement functions with a single argument 'param', with
 #'     class \code{outbreaker_moves}.
 
 custom_moves <- function(...) {

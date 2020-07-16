@@ -18,7 +18,7 @@
 #'
 #' @return
 #'
-#' A list containing two components \code{$store} and
+#' A named list containing two components \code{$store} and
 #' \code{$current}. \code{store} is a list with the class
 #' \code{outbreaker_store}, used for storing 'saved' states of the
 #' MCMC. \code{current} is a list with the class \code{outbreaker_param}, used

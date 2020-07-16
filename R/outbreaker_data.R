@@ -63,6 +63,10 @@
 #' @import data.table
 #' @export
 #'
+#' @return 
+#' 
+#' A named list containing the value of each elements listed in the 'Details' section. This list describes the data that will be used by the function \code{outbreaker()}.
+#'
 #' @examples
 #'
 #' data("toy_outbreak_short")

@@ -19,8 +19,6 @@ A named list of functions with the class \code{custom_likelihood}, each
     implementing a customised log-likelihood components of
     outbreaker. Functions which are not customised will result in a NULL
     component.
-
-a list of named functions
 }
 \description{
 This function is used to specify customised likelihood functions for

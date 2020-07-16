@@ -11,7 +11,7 @@ custom_moves(...)
 implementing movements of parameters or augmented data.}
 }
 \value{
-A list of movement functions with a single argument 'param', with
+A named list of movement functions with a single argument 'param', with
     class \code{outbreaker_moves}.
 }
 \description{

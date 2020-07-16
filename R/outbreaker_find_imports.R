@@ -80,7 +80,7 @@ outbreaker_find_imports <- function(moves, data, param_current,
     threshold <- quantile(influences_vect, probs = config$outlier_threshold)
   }
   
-  # Set cases with no likely index as import
+  # Set cases with no likely infector as import
   new_imports <- unlist(lapply(list_influences, function(X){
     if(!is.null(dim(X))){
       # Compute n_imports_iteration, the  number of import per iteration in each cluster

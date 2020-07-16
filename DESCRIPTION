@@ -24,7 +24,7 @@ Imports:
 LazyData: true  
 Depends: R(>= 3.5.0)
 LinkingTo: Rcpp
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Suggests: 
     testthat, 
     tigris,

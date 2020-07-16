@@ -27,6 +27,30 @@ outbreaker(
 \item{moves}{a set of movement functions as returned by
 \code{\link{custom_moves}}}
 }
+\value{
+A data frame of \code{n_iter / sample_every} rows (as defined in the function\code{create_config()}). For each row, the data frame contains:
+\itemize{
+
+\item \code{post}: The posterior value of the transmission tree at this iteration.
+
+\item \code{like}: The likelihood value of the transmission tree at this iteration.
+
+\item \code{post}: The posterior value of the transmission tree at this iteration.
+
+\item \code{a}: The estimate of the spatial parameter \code{a} at this iteration,
+
+\item \code{a}: The estimate of the spatial parameter \code{b} at this iteration,
+
+\item \code{pi}: The estimate of the conditional report ratio \code{pi} at this iteration,
+
+\item \code{alpha_1 to alpha_N}: The infector of each case at this iteration.
+
+\item \code{t_inf_1 to t_inf_N}: The infection date of each case at this iteration.
+
+\item \code{kappa_1 to kappa_N}: The number of generation between each case and their infector at this iteration.
+
+}
+}
 \description{
 The function \code{outbreaker} is the main function of the package. It runs
 processes various inputs (data, configuration settings, custom priors,

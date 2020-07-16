@@ -49,8 +49,6 @@
 #'
 #' @param ... a named list of functions, each computing a log-likelihood component.
 #'
-#' @return a list of named functions
-#'
 #' @export
 #' 
 #' @examples
