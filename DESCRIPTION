@@ -20,7 +20,8 @@ Imports:
     ggplot2,
     magrittr,
     visNetwork,
-    data.table
+    data.table,
+    outbreaker2
 LazyData: true  
 Depends: R(>= 3.5.0)
 LinkingTo: Rcpp

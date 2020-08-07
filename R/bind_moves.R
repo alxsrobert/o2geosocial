@@ -1,6 +1,7 @@
 ## This function creates a named list of movement functions taking a single
 ## argument 'param'; all the rest (e.g. likelihood, prior, posterior functions,
 ## config, etc) is enclosed in the functions.
+#' @importFrom outbreaker2 bind_to_function
 
 bind_moves <- function(moves = custom_moves(), config, data,
                        likelihoods, priors) {
