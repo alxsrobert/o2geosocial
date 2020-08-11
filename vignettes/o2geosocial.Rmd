@@ -348,7 +348,6 @@ lines(sort(index_clust2), col = grey.colors(3)[2], lwd = 3)
 legend("bottomright", col = grey.colors(3)[1:2], lwd = 3, bty = "n",
        legend = c("Inferred import status", 
                   "Known import status"))
-par(oldpar)
 ```
 
 ### Interpretation of the results
@@ -639,7 +638,6 @@ index_infer_stouf <- index_infer(dt_cases = dt_cases, out = out_stouffer,
 index_clust_stouf <- index_clust(dt_cases = dt_cases, out = out_stouffer, 
                                  burnin = config1$burnin)
 # Plot the sorted proportion in each model
-oldpar <- par(no.readonly =TRUE)
 par(bty = "n", mfrow = c(1, 2), mar = c(5,4,2,0), oma = c(0, 0, 0, 0))
 # Panel A
 plot(sort(index_infer_stouf), type = "l", xlab = "Case", ylab = "", 
