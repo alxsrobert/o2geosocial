@@ -1,6 +1,6 @@
 Package: o2geosocial
 Type: Package
-Title: Reconstruction of Transmission Chains During Outbreaks
+Title: Reconstruction of Transmission Chains From Surveillance Data
 Version: 1.0
 URL: https://github.com/alxsrobert/o2geosocial
 Encoding: UTF-8
