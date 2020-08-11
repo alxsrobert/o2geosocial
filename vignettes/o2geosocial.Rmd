@@ -16,31 +16,35 @@ vignette: >
 
 # Abstract 
 
-Individual transmission events during an outbreak give valuable information on the factors impacting the spread of an infectious disease. In recent years, methods have been developed to reconstruct transmission trees from onset dates and sequence data. Nevertheless, sequences can be uninformative, or sequencing can be scarce.  We developed the package *o2geosocial* to reconstruct transmission trees using variables from routinely collected surveillance data, excluding genetic sequences. The model introduced in *o2geosocial* takes the reported age-group, onset date, location and genotype of the cases to reconstruct probabilistic transmission trees. In this vignette, we describe the structure and the different functions of the package. We also provide a tutorial on a simulated measles outbreak showing how to run a model, evaluate the output and visualise the results of the inference. In the second part of the tutorial, we customise the likelihood functions to introduce a different mobility model. 
+The reconstruction of the individual transmissions events that led to an outbreak gives valuable information on the causes of spread of an infectious disease. In recent years, methods have been developed to infer transmission trees from onset dates and genetic sequences. Nevertheless, sequences can be uninformative for pathogens with slow mutation rates, or sequencing can be scarce.  We developed the package *o2geosocial* to integrate more variables from routinely collected surveillance data to reconstruct transmission trees when genetic sequences are not informative. The model introduced in *o2geosocial* takes the reported age-group, onset date, location and genotype of infected cases to infer probabilistic transmission trees. In this vignette, we describe the structure and the different functions of the package. We also provide a tutorial on a simulated measles outbreak showing how to run a model, evaluate the output and visualise the results of the inference. In the second part of the tutorial, we customise the likelihood functions to introduce a different mobility model. 
 
 # Introduction
 
-Regional immunity against infectious diseases is built up by past infections and, if a vaccine is available, vaccination campaigns. Social and spatial heterogeneity in disease incidence or vaccine coverage lead to under-immunised areas, also called pockets of susceptibles. Importation of cases into these areas can cause large transmission clusters and long-lasting outbreaks. The most vulnerable areas of a country could be identified using historical data on local vaccine coverage and incidence, but these data are often scarce, or unreliable. Another solution is to infer probabilistic transmission trees and clusters to identify in which regions importations repeatedly caused large transmission clusters.  
+The risk of outbreak in a given region is higher if there is low immunity against the virus in the population. Regional immunity against infectious diseases is built up by past infections and, if a vaccine is available, vaccination campaigns. Social and spatial heterogeneity in disease incidence or vaccine coverage lead to under-immunised areas, also called pockets of susceptibles. Importation of cases into these areas can cause large transmission clusters and long-lasting outbreaks. The most vulnerable areas of a country could be identified using historical data on local vaccine coverage and incidence, but these data are often scarce, or unreliable. Another solution is to infer probabilistic transmission trees and clusters to identify in which regions importations repeatedly caused large clusters of local transmission.  
 
-The Wallinga-Teunis method was developed to infer probabilistic transmission trees from onset dates, serial interval and latent periods in a maximum likelihood framework. As genetic sequencing of cases during an outbreak became more common, new tools such as the R package [*outbreaker2*](https://CRAN.R-project.org/package=outbreaker2) showed that combining the timing of infection and the genetic sequences could improve the accuracy of inferred transmission trees. Nevertheless, sequencing cases remains costly, and the efficacy of the reconstruction methods depends on the proportion of sequenced cases, the quality of the sequences, and on the characteristics of the virus. For instance, the measles virus evolves very slowly, so sequences from unrelated cases can be very similar, which makes methods combining onset dates and genetic sequences ineffective.  
+The [*Wallinga-Teunis method*](https://academic.oup.com/aje/article/160/6/509/79472) was developed to infer probabilistic transmission trees from onset dates, serial intervals and latent periods in a maximum likelihood framework. As genetic sequencing of pathogens during an outbreak became more common, new tools such as the R package [*outbreaker2*](https://CRAN.R-project.org/package=outbreaker2) showed that combining the timing of infection and the genetic sequences could improve the accuracy of inferred transmission trees. Nevertheless, sequencing pathogens remains costly, and the efficacy of the reconstruction methods depends on the proportion of sequenced cases, the quality of the sequences, and on the characteristics of the pathogen. For instance, the measles virus evolves very slowly, so sequences from unrelated cases can be very similar, which makes methods combining onset dates and genetic sequences ineffective.  
 
-Building upon the framework presented in [*outbreaker2*](https://CRAN.R-project.org/package=outbreaker2), we developed the R package *o2geosocial* to estimate the cluster size distribution from the onset date, age, location and genotype of the cases. Those variables are generally collected by surveillance systems and well reported. Using age-stratified contact matrices and mobility models, we combined the different variables into a likelihood of connection between cases. The package *o2geosocial* is ideal to study outbreaks where sequences are uninformative, either because only a small proportion of cases were sequenced or because the virus evolves too slowly. In this vignette, we first introduce the overall structure of *o2geosocial*, the components of the individual likelihood and the parameters; then we present a tutorial on how to develop a model to reconstruct the cluster size distribution with *o2geosocial*.  
+Building upon the framework presented in [*outbreaker2*](https://CRAN.R-project.org/package=outbreaker2), we developed the R package *o2geosocial* to estimate the cluster size distribution from the onset date, age, location and genotype of the cases. Those variables are routinely collected by surveillance systems and often well reported. Using age-stratified contact matrices and mobility models, we combined the different variables into a likelihood of connection between cases. The package *o2geosocial* is ideal to study outbreaks where sequences are uninformative, either because only a small proportion of cases were sequenced or because the virus evolves too slowly. In this vignette, we first introduce the overall structure of *o2geosocial*, the components of the individual likelihood and the parameters; then we present a tutorial on how to develop a model to reconstruct the cluster size distribution with *o2geosocial*.  
 
 # Implementation 
 ## Overall structure
-The package *o2geosocial* uses Rcpp to incorporate C++ functions into a R framework. The general implementation of *o2geosocial* follows the structure of [*outbreaker2*](https://CRAN.R-project.org/package=outbreaker2): the main function of the package, so-called `outbreaker()`, takes five lists as inputs: i) 'moves', ii) 'likelihoods', iii) 'priors', iv) 'data', and v) 'config'. These five lists can be generated and modified using the functions `custom_moves()`, `custom_likelihoods()`, `custom_priors()`, `create_config()` and `outbreaker_data()`. Examples of how these functions are used to customize the model will be presented in the Tutorial section. The function `outbreaker()` uses Monte Carlo Markov Chains (MCMC) to sample from the posterior distribution, and infer the infection date, the infector, and the number of missing generations for each case. The package *o2geosocial* was designed to study datasets that include a large number of potentially unrelated cases and without information on the genetic sequence of cases, hence there are major differences between the implementation of *o2geosocial* and [*outbreaker2*](https://CRAN.R-project.org/package=outbreaker2).
+
+The general implementation of *o2geosocial* follows the structure of [*outbreaker2*](https://CRAN.R-project.org/package=outbreaker2) and incorporates C++ functions into a R framework using [*Rcpp*](https://CRAN.R-project.org/package=Rcpp). The main function of the package, called `outbreaker()`, uses Monte Carlo Markov Chains (MCMC) to sample from the posterior distribution. For each case, it infers the infection date, the infector, and the number of missing generations between the case and their infector. It takes five lists as inputs: i) 'moves', ii) 'likelihoods', iii) 'priors', iv) 'data', and v) 'config'. These five lists can be generated and modified using the functions `custom_moves()`, `custom_likelihoods()`, `custom_priors()`, `create_config()` and `outbreaker_data()`. Examples of how these functions are used to customize the model will be presented in the Tutorial section. 
+
+The package *o2geosocial* was developed for the study of outbreaks where full information on the onset date, location and age group of the cases is available. It builds upon [*outbreaker2*](https://CRAN.R-project.org/package=outbreaker2) by adding the effect of the location and the age-stratified contact data on the reconstruction of the transmission clusters. However, unlike [*outbreaker2*](https://CRAN.R-project.org/package=outbreaker2), *o2geosocial* does not take genetic sequences as input. Genetic information (or genotype) is only used to exclude connections between cases, i.e. two cases cannot be from the same cluster if they belong to different genetic groups. Therefore, *o2geosocial* is adapted to reconstructing transmission clusters from large datasets (up to several thousand cases) where genetic sequencing is not informative, either because the mutation rate of the virus is slow, or because sequencing is scarce. On the other hand, [*outbreaker2*](https://CRAN.R-project.org/package=outbreaker2) is more adapted to reconstructing transmission chains if genetic sequences are informative and available for a high proportion of the cases. 
+
 
 In *o2geosocial* the genetic component of the likelihood is a binary value depending on the genotype of the cases. There can be only one genotype reported per transmission tree, hence the number of trees will be at least equal to the number of unique genotypes reported in the dataset. The genotype of a tree T is the genotype reported for at least one of the cases belonging to T. For each genotyped case $i_{gen}$ and at every iteration, only cases from trees with the same genotype as $i_{gen}$, or without reported genotype should be listed as potential infectors. Therefore, ungenotyped cases belonging to a tree with a different genotype will not be potential infectors of $i_{gen}$ at this iteration. Ungenotyped cases can be placed on any tree.
 
-Routinely collected surveillance data may include thousands of cases from unrelated outbreaks. Therefore, it was crucial to speed up the algorithm. We added a pre-clustering step to the function `outbreaker()` to reduce the pool of potential infectors for each case, which can greatly reduce the computing time of the MCMC (Figure 1). In the pre-clustering step, the potential infectors for each case are listed. Cases with overlapping potential infectors, and their potential infectors, are grouped together. Cases from different groups cannot infect one another. The group each case belongs to is listed in the variable 'is_cluster', which is an element of the list returned by the function `outbreaker_data()`. We used three criteria to group together cases that can be connected: For each case $i$, only cases reported in a radius of $\gamma$ km, less than $\delta$ days before $i$, and from similar or unreported genotype can be classified as potential infectors of $i$. The parameter $\gamma$ and $\delta$ are defined as inputs in the function `create_config()`.
+Routinely collected surveillance data may include thousands of cases from unrelated outbreaks. Therefore, it was crucial to develop the algorithm to be computationally efficient. We added a pre-clustering step to the function `outbreaker()` to reduce the pool of potential infectors for each case, which can greatly reduce the computing time of the MCMC (Figure 1). In the pre-clustering step, the potential infectors for each case are listed. Cases with overlapping potential infectors, and their potential infectors, are grouped together. Cases from different groups cannot infect one another. The group each case belongs to is listed in the variable 'is_cluster', which is an element of the list returned by the function `outbreaker_data()`. We used three criteria to group together cases that may be connected: For each case $i$, only cases reported in a radius of $\gamma$ km, less than $\delta$ days before $i$, and from similar or unreported genotype can be classified as potential infectors of $i$. The parameter $\gamma$ and $\delta$ are defined as inputs in the function `create_config()`.
 
-Cases classified in the same group after the pre-clustering stage may still be unrelated (e.g. if several importations were reported simultaneously in the nearby region). We need to define a likelihood threshold $\lambda$ which quantifies what is an unlikely connection. If the likelihood of connection between cases $i$ and $j$ is worse than $\lambda$, we consider it is more likely that $i$ was an import, unrelated to $j$. In *o2geosocial*, the variable $\lambda$ can either be an absolute (the likelihood threshold will be $log(\lambda)$) or relative value (a quantile of the likelihood of all connections in all samples), and is defined by the variables 'outlier_threshold' and the boolean 'outlier_relative' in `create_config()`. If the initial number of importations is minimal, unlikely connections between cases can alter the inferred infection dates of cases and bias the generated transmission trees. Therefore, first we run a short MCMC and compute $n$, the minimum number of connections worse than $\lambda$ in the samples; then we add $n$ imports to the starting tree and run a long MCMC. Finally, we remove the connections worse than $\lambda$ in the final samples and return the infector, infection date and probability of being an import for each case (Figure 1). 
+Cases classified in the same group after the pre-clustering stage may still be unrelated (e.g. if several importations were reported simultaneously in a nearby region). Because of this, we defined a likelihood threshold $\lambda$ which allows connections to be discarded as unlikely. If the likelihood of connection between cases $i$ and $j$ is less than $\lambda$, we consider it to be more likely that $i$ was an import and unrelated to $j$. In *o2geosocial*, the variable $\lambda$ can either be an absolute (the log-likelihood threshold will be $log(\lambda)$) or relative value (a quantile of the likelihood of all connections in all samples), and is defined by the variables 'outlier_threshold' and 'outlier_relative' in `create_config()`. If the initial number of importations is too small, unlikely connections between cases can alter the inferred infection dates of cases and bias the generated transmission trees. Therefore, we first run a short MCMC and compute $n$, the minimum number of connections with a likelihood lower than $\lambda$ in the samples; then we add $n$ imports to the starting tree and run a long MCMC. Finally, we remove the connections with likelihood lower than $\lambda$ in the final samples and return the infector, infection date and probability of being an import for each case (Figure 1). 
 
-![Figure 1: Example of the process to estimate the cluster size distribution and the import status of $11$ cases. In the first step, cases are split in two groups because they do not have overlapping potential infectors (they were reported in different places, or different time). In step 2, we estimate the minimum number of unlikely transmissions ($n$) in the samples (right panel). In step 3, we remove $n$ transmissions to the initial tree, and generate samples. Finally, we remove the unlikely connections in each sample of Step 3 and compute the inferred cluster size distribution.](Figs_vignette/Vignette_figure_1.jpg)
+![Figure 1: Example of the process to estimate the cluster size distribution and the import status of $11$ cases. In the first step, cases are split in two groups that do not have overlapping potential infectors (they were reported in different places, or different time). In step 2, we estimate the minimum number of unlikely transmissions ($n$) in the samples (right panel). In step 3, we remove $n$ transmissions from the initial tree, and generate samples. Finally, we remove the unlikely connections in each sample of Step 3 and compute the inferred cluster size distribution.](Figs_vignette/Vignette_figure_1.jpg)
 
 ## Likelihood and priors
 
-The functions custom_likelihoods() and custom_priors() can be used to edit each component of the likelihood and priors. 
+The functions `custom_likelihoods()` and `custom_priors()` can be used to edit each component of the likelihood and priors. 
 
 ### Genotype
 
@@ -54,35 +58,35 @@ $$G(g_{i},g_{\tau_{j}})= \left\{\begin{array}{l}
  \right.
 $$
 
-Therefore, ungenotyped cases may not be potential infector if they belong to a tree that contains another genotype than $g_i$. The algorithm must look into the genotype of each tree containing potential infectors.
+Therefore, ungenotyped cases may not be potential infector if they belong to a tree that contains another genotype than $g_i$. The algorithm must consider the genotype of each tree containing potential infectors.
 
 
 ### Conditional report ratio
 
-Like in the packages [*outbreaker*]( https://CRAN.R-project.org/package=outbreaker) and [*outbreaker2*](https://CRAN.R-project.org/package=outbreaker2), we consider there can be missing cases in transmission chains. The number of generations between linked case $\kappa_{ji}$ is equal to one if $j$ infected $i$. We define $\rho$ as the conditional report ratio of the trees. The conditional report ratio is not the same as the overall report ratio of an outbreak, since entirely unreported clusters, or missing cases before the ancestor of a tree will not change the value of $\rho$. Only unreported cases within transmission chains will impact the conditional report ratio. By default, the probability of observing $\kappa_{ji}$ missing generation between $i$ and $j$ from the conditional report ratio $p(\kappa_{ji} | \rho)$ follows an exponential distribution. 
+As in the packages [*outbreaker*]( https://CRAN.R-project.org/package=outbreaker) and [*outbreaker2*](https://CRAN.R-project.org/package=outbreaker2), we allow for missing cases in transmission chains. The number of generations between linked cases $i$ and $j$ $\kappa_{ji}$ is equal to one if $j$ infected $i$. We define $\rho$ as the conditional report ratio of the trees. The conditional report ratio is not the same as the overall report ratio of an outbreak because entirely unreported clusters, or missing cases before the ancestor of a tree will not change the value of $\rho$. Only unreported cases within transmission chains will impact the conditional report ratio. By default, the probability of observing $\kappa_{ji}$ missing generation between $i$ and $j$ from the conditional report ratio $p(\kappa_{ji} | \rho)$ follows an exponential distribution. 
 
-The conditional report ratio is estimated during the MCMC runs, it follows a beta distribution. 
+The conditional report ratio is estimated during the MCMC runs using a beta distribution prior. The two parameters of the beta prior can be changed using the variable `prior_pi` in `create_config()` (default to $Beta(10, 1)$). 
 
 ### Time
 
-The time component of the likelihood is similar to what is used in the default version of outbreaker2. The probability of $t_i$ being the infection date of the case $i$ reported on $T_i$ depends on the distribution of the incubation period $f$. The incubation period should be defined using the variable $f_{dens}$ in the function `outbreaker_data()`. 
+The time component of the likelihood is similar to what is used in the default version of [*outbreaker2*](https://CRAN.R-project.org/package=outbreaker2). The probability of $t_i$ being the infection date of the case $i$ reported at time $T_i$ depends on the distribution of the incubation period $f$. The incubation period should be defined using the variable `f_dens` in the function `outbreaker_data()`. 
 
-The probability that $i$ was infected by $j$, knowing their respective inferred dates of infection $t_i$ and $t_j$ is defined by the generation time of the disease $w^{\kappa_{ji}}(t_i-t_j)$ (variable $w_dens$ in `outbreaker_data()`), and the number of generation between $i$ and $j$ $\kappa_{ji}$. The operator $w^{\kappa_{ji}}$ was defined as $w^{\kappa_{ji}}= \Pi_{\kappa_{ji}}w$, where $\Pi$ is the convolution operator.
+The probability that $i$ was infected by $j$ given their respective inferred dates of infection $t_i$ and $t_j$ is defined by the generation time of the disease $w^{\kappa_{ji}}(t_i-t_j)$ (variable `w_dens` in `outbreaker_data()`), and the number of generations $\kappa_{ji}$ between $i$ and $j$. The operator $w^{\kappa_{ji}}$ was defined as $w^{\kappa_{ji}}= \Pi_{\kappa_{ji}}w$, where $\Pi$ is the convolution operator.
 
 
 ### Space
 
-In *o2geosocial*, we introduce a spatial component to the likelihood of connection between cases. By default, we implemented a gravity model to illustrate the probability of connection between two regions $k$ and $l$. Gravity models depend on the population sizes $m_k$ and $m_l$, and the distance between regions $d_{kl}$. Given $a$ and $b$ two spatial parameters, the probability that a case coming from the region $l$ was infected by a case reported in $l$ is $s(k,l)$:
+In *o2geosocial*, we introduce a spatial component to the likelihood of connection between cases. By default, we implemented a gravity model to illustrate the probability of connection between two regions $k$ and $l$. Gravity models depend on the population sizes $m_k$ and $m_l$, and the distance between regions $d_{kl}$. Given spatial parameters $a$ and $b$, the probability that a case in the region $k$ was infected by a case reported in $l$ is $s(k,l)$:
 
-$$s(k,l)=  \frac{p_{kl}}{\Sigma_hp_{hl}}=\frac{f(d_{kl}, b)* m_k^a*m_l^c}{\Sigma_h(f(d_{hl}, b)*m_h^a *m_l^c)}=\frac{f(d_{kl}, b)* m_k^a}{\Sigma_h(f(d_{hl}, b)*m_h^a)}$$
+$$s(k,l)=  \frac{p_{kl}}{\Sigma_hp_{hl}}=\frac{F(d_{kl}, b)* m_k^a*m_l^c}{\Sigma_h(F(d_{hl}, b)*m_h^a *m_l^c)}=\frac{F(d_{kl}, b)* m_k^a}{\Sigma_h(F(d_{hl}, b)*m_h^a)}$$
 
-If we use an exponential gravity model, $f(d_{kl},a)=e^{-b*d_{kl}}$; for a power-law gravity model: $f(d_{kl},a)=(\frac{1}{d_{kl}})^b$. The exponential gravity model has been shown to perform well to represent short-distance mobility patterns. As *o2geosocial* aims at reconstructing transmission in a community or a region, the default model in the function `outbreaker()` is an exponential gravity model. The type of gravity model can be changed by setting the parameter `spatial_method` to "power-law": `create_config(spatial_method = "power_law")`. Other mobility models can be used by developing modules, we give an example of module in the tutorial where we replace the exponential gravity model by a Stouffer's rank model. 
+If we use an exponential gravity model, $F(d_{kl},a)=e^{-b*d_{kl}}$; for a power-law gravity model: $F(d_{kl},a)=(\frac{1}{d_{kl}})^b$. The exponential gravity model has been shown to perform well to represent short-distance mobility patterns. As *o2geosocial* aims at reconstructing transmission in a community or a region, the default model in the function `outbreaker()` is an exponential gravity model. The type of gravity model can be changed by setting the parameter `spatial_method` to "power-law": `create_config(spatial_method = "power_law")`. Other mobility models can be used by developing modules. We give an example of module in the tutorial where we replace the exponential gravity model by a Stouffer's rank model. 
 
-The parameters $a$ and $b$ are estimated during the MCMC run. This requires re-computing the probability matrix twice per iteration, and can be time-consuming.  Therefore, if $a$ or $b$ is not fixed, we allow for a maximum of 1 missing generation between cases ($max(\kappa_{ji})=2$) and only compute $s^1(k,l)$ and $s^2(k,l)$ for regions that could potentially be connected. By default, the uniform distribution of $a$ and $b$ is uniform.
+The parameters $a$ and $b$ are estimated during the MCMC run. This requires re-computing the probability matrix twice per iteration and can be time-consuming.  Therefore, if either $a$ or $b$ is not fixed, we allow for a maximum of 1 missing generation between cases ($max(\kappa_{ji})=2$) and only compute $s^1(k,l)$ and $s^2(k,l)$ for regions that could potentially be connected. By default, the prior distribution of $a$ and $b$ are uniform.
 
 ### Age
 
-Using the social contact matrices provided by large scale quantitative investigations such as the POLYMOD study (REF), we can calculate the probability of contact between cases of different age groups in different countries. In *o2geosocial*, given the age group of each case $\alpha_{(1,..,N)}$ and the age-stratified social contact matrix, we introduced $a^{\kappa_{ji}} (\alpha_i,\alpha_j)$, the probability that a case aged $\alpha_j$ infected a case aged $\alpha_i$. This corresponds to the proportion of contacts to $\alpha_i$ that came from individuals of age $\alpha_j$.The contact matrix can be modified using the variable `a_dens` in `outbreaker_data()`.
+Social contact matrices provided by large scale quantitative investigations such as the [*POLYMOD study*](https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.0050074) can be used to calculate the probability of contact between cases of different age groups in different countries. These social contact matrices are imported using the R package [*socialmixr*](https://CRAN.R-project.org/package=socialmixr). In *o2geosocial*, given the age group of each case $\alpha_{(1,..,N)}$ and the age-stratified social contact matrix, we introduced $a^{\kappa_{ji}} (\alpha_i,\alpha_j)$, the probability that a case aged $\alpha_j$ infected a case aged $\alpha_i$. This corresponds to the proportion of contacts to $\alpha_i$ that came from individuals of age $\alpha_j$. The contact matrix can be modified using the variable `a_dens` in `outbreaker_data()`.
 
 ### Overall likelihood
 
@@ -91,9 +95,9 @@ The overall likelihood that a case $i$ was infected by the case $j$ is equal to 
 $$L_ji(t_i,t_j,\theta)=log(\rho(\kappa_{ji}|\rho)*w^{\kappa_{ji}}(t_i-t_j)*a^{\kappa_{ji}} (\alpha_i,\alpha_j )*G(g_i,g_{\tau_j})*s^{\kappa_{ji}} (r_i,r_j | a,b))$$
 
 
-## Movements
+## Tree proposals
 
-At every iteration of the MCMC, a set of movements is used to propose an update of the transmission trees. This update is then accepted or rejected depending on the posterior value of the new trees. In *o2geosocial*, eight default movements are tested at each iteration. Three of them were already part of [*outbreaker2*](https://CRAN.R-project.org/package=outbreaker2) and were not modified (`cpp_move_t_inf()` to change the infection date of cases; `cpp_move_pi()` to change the conditional report ratio; `cpp_move_kappa()` to change the number of generations between connected cases); two were edited to add the scanning of the transmissions trees to prevent from having different genotypes in the same tree (`cpp_move_alpha()`. `cpp_move_swap_cases()`); The last three are new movements and were not part of [*outbreaker2*](https://CRAN.R-project.org/package=outbreaker2):
+At every iteration of the MCMC, a set of movements is used to propose an update of the transmission trees. This update is then accepted or rejected depending on the posterior density of the new trees. In *o2geosocial*, eight default movements are tested at each iteration. Three of them were already part of [*outbreaker2*](https://CRAN.R-project.org/package=outbreaker2) and were not modified (`cpp_move_t_inf()` to change the infection date of cases; `cpp_move_pi()` to change the conditional report ratio; `cpp_move_kappa()` to change the number of generations between connected cases); two were edited to scan of the transmissions trees to prevent from having different genotypes in the same tree (`cpp_move_alpha()`. `cpp_move_swap_cases()`); The last three are new movements and were not part of [*outbreaker2*](https://CRAN.R-project.org/package=outbreaker2):
 
   * `cpp_move_a()` and `cpp_move_b()` propose new values of the spatial parameters $a$ and $b$ and compute the matrix of probability of connection between regions.
 
@@ -102,19 +106,22 @@ At every iteration of the MCMC, a set of movements is used to propose an update 
 # Tutorial
 ## Part one: First models and outputs
 
-Two lists are attached to *o2geosocial*: `toy_outbreak_short` and `toy_outbreak_long`. Both describe simulated outbreaks and include 3 elements: i)`cases`: a data table with the ID, location, onset date, genotype, age group, import status, cluster, generation and infector of each case; ii) `dt_regions`: a data table with the ID, population, longitude and latitude of each region; iii)`age_contact`: a numeric matrix of the proportion of contact between age groups. Both simulations were ran using distributions of the serial interval and the latent period typically associated with measles outbreaks The dataset `toy_outbreak_long` contains 1940 cases simulated by the authors in the United States between 2003 and 2016, it can be used to reproduce the results described in https://github.com/alxsrobert/datapaperMO. 
+There are two simulated datasets attached to *o2geosocial*: `toy_outbreak_short` and `toy_outbreak_long`. Both are lists describing simulated outbreaks and include 3 elements: i)`cases`: a data table with the ID, location, onset date, genotype, age group, import status, cluster, generation and infector of each case; ii) `dt_regions`: a data table with the ID, population, longitude and latitude of each region; iii)`age_contact`: a numeric matrix of the proportion of contact between age groups. Both simulations were ran using distributions of the serial interval and the latent period typically associated with measles outbreaks The dataset `toy_outbreak_long` contains 1940 cases simulated in the United States between 2003 and 2016, it can be used to reproduce the results described in https://github.com/alxsrobert/datapaperMO. 
 
 In this tutorial, we will analyse `toy_outbreak_short`. We will run a first model where the import status is inferred, and a second model that takes the import status from the reference dataset and only estimates the transmission trees. We will then evaluate the agreement between the inferred and the reference transmission clusters, and observe the added value of knowing the import status of the cases. Finally, we will give insight into the interpretation of the results and the geographical heterogeneity of the reconstructed transmission dynamics.
 
-The results presented in this tutorial were generated using only 7,500 iterations to ensure a short run-time for the vignette. We usually recommend longer runs for the chains to converge and to sample from the posterior distribution.
+We used the package [*data.table*](https://CRAN.R-project.org/package=data.table) for handling data through the tutorial as it is optimised to deal with large datasets. The methods defined in `o2geosocial` would work similarly if we had used the `data.frame` syntax and format.
+
+The results presented in this tutorial were generated using only 7,500 iterations to ensure a short run-time for the vignette. We recommend running longer chains to reach the convergence and sample from the posterior distribution, and using the package [*coda*](https://CRAN.R-project.org/package=coda) to evaluate the convergence of the MCMC chains.
 
 ### Run the models with `outbreaker()'
 
-The dataset contains 75 simulated cases from different census tracts of Ohio in 2014 (variable `cens_tract`). The variable `cluster` describes the transmission tree of each case, and "generation" is equal to the number of generations between the first case of the tree (`generation = 1`) and the case. We import the *o2geosocial* library and the `toy_outbreak_short` list, and extract the dataset.
+The dataset contains 75 simulated cases from different census tracts of Ohio in 2014 (variable `cens_tract`). The variable `cluster` describes the transmission tree of each case, and "generation" is equal to the number of generations between the first case of the tree (`generation = 1`) and the case. We import *o2geosocial* and extract the dataset `cases` from `toy_outbreak_short`.
  
 ```{r import_library, warning = FALSE, message = FALSE}
 library(o2geosocial)
-
+## We used the data.table syntax throughout this example
+library(data.table)
 data("toy_outbreak_short")
 print(toy_outbreak_short$cases, nrows = 10)
 # Extract dataset
@@ -122,19 +129,20 @@ dt_cases <- toy_outbreak_short[["cases"]]
 dt_cases <- dt_cases[order(Date), ]
 ```
 
-First we plot the cluster size distribution of the reference data (Figure 2). $70\%$ of the clusters contain less than 5 cases, $51.8\%$ of the clusters are isolated (also called singletons). Two clusters are much larger, and include $30$ and $36$ cases. 
+First we plot the cluster size distribution of the reference data (Figure 2). $95\%$ of the clusters contain less than 5 cases, $47.6\%$ of the clusters are isolated (also called singletons). One larger cluster includes $31$ cases (Figure 2). 
 
 ```{r plot_ref, warning = FALSE, fig.width = 6.5, fig.height = 4, fig.cap="Figure 2: Cluster size distribution of the simulated dataset"}
 # Reference cluster size distribution
-hist(table(dt_cases$cluster), breaks = 1:max(table(dt_cases$cluster)), 
+hist(table(dt_cases$cluster), breaks = 0:max(table(dt_cases$cluster)), 
      ylab = "Number of clusters", xlab = "Cluster size", main = "", las=1)
 ```
 
-We set up the distributions the model will use to reconstruct the transmission trees. We define `f_dens` the duration of the latent period, and `w_dens` the number of days between the infection dates of two connected cases, also called the serial interval. These distributions have been described for measles outbreaks in previous studies.
+We set up the distributions the model will use to reconstruct the transmission trees. We define `f_dens` as the duration of the latent period, and `w_dens` as the number of days between the infection dates of two connected cases, also called the serial interval. These distributions have previously been described for measles outbreaks.
 
 ```{r distrib}
+# Distribution of the latent period
 f_dens <- dgamma(x = 1:100, scale = 0.43, shape = 26.83)
-
+# Distribution of the generation time
 w_dens <- dnorm(x = 1:100, mean = 11.7, sd = 2.0)
 ```
 
@@ -156,7 +164,7 @@ polymod_matrix <-data.table::as.data.table(polymod_matrix)
 a_dens <- t(t(polymod_matrix)/colSums(polymod_matrix))
 ```
 
-Finally, the distance matrix between regions is set up from the data table `dt_regions`, element of `toy_outbreak_short`. We use the column `population` to set up the population vector `pop_vect`. We compute the distance between each region into the distance matrix `dist_mat` from the R package [*geosphere*](https://CRAN.R-project.org/package=geosphere). 
+Finally, the distance matrix between regions is set up from the data table `dt_regions`, element of `toy_outbreak_short`. We use the column `population` to set up the population vector `pop_vect`. We compute the distance between each region into the distance matrix `dist_mat` using the package [*geosphere*](https://CRAN.R-project.org/package=geosphere). 
 
 ```{r distance_pop, warning = FALSE}
 # Extract all regions in the territory
@@ -180,7 +188,7 @@ names(pop_vect) <- rownames(dist_mat) <- colnames(dist_mat) <-
 
 Now that all the distributions and matrices are set up, we create the lists `data`, `config`, `moves`, `likelihoods` and `priors` to run the main function of the package. In this example, we use the default parameters to build `moves`, `likelihoods` and `priors` with the same elements as described in section "Implementation".  The list `data` contains the distributions `f_dens` and `w_dens`, the population vector and the distance matrix, along with the onset dates, age group, location and genotype of the cases. 
 
-We implement two different models: in `out1` the import status of the cases is inferred by the model, whereas in `out2` the import status is set before the MCMC. Both models are run with $2,500$ iterations to find the import status and $10,000$ iterations for the main MCMC. As the import status of the cases is inferred in `out1`, we have to set a threshold to quantify what is an unlikely likelihood of transmission between cases. We use a relative outlier threshold at 0.9, which means that the threshold will be the $9^{th}$ decile of all the likelihoods $L_i(t_i, j, t_j, \theta)$ in every sample. 
+We implement two different models: in `out1` the import status of the cases is inferred by the model, whereas in `out2` the import status is set before the MCMC. The first short run in `out1` is run with $2,000$ iterations to find the import status, and the main run lasts for $7,500$ iterations in both models. As the import status of the cases is inferred in `out1`, we have to set a threshold to quantify what is an unlikely likelihood of transmission between cases. We use a relative outlier threshold at 0.9, which means that the threshold will be the $9^{th}$ decile of the negative log-likelihoods $L_i(t_i, j, t_j, \theta)$ in every sample. 
 
 ```{r first_model, message = FALSE, warning = FALSE}
 # Default moves, likelihoods and priors
@@ -228,9 +236,9 @@ out2 <- outbreaker(data = data2, config = config2, moves = moves,
 
 ```
 
-The matrices `out1` and `out2` contain the posterior, likelihood,  and prior of the trees at every iteration, along with the values of the spatial parameters `a` and `b`, the conditional report ratio `pi`, and the index, estimated infection date and number of generations for each case. We first remove the burnin period, which designates the number of iterations before the MCMC converged.
+The matrices `out1` and `out2` now contain the posterior, likelihood,  and prior of the trees generated at every iteration, along with the values of the spatial parameters `a` and `b`, the conditional report ratio `pi`, and the index, estimated infection date and number of generations for each case. 
 
-The function `summary` describes the features of the output matrix generated by `outbreaker()`. The function generates a list with the number of steps, the distributions of the posterior, likelihood and priors, the parameter distributions, the most likely infector and the probability of being an import for each case, and the cluster size distribution.  we use it to describe the distribution of the inferred parameters.
+The function `summary` prints a summary of the features of the output matrix generated by `outbreaker()`. The function generates a list with the number of steps, the distributions of the posterior, likelihood and priors, the parameter distributions, the most likely infector and the probability of being an import for each case, and the cluster size distribution. For example, we can use it to describe the distribution of the inferred parameters. We remove the burn-in period, which corresponds to the number of iterations before the MCMC converged.
 
 ```{r params, warning = FALSE}
 burnin <- config1$burnin
@@ -239,17 +247,15 @@ burnin <- config1$burnin
 print(summary(out1, burnin = burnin)$a)
 print(summary(out1, burnin = burnin)$b)
 # Model 2
-print(summary(out1, burnin = burnin)$a)
-print(summary(out1, burnin = burnin)$b)
+print(summary(out2, burnin = burnin)$a)
+print(summary(out2, burnin = burnin)$b)
 ```
 
 ### Model evaluation
 
-We now use `barplot` to show the median inferred cluster size distribution in `out1` and `out2` and the confidence intervals, and compare it with the reference data.
+In order to evaluate the fit of the model, we plot the median inferred cluster size distribution in `out1` and `out2` and the credible intervals, and compare it with the reference data. First, we group together clusters of similar sizes. The breaks of each group is written in the vector `group_cluster`. In this example, we defined the size categories as $1$; $2$; $3-4$; $5-9$; $10-15$; $15-40$ and $40+$. The inferred cluster size distributions are shown in the element `cluster` of the list generated by `summary(out1)`, and can be aggregated using the input variable `group_cluster`. The generated barplot shows that the number of isolated cases in `out1` is lower than in the data. Therefore, when the import status of cases was inferred, the model underestimated the number of clusters and tended to link together unrelated cases (Figure 3). On the other hand, the cluster size distribution in `out2` is very similar to the data.
 
-First, we group together clusters of similar sizes. The breaks of each group is written in the vector `group_cluster`. In this example, the size categories are $1$; $2$; $3-4$; $5-9$; $10-15$; $15-40$ and $40+$. The inferred cluster size distributions are shown in the element `cluster` of the list generated by `summary(out1)`, and can be aggregated using the input variable `group_cluster`. The generated barplot highlights that the models generated a similar cluster size distribution, and are very close to the reference data (Figure 3). Inferring the import status in `out1` did not generate more uncertainty, or more bias. 
-
-Nevertheless, the cluster size distribution when the import status of the cases is inferred depends on the likelihood threshold used to classify cases into clusters. Other models with different values of `outlier_threshold` and `outlier_relative` would show the impact of looser and stronger definitions of $\lambda$ on the inferred cluster size distribution.
+Nevertheless, the cluster size distribution when the import status of the cases is inferred depends on the likelihood threshold set in `outlier_threshold` and `outlier_relative`. Using a looser or stronger definitions of $\lambda$ would impact the cluster size distribution inferred in `out1`.
 
 ```{r plot_first, warning = FALSE, fig.width = 6.5, fig.height = 4, fig.cap= "Figure 3: Comparison of inferred cluster size distribution with the reference data"}
 # We create groups of cluster size: initialise the breaks for each group
@@ -280,7 +286,7 @@ legend("topright", fill = grey.colors(3), bty = "n",
                   "Known import status", "Simulated dataset"))
 ```
 
-Although the aggregated cluster size distributions are close to the reference data, we have to look into the reconstructed transmission trees to make sure the index assigned to each case are in agreement with the reference dataset. We write two functions: in `index_infer` we compute the proportion of iterations where the inferred index is the actual index for each case (perfect match); In `index_clust` we compute the proportion of iterations where the inferred index is from the same reference cluster as the actual index (close match). 
+Although the aggregated cluster size distributions are close to the reference data, we have to investigate the reconstructed transmission trees to ensure the index assigned to each case is in agreement with the reference dataset. We write two functions: in `index_infer` we compute the proportion of iterations where the inferred index is the actual index for each case (perfect match); In `index_clust` we compute the proportion of iterations where the inferred index is from the same reference cluster as the actual index (close match). 
 
 
 ```{r index_infer, warning = FALSE}
@@ -324,7 +330,7 @@ index_clust1 <- index_clust(dt_cases = dt_cases, out = out1, burnin = burnin)
 index_clust2 <- index_clust(dt_cases = dt_cases, out = out2, burnin = burnin)
 ```
 
-The plots show that although the fits of the two models are close, inferring the import status of cases decreased the proportion of perfect and close match for almost every case (Figure 4). This highlights the importance of using reliable contact tracing investigations to investigate the import status of cases.
+The plots show that inferring the import status of cases decreased the proportion of perfect and close match for most cases (Figure 4). This highlights the importance of using reliable contact tracing investigations to investigate the import status of cases.
 
 ```{r plot index_infer, warning = FALSE, fig.width = 7, fig.height = 3, fig.cap = "Figure 4: Panel A: Proportion of iterations with the correct index for each case; Panel B: Proportion of iterations where the index is from the correct cluster"}
 # Plot the sorted proportion in each model
@@ -347,7 +353,7 @@ par(oldpar)
 
 ### Interpretation of the results
 
-In this section, we want to generate two maps to observe the geographical distribution of the importations, and the average number of secondary cases per region in `out1` and `out2`. The maps will be generated using the package [*ggplot2*]( https://CRAN.R-project.org/package=ggplot2)
+We now generate two maps to investigate the geographical distribution of the importations, and the average number of secondary cases per region in `out1` and `out2`. The maps are generated using the package [*ggplot2*]( https://CRAN.R-project.org/package=ggplot2)
 
 First, we retrieve the boundary files of the census tract in Ohio. They will be used to generate the background of the maps, and are available using the library [*tigris*](https://CRAN.R-project.org/package=tigris). The boundary files are also available on the website [*census.gov*](https://www2.census.gov). We import them in a format compatible with the package [*sf*](https://CRAN.R-project.org/package=sf) and create one background map for each model.
 
@@ -364,7 +370,7 @@ map2$model <- "Model 2"
 
 ```
 
-We are interested in two outputs of the models:  i) the number of import per region, and ii) the geographical distribution of the average number of the secondary cases per case in each model. 
+We are interested in two outputs of the models:  i) the number of imports per region to show the regions where importations of cases are most likely, and ii) the geographical distribution of the  number of secondary cases per case, which give insight into the areas most susceptible to the spread of the disease.
 
 We compute the proportion of iterations where each case was an import in out1 and out2. The element `tree` of `summary(out1)` gives the most likely infector, the proportion of iterations where the index is the most likely infector (i.e. the support of the connection) and the median number of generations between the two cases, the most likely infection date and the chances of being an import for each case. We therefore add the columns `prop_infer1` and `prop_infer2` to `dt_cases`. As the import status is not inferred in `out2`, `prop_infer2` is a binary value, and is the same as `dt_cases$import`.
 
@@ -393,7 +399,7 @@ map2$prop_reg <- prop_reg2[as.character(map2$GEOID)]
 
 We now plot the number of imports per region in each model (Figure 5). Regions where no cases were reported are shown in grey. The right panel (Model `out2`) shows the geographical distribution of importations in the data. 
 
-We observe discrepancies between the two panels: although some regions have the correct number of imports inferred in most iterations, there are uncertainties for some imports in the left panel. Furthermore, the right panel shows there should be one import in each of the 4 regions in the central area, which seems to be underestimated in the left panel. These maps highlight the uncertainty added by the inference of the import status of each case.
+We observe discrepancies between the two panels: although some regions have the correct number of imports inferred in most iterations, there are uncertainties for some imports in the left panel. Furthermore, the right panel shows there should be one import in 4 of the regions in the central area, which seems to be underestimated in the left panel. These maps highlight the uncertainty added by the inference of the import status of each case.
 
 ```{r create_map1, warning = FALSE, fig.width = 6.5, fig.height = 2.5, fig.cap = "Figure 5: Average number of import cases per census tract"}
 # Merge maps
@@ -413,7 +419,7 @@ ggplot(maps) +  geom_sf(aes(fill = prop_reg)) + facet_grid(~model)  +
   theme_classic(base_size = 9)
 ```
 
-Then, we want to compute the average number of secondary cases per case in each region. We write a function to get the number of secondary cases in each iteration, and aggregate it per region. We compute the median across all iterations per region. We can observe the dispersion of the number of secondary cases by taking another quantile than the median, for example, we can use `n_sec1 <- apply(n_sec_tot1[,-1], 1, function(X) quantile(X, 0.25))` to get the first quartile in each region.
+We now compute the average number of secondary cases per case in each region. We define the function `n_sec_per_reg¬, which computes the number of secondary cases per case and aggregates it per region at each iteration of the model. We then extract the median number of secondary cases per case in each region. The dispersion of the number of secondary cases per region can be generated by taking another quantile than the median. For example, `n_sec1 <- apply(n_sec_tot1[,-1], 1, function(X) quantile(X, 0.25))` would show the first quartile in each region.
 
 ```{r n_sec_region, warning = FALSE}
 #' Title: Compute the number of secondary cases per case in each region
@@ -426,11 +432,14 @@ Then, we want to compute the average number of secondary cases per case in each 
 #' other columns show the number of secondary cases per case. Each row 
 #' corresponds to a different iteration.
 n_sec_per_reg <- function(dt_cases, out, burnin){
+  ## Number of secondary cases per case
   n_sec <- apply(out[out$step > burnin, grep("alpha", colnames(out))], 1, 
                  function(X){
                    X <- factor(X, 1:length(X))
                    return(table(X))})
+  ## Aggregate by region
   tot_n_sec_reg <- aggregate(n_sec, list(dt_cases$Cens_tract), sum)
+  ## Divide by the number of cases in each region
   tot_n_sec_reg <- cbind(tot_n_sec_reg[, 1], 
                          tot_n_sec_reg[, -1] / table(dt_cases$Cens_tract))
   return(tot_n_sec_reg)
@@ -443,14 +452,14 @@ n_sec2 <- apply(n_sec_tot2[,-1], 1, median)
 names(n_sec1) <- names(n_sec2) <- unique(dt_cases$Cens_tract)
 ```
 
-We add the number of secondary cases per region to the matrices describing the maps.
+We then add the number of secondary cases per region to the matrices describing the maps.
 
 ```{r add_variables_sec, warning = FALSE}
 map1$n_sec <- as.numeric(n_sec1[as.character(map1$GEOID)])
 map2$n_sec <- as.numeric(n_sec2[as.character(map2$GEOID)])
 ```
 
-We plot the geographical distribution of the median number of secondary cases in each region (Figure 6). The maps generated by the two models are very similar. Both of them show the spatial heterogeneity of the number of secondary transmissions. Some regions seem to consistently cause more secondary cases. There are minor discrepancies between the maps, but they show the same pattern. If we change the vectors `n_sec1` and `n_sec2` to plot different deciles, we can get an idea of the dispersion of the number of secondary cases in the different iterations of the models.
+We can now plot the geographical distribution of the median number of secondary cases in each region (Figure 6). The maps generated by the two models are very similar. Both of them show the spatial heterogeneity of the number of secondary infections. Some regions seem to consistently cause more secondary cases. There are minor discrepancies between the maps, but they show the same pattern. If we change the vectors `n_sec1` and `n_sec2` to plot different deciles, we can get an idea of the dispersion of the number of secondary cases in the different iterations of the models.
 
 
 ```{r create_maps2, warning = FALSE, fig.width = 6.5, fig.height = 2.5, fig.cap = "Figure 6: Median number of secondary transmission per case in each census tract"}
@@ -473,15 +482,16 @@ ggplot(maps) +  geom_sf(aes(fill = n_sec)) + facet_grid(~model)  +
 
 ## Part two: Modify the likelihoods, priors and movements lists: the Stouffer's rank module
 
-In the previous section, we ran and evaluated two different models to reconstruct transmission clusters from surveillance data, and highlighted the spatial heterogeneity of measles transmission in the region. These models were run using the default likelihood and movement functions. Now we develop a third model, where the spatial connection between regions is based on the Stouffer's rank method. 
+In the previous section, we ran and evaluated two different models to reconstruct transmission clusters from simulated surveillance data, and highlighted the spatial heterogeneity of measles transmission in the region. These models were run using the default likelihood, prior and movement functions. Now we develop a third model, where the spatial connection between regions is based on the Stouffer's rank method. 
 
-The Stouffer's rank model, also named the "law of intervening opportunities" does not take absolute distance into account to compute the probability of connection between regions. In this model, the connectivity between the regions $k$ and $l$ only depends on the summed population of all the towns closer to $l$ than $k$. If we define this collection of towns $\Omega_{k,l} = \{i: 0 \leq d(i,l) \leq d(k,l) \}$, the distance of Stouffer is then $p_{kl} = m_l^c * \left(\frac{m_k}{\sum_{i \in \Omega_{k,l}} m_i}\right)^a$. From this, we deduce the probability that a case from region $l$ was infected by a case from region $k$ as $$s(k,l)= \frac{p_{kl}}{\Sigma_hp_{hl}}=\frac{\left(\frac{m_k}{\sum_{i \in \Omega_{k,l}} m_i}\right)^a}{\Sigma_h\left(\frac{m_h}{\sum_{i \in \Omega_{h,l}} m_i}\right)^a}$$
+The Stouffer's rank model does not take absolute distance into account to compute the probability of connection between regions. In this model, the connectivity between the regions $k$ and $l$ only depends on the summed population of all the towns closer to $l$ than $k$. If we define this collection of towns $\Omega_{k,l} = \{i: 0 \leq d(i,l) \leq d(k,l) \}$, the distance of Stouffer is then $p_{kl} = m_l^c * \left(\frac{m_k}{\sum_{i \in \Omega_{k,l}} m_i}\right)^a$. From this, we deduce the probability that a case from region $l$ was infected by a case from region $k$ as $$s(k,l)= \frac{p_{kl}}{\Sigma_hp_{hl}}=\frac{\left(\frac{m_k}{\sum_{i \in \Omega_{k,l}} m_i}\right)^a}{\Sigma_h\left(\frac{m_h}{\sum_{i \in \Omega_{h,l}} m_i}\right)^a}$$
 
 
-This model is actually similar to the power-law gravity model, with a two differences: 
+This model is similar to the power-law gravity model with two main differences: 
+
   * Each cell of the distance matrix should be equal to $\sum_{i \in \Omega_{k,l}} m_i$.
   
-  * There's only one spatial parameter $a$ to estimate.
+  * There is only one spatial parameter $a$ to estimate.
 
 First, we create the initial distance matrix in the Stouffer's rank model `dist_mat_stouffer`:
 
@@ -492,16 +502,17 @@ First, we create the initial distance matrix in the Stouffer's rank model `dist_
 dist_mat_stouffer <- apply(dist_mat, 2, function(X){
   pop_X <- cumsum(pop_vect[order(X)])
   omega_X <- pop_X[names(X)]
+  # omega_X is set to -1 if the distance between two regions is above gamma
   omega_X[X > config1$gamma] <- -1
   return(omega_X)
 })
-# New value of gamma
+# The new value of gamma is equal to the maximum of dist_mat_stouffer + 1
 gamma <- max(dist_mat_stouffer) + 1
-# Negative value of distance set above gamma
+# The values previously set to -1 are now set to the new value of gamma
 dist_mat_stouffer[dist_mat_stouffer == -1] <- max(dist_mat_stouffer) * 2
 ```
 
-We now write the function `cpp_stouffer_move_a` to replace the default movement function `cpp_move_a`. As the Stouffer's rank and the power law gravity models are close, we do not need to re-write `cpp_log_like`, the default function to compute the probability matrix. For other distance models, it may be required to create a new version of `cpp_log_like` and call it in the movement function. In `cpp_stouffer_move_a`, there is no parameter $b$, both spatial parameters are equal to $a$. We use the package [*Rcpp*](https://CRAN.R-project.org/package=Rcpp) to source the new movement function.
+We write the function `cpp_stouffer_move_a` to replace the default movement function `cpp_move_a`. As the formula used to compute the Stouffer's rank values is similar to the power law gravity models, we do not need to re-write `cpp_log_like`, the default function to compute the probability matrix. Other distance models may require a rewriting of `cpp_log_like`, which should then be called in the new movement function. In the Stouffer's rank model, there is no parameter $b$, both spatial parameters are equal to $a$. We use the package [*Rcpp*](https://CRAN.R-project.org/package=Rcpp) to source the new movement function.
 
 ```{Rcpp stouffer_model, message = FALSE, warning = FALSE}
 // [[Rcpp::depends(o2geosocial)]]
@@ -558,7 +569,7 @@ Rcpp::List cpp_stouffer_move_a(Rcpp::List param, Rcpp::List data, Rcpp::List con
 }
 ```
 
-We now modify the element $a$ of the list `moves`, and replace it with `cpp_stouffer_move_a`. As `b` is not estimated in this model, we create the null function `f_null`, and modify the list `priors`.
+We modify the element $a$ of the list `moves`, and replace it with `cpp_stouffer_move_a`. As `b` is not estimated in this model, we create the null function `f_null`, and modify the list `priors`.
 
 ```{r moves_priors, message = FALSE, warning = FALSE}
 moves3 <- custom_moves(a = cpp_stouffer_move_a)
@@ -568,6 +579,7 @@ f_null <- function(param) {
 }
 priors3 <- custom_priors(b = f_null)
 ```
+
 Finally, we set up the lists `data` and `config`: the distance matrix for this run is `dist_mat_stouffer`; we do not move the parameter `b`, and we change the value of `gamma`. We then run `out_stouffer`.  
 
 ```{r out_stouffer, message = FALSE, warning = FALSE}
@@ -598,7 +610,7 @@ out_stouffer <- outbreaker(data = data3, config = config3, moves = moves3,
                            priors = priors3, likelihoods = likelihoods)
 ```
 
-As we did in the previous section, we plot the inferred cluster size distribution and compare it to the reference data (Figure 7). We observe minor discrepancies between the two distributions, notably most of the iterations show one larger cluster (above 40 cases), which is not present in the reference data. Otherwise the two distributions are close. 
+As we did in the previous section, we plot the inferred cluster size distribution and compare it to the reference data (Figure 7). We observe discrepancies between the inferred distribution and the data: the model over-estimates the number of larger clusters (above 5 cases).
 
 ```{r stouffer_cluster, message = FALSE, warning = FALSE, fig.width = 6.5, fig.height = 4, fig.cap = "Figure 7: Comparison of inferred cluster size distribution with the reference data"}
 # Grouped cluster size distribution in the Stouffer's rank model
@@ -617,7 +629,7 @@ legend("topright", fill = grey.colors(2), bty = "n",
                   "Simulated dataset"))
 ```
 
-Finally, we plot the proportion of perfect match and close match for each case (Figure 8). If we compare it with the first two models, we observe that the fit obtained with the Stouffer's rank method is consistently worse than the first two models. The Stouffer's rank method did not improve the agreement between the fitted and reference data. 
+Finally, we plot the proportion of perfect and close match for each case (Figure 8). We observe that the fit obtained with the Stouffer's rank method is consistently worse than the first two models. The Stouffer's rank method did not improve the agreement between the inferred trees and the reference data. 
 
 The reference data used in the study were simulated using an exponential gravity model, which explains why introducing the Stouffer's rank method did not improve the inference. This is not representative of the performance of each mobility model on real-world data.
 
@@ -641,7 +653,7 @@ par(oldpar)
 
 # Conclusion
 
-The R package *o2geosocial* is a new tool for data analysis building upon the framework developed in [*outbreaker2*](https://CRAN.R-project.org/package=outbreaker2). It is highly flexible and only requires routinely collected surveillance data. It can be used to identify large transmission clusters and highlight the dynamics of transmission in different regions. An application of the algorithm on a small geographical scale was presented in the tutorial, it can also be used to study datasets of cases scattered across larger areas. The methods presented in the tutorial can be applied to the second dataset included in the package `toy_outbreak_long`, which includes more than 1900 cases simulated in the United States. The computation time increases with the number of regions and the number of cases, so the MCMC runs will be longer.
+The R package *o2geosocial* is a new tool for data analysis building upon the framework developed in [*outbreaker2*](https://CRAN.R-project.org/package=outbreaker2). It is highly flexible and only requires routinely collected surveillance data. It can be used to identify large transmission clusters and highlight the dynamics of transmission in different regions. An application of the algorithm on a small geographical scale was presented in the tutorial, it can also be used to study datasets of cases scattered across larger areas. The methods presented in the tutorial can be applied to the second dataset included in the package `toy_outbreak_long`, which includes more than 1900 cases simulated in the United States. The computation time increases with the number of regions and the number of cases.
 
-We showed how the model could be edited to implement a range of mobility models. Describing human mobility during infectious diseases outbreaks can be challenging, and the performances of the models depend on the setting studied. The package can be extended to take into account the variety of existing mobility models. We encourage the development of extensions and the use of *o2geosocial* to study different pathogens and settings. We believe a wide use of *o2geosocial* could maximise what can be reconstructed from routinely collected data and epidemiological investigations and improve out understanding of outbreak dynamics. 
+We showed how the model could be edited to implement a range of mobility models. Describing human mobility during infectious diseases outbreaks can be challenging, and the performances of the models depend on the setting studied. The package can be extended to take into account the variety of existing mobility models. We encourage the development of extensions and the use of *o2geosocial* to study different pathogens and settings where sequence data cannot be used to reconstruct transmission clusters. We hope that wider use of *o2geosocial* can help maximise what can be reconstructed from routinely collected data and epidemiological investigations to improve our understanding of outbreak dynamics. 
 
