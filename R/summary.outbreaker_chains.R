@@ -20,6 +20,7 @@
 #' @param ... further arguments to be passed to other methods
 #'
 #' @export
+#' 
 #' @importFrom utils head tail
 #'
 print.outbreaker_chains <- function(x, n_row = 3, n_col = 8, type = "chain", ...) {
@@ -69,7 +70,7 @@ print.outbreaker_chains <- function(x, n_row = 3, n_col = 8, type = "chain", ...
     }))
     if (ncol(table_tot) > n_col) {
       cat("\n Biggest cluster:", max_clust_size)
-      cat("\n Cluster not shown:", n_col, "to", ncol(table_tot))
+      cat("\n Cluster not shown:", n_col, "to", ncol(table_tot), "\n")
       table_tot <- table_tot[, seq_len(min(n_col, ncol(table_tot)))]
     }
     if((n_row * 2) < nrow(table_tot)){
@@ -106,6 +107,13 @@ print.outbreaker_chains <- function(x, n_row = 3, n_col = 8, type = "chain", ...
 #' cluster size distribution.
 #'
 #' @export
+#' 
+#' @return
+#' 
+#' The form of the value returned by \code{plot} depends on the \code{type}. 
+#' If the type is set as \code{network}, plot returns a visNetwork object 
+#' containing  the details of the inferred transmission trees. Otherwise, it 
+#' returns a ggplot object containing the elements of the plot.
 #'
 #' @details \code{type} indicates the type of graphic to plot:
 #' 
@@ -384,9 +392,49 @@ plot.outbreaker_chains <- function(x, y = "post",
 
 #' @rdname outbreaker_chains
 #' @param object an \code{outbreaker_chains} object as returned by \code{outbreaker}.
-#' @param group_cluster a numeric \code{vector} indicating the breaks to aggregate the
-#' cluster size distribution.
+#' @param group_cluster a numeric \code{vector} indicating the breaks to 
+#' aggregate the cluster size distribution.
 #' @export
+#' 
+#' @return 
+#' The function \code{summary} returns a list containing 9 elements:
+#' 
+#' \itemize{
+#' 
+#' \item{\code{step}}{contains the first and last values of the iteration 
+#' number; the interval between each iteration retained for the output 
+#' (defined by the parameter \code{sample_every} in \code{create_config}),
+#'  and the number of iterations in the output,}
+#'
+#' \item{\code{post}}{contains the minimum, maximum, mean, median and 
+#' quartiles of the posterior distribution.}
+#'
+#' \item{\code{like}}{contains the minimum, maximum, mean, median and 
+#' quartiles of the likelihood distribution.}
+#'
+#' \item{\code{prior}}{contains the minimum, maximum, mean, median and 
+#' quartiles of the prior distribution.}
+#'
+#' \item{\code{pi}}{contains the minimum, maximum, mean, median and quartiles 
+#' of the conditional report ratio.}
+#'
+#' \item{\code{a}}{contains the minimum, maximum, mean, median and quartiles 
+#' of the spatial parameter \code{a}.}
+#'
+#' \item{\code{b}}{contains the minimum, maximum, mean, median and quartiles 
+#' of the spatial parameter \code{b}.}
+#' 
+#' \item{\code{tree}}{a \code{data.frame} that contains the most likely 
+#' infector, the infection date, and the number of missing generations of each
+#' case. It also contains the \code{support} of the most likely branch (i.e. 
+#' the proportion of iterations where the infector of a case is its most 
+#' likely infector), and \code{import}, the proportion of iteration where the 
+#' case was classified as an importation.}
+#' 
+#' \item{\code{cluster}}{a data frame listing the minimum, maximum, median,
+#' mean and quartile of the cluster size distribution.}
+#'
+#' }
 #' @importFrom stats median
 #' @importFrom stats aggregate
 summary.outbreaker_chains <- function(object, burnin = 0, group_cluster = NULL, ...) {

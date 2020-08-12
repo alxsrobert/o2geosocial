@@ -44,10 +44,55 @@ ancestries to be plotted; only used if 'type' is 'network'}
 \item{labels}{a vector of length N indicating the case labels (must be
 provided in the same order used for dates of symptom onset)}
 
-\item{group_cluster}{a numeric \code{vector} indicating the breaks to aggregate the
-cluster size distribution.}
+\item{group_cluster}{a numeric \code{vector} indicating the breaks to 
+aggregate the cluster size distribution.}
 
 \item{object}{an \code{outbreaker_chains} object as returned by \code{outbreaker}.}
+}
+\value{
+The form of the value returned by \code{plot} depends on the \code{type}. 
+If the type is set as \code{network}, plot returns a visNetwork object 
+containing  the details of the inferred transmission trees. Otherwise, it 
+returns a ggplot object containing the elements of the plot.
+
+The function \code{summary} returns a list containing 9 elements:
+
+\itemize{
+
+\item{\code{step}}{contains the first and last values of the iteration 
+number; the interval between each iteration retained for the output 
+(defined by the parameter \code{sample_every} in \code{create_config}),
+ and the number of iterations in the output,}
+
+\item{\code{post}}{contains the minimum, maximum, mean, median and 
+quartiles of the posterior distribution.}
+
+\item{\code{like}}{contains the minimum, maximum, mean, median and 
+quartiles of the likelihood distribution.}
+
+\item{\code{prior}}{contains the minimum, maximum, mean, median and 
+quartiles of the prior distribution.}
+
+\item{\code{pi}}{contains the minimum, maximum, mean, median and quartiles 
+of the conditional report ratio.}
+
+\item{\code{a}}{contains the minimum, maximum, mean, median and quartiles 
+of the spatial parameter \code{a}.}
+
+\item{\code{b}}{contains the minimum, maximum, mean, median and quartiles 
+of the spatial parameter \code{b}.}
+
+\item{\code{tree}}{a \code{data.frame} that contains the most likely 
+infector, the infection date, and the number of missing generations of each
+case. It also contains the \code{support} of the most likely branch (i.e. 
+the proportion of iterations where the infector of a case is its most 
+likely infector), and \code{import}, the proportion of iteration where the 
+case was classified as an importation.}
+
+\item{\code{cluster}}{a data frame listing the minimum, maximum, median,
+mean and quartile of the cluster size distribution.}
+
+}
 }
 \description{
 Several methods are defined for instances of the class
