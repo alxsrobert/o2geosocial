@@ -1,3 +1,3 @@
-# o2geosocial 0.1.0
+# o2geosocial 1.0.0
 
 * initial release
