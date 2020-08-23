@@ -27,17 +27,17 @@
 #' \itemize{
 #'
 #' \item \code{pi} (reporting probability): default function is a beta
-#' distribution implemented in \code{outbreaker:::cpp_prior_pi}. New prior
+#' distribution implemented in \code{cpp_prior_pi}. New prior
 #' functions should use \code{x$pi} to refer to the current value of \code{pi},
 #' assuming their argument is called \code{x}.
 #'
 #' \item \code{a} (first spatial parameter (population)): default function is 
-#' a uniform distribution implemented in \code{outbreaker:::cpp_prior_a}. 
+#' a uniform distribution implemented in \code{cpp_prior_a}. 
 #' New prior functions should use \code{x$a} to refer to the current value of \code{a},
 #' assuming their argument is called \code{x}.
 #'
 #' \item \code{b} (second spatial parameter (distance)): default function is 
-#' a uniform distribution implemented in \code{outbreaker:::cpp_prior_b}.
+#' a uniform distribution implemented in \code{cpp_prior_b}.
 #' New prior functions should use \code{x$b} to refer to the current value of \code{b},
 #' assuming their argument is called \code{x}.
 #'
@@ -56,36 +56,21 @@
 #'     instead.
 #'
 #' @examples
-#'
-#' ## BASIC CONFIGURATION
-#' custom_priors()
-#'
-#'
 #' ## SPECIFYING PRIOR PARAMETERS
-#' ## - this will need to be passed to outbreaker
+#' ## Default values: pi follows a beta distribution (parameters 10, 1), 
+#' ## a and b follow a uniform distribution (parameters 0, 5)
 #' default_config <- create_config()
+#' ## Use the variables prior_a, prior_b and prior_pi to change the parameters
+#' ## of the prior distributions can be 
 #' new_config <- create_config(prior_a = c(0,5), prior_b = c(0,5),
 #'                         prior_pi = c(2, 1))
 #'
-#' ## - to check the prior manually, default settings:
-#' param <- list(mu = 0.001, pi = 0.9)
-#' o2geosocial:::cpp_prior_pi(param, default_config)
 #'
-#' o2geosocial:::cpp_prior_pi(param, new_config)
-#'
-#' ## these correspond to:
-#' dexp(0.001, 0.01, log = TRUE)
-#' dbeta(0.9, 2, 1, log = TRUE)
-#'
-#'
-#' ## SPECIFYING A PRIOR FUNCTION
-#'
-#' ## flat prior for pi between 0.5 and 1
+#' ## SPECIFYING A NEW PRIOR FUNCTION
+#' ## Example: flat prior for pi between 0.5 and 1
 #' f <- function(x) {ifelse(x$pi > 0.5, log(2), log(0))}
 #' priors <- custom_priors(pi = f)
-#' priors # this should be passed to outbreaker
-#'
-#' ## test the prior manually
+#' ## test the new prior distribution
 #' priors$pi(list(pi=1))
 #' priors$pi(list(pi=.6))
 #' priors$pi(list(pi=.2))
