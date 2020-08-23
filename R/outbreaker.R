@@ -80,7 +80,6 @@
 #' ## get data
 #' data(toy_outbreak_short)
 #'
-#' \dontrun{
 #' ## run outbreaker
 #' dt_cases <- toy_outbreak_short$cases
 #' dt_cases <- dt_cases[order(dt_cases$Date), ]
@@ -107,7 +106,6 @@
 #' plot(out)
 #'
 #'
-#' }
 outbreaker <- function(data = outbreaker_data(),
                        config = create_config(),
                        priors = custom_priors(),
