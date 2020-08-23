@@ -1,13 +1,13 @@
 ## This function is not exported and is meant for internal use.
-## It is near identical to the MCMC implemented by 'outbreaker.move'. 
-## The only difference is it has its own number of iterations
-## ('config$n.iter.import') and sampling frequency
-## ('config$sample.every.import'), and stores individual likelihoods for each
-## case and saved iteration. The rationale is to use these chains to compute the
-## 'global influences' of each case, flag the number of outliers based on these values 
-## and an arbitrary threshold ('config$outlier.threshold'), and mark these cases as
-## imported, i.e. for which the ancestor will be 'NA'.
-
+## It is similar to the MCMC implemented by 'outbreaker.move'. 
+## It has its own number of iterations ('config$n.iter.import') and sampling 
+## frequency ('config$sample.every.import'), and stores individual likelihoods 
+## for each case and saved iteration. These chains are then used to compute 
+## the 'global influence' of each case, flag the number of outliers per 
+## iteration based on these values and the threshold 
+## ('config$outlier.threshold' and 'config$outlier.relative'). 
+## We then compute the minimum number of outliers per iteration in the MCMC run
+## and mark these cases as imported, i.e. for which the ancestor will be 'NA'.
 #' @importFrom stats quantile
 outbreaker_find_imports <- function(moves, data, param_current,
                                     param_store, config, likelihoods) {
@@ -30,7 +30,6 @@ outbreaker_find_imports <- function(moves, data, param_current,
   influences <- matrix(0, ncol = data$N, nrow = n_measures)
   colnames(influences) <- 1:data$N
 
-  # set.seed(20)
   ## Function to run the short MCMC ##
   MCMC_imports <- function(config_imports, data_imports, moves_imports,
                            J_imports, likelihoods_imports,
@@ -70,10 +69,11 @@ outbreaker_find_imports <- function(moves, data, param_current,
   influences <- outcome_MCMC[["influences"]]
   param_current <- outcome_MCMC[["param_current"]]
   
-  ##Influence matrix per cluster
+  ## Influence matrix per cluster
   list_influences <- sapply(1:max(data$is_cluster), function(X)
     return(influences[, which(data$is_cluster == X)]))
-  
+  ## Compute the likelihood threshold. The likelihoods of connection lower than
+  ## the threshold will be considered implausible
   threshold <- -log(config$outlier_threshold)*5
   if(config$outlier_relative == TRUE){
     influences_vect <- c(influences)
@@ -88,7 +88,8 @@ outbreaker_find_imports <- function(moves, data, param_current,
       bad_ancestor_matrix <- X>bad_ancestor
       n_imports_iteration <- apply(bad_ancestor_matrix, 1, sum)
       # Add the min(n_imports_iteration) new import in the cluster
-      imports <- names(which(bad_ancestor_matrix[which.min(n_imports_iteration),] == TRUE))
+      imports <- names(which(
+        bad_ancestor_matrix[which.min(n_imports_iteration),] == TRUE))
       imports <- as.numeric(imports)
       return(imports)
     }
@@ -101,7 +102,6 @@ outbreaker_find_imports <- function(moves, data, param_current,
   ## movements of alpha and kappa for these cases is also disabled; because the config has been
   ## altered in these cases, we systematically return the config as well as the initial
   ## parameters.
-  
   ini_param$store$alpha[[1]][new_imports] <- ini_param$current$alpha[new_imports] <- NA
   ini_param$store$kappa[[1]][new_imports] <- ini_param$current$kappa[new_imports] <- NA
   ini_param$store$a[[1]] <- ini_param$current$a <- param_current$a
