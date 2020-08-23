@@ -37,6 +37,7 @@ test_that("Output have expected format", {
   print(out, n_col = 4)
   print(out, type = "cluster")
   print(out, type = "cluster", n_col = 2)
+  print(out, type = "cluster", group_cluster = c(1,2,3))
   
   plot(out, type = "trace")
   plot(out, type = "trace", burnin = 200)
@@ -45,7 +46,18 @@ test_that("Output have expected format", {
   plot(out, type = "alpha")
   plot(out, type = "t_inf")
   plot(out, type = "kappa")
-
+  plot(out, type = "network")
+  plot(out, type = "cluster")
+  plot(out, type = "cluster", group_cluster = c(1,2,3))
+  
+  
+  summary(out, group_cluster = c(1,2,3))
+  
+  expect_error(summary(out, burnin = 2000),
+               "burnin exceeds the number of steps in object")
+  expect_error(plot(out, burnin = 2000),
+               "burnin exceeds the number of steps in x")
+  expect_error(plot(out, y = "error"), "error is not a column of x")
   
   out_df <- as.data.frame(out)
   
