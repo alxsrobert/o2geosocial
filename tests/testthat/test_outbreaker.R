@@ -32,6 +32,20 @@ test_that("Output have expected format", {
                           n_iter = 1000, n_iter_import = 500, burnin = 200)
   out <- outbreaker(data, config)
   
+  print(out)
+  print(out, n_row  = 2)
+  print(out, n_col = 4)
+  print(out, type = "cluster")
+  print(out, type = "cluster", n_col = 2)
+  
+  plot(out, type = "trace")
+  plot(out, type = "trace", burnin = 200)
+  plot(out, type = "hist")
+  plot(out, type = "density")
+  plot(out, type = "alpha")
+  plot(out, type = "t_inf")
+  plot(out, type = "kappa")
+
   
   out_df <- as.data.frame(out)
   
