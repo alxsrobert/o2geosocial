@@ -30,9 +30,8 @@ test_that("Customization of prior distributions works well", {
   param <- list(pi = .85, a = .7, b = .1)
   
   prior <- custom_priors()
+  print(prior)
   expect_identical(prior, custom_priors(prior))
-  
-  
   
   normal_prior_pi <- function(param){
     return(dnorm(x = param$pi, mean = config$prior_pi[1], sd = config$prior_pi[2], log = T))
@@ -43,6 +42,9 @@ test_that("Customization of prior distributions works well", {
   normal_prior_b <- function(param){
     return(dnorm(x = param$b, mean = config$prior_b[1], sd = config$prior_b[2], log = T))
   }
+  expect_error(custom_priors(pi = "error_pi"), "The following priors are not functions: pi")
+  expect_error(custom_priors(pi = function(param1, param2) return(c(2))), 
+               "The following priors don't have a single argument: pi")
   new_prior <- custom_priors(pi = normal_prior_pi, a = normal_prior_a, b = normal_prior_b)
   expect_identical(new_prior$pi, normal_prior_pi)
   expect_identical(new_prior$a, normal_prior_a)
@@ -50,6 +52,7 @@ test_that("Customization of prior distributions works well", {
   expect_equal(cpp_prior_pi(param, config, new_prior$pi), -0.13191552)
   expect_equal(cpp_prior_a(param, config, new_prior$a), -0.61635344)
   expect_equal(cpp_prior_b(param, config, new_prior$b), -9.5069156)
+  print(new_prior)
   
   expect_equal(cpp_prior_all(param, config, new_prior), 
                -0.13191552 + -0.61635344 + -9.5069156)

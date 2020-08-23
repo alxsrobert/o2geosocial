@@ -258,6 +258,7 @@ test_that("Customisation with identical functions", {
   ## check custom_likelihoods
   expect_identical(custom_likelihoods(),
                    custom_likelihoods(custom_likelihoods()))
+  print(custom_likelihoods())
   
   ## generate data
   alpha <- c(NA,rep(1,4))
@@ -303,6 +304,11 @@ test_that("Customisation with identical functions", {
                                        timing_infections = f_timing_infections,
                                        timing_sampling = f_timing_sampling,
                                        reporting = f_reporting)
+  print(list_functions)
+  expect_error(custom_likelihoods(age = "error_age"), 
+               "The following likelihoods are not functions: age")
+  expect_error(custom_likelihoods(age = function(data) cpp_ll_age(data, param)), 
+               "The following likelihoods don't have two arguments: age")
   
   ## tests
   expect_equal(cpp_ll_age(data, param, , list_functions$age),
