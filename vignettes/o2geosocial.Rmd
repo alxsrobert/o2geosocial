@@ -112,7 +112,7 @@ In this tutorial, we will analyse `toy_outbreak_short`. We will run a first mode
 
 We used the package [*data.table*](https://CRAN.R-project.org/package=data.table) for handling data through the tutorial as it is optimised to deal with large datasets. The methods defined in `o2geosocial` would work similarly if we had used the `data.frame` syntax and format.
 
-The results presented in this tutorial were generated using only 6,000 iterations to ensure a short run-time for the vignette. We recommend running longer chains to reach the convergence and sample from the posterior distribution, and using the package [*coda*](https://CRAN.R-project.org/package=coda) to evaluate the convergence of the MCMC chains.
+The results presented in this tutorial were generated using only 5,000 iterations to ensure a short run-time for the vignette. We recommend running longer chains to reach the convergence and sample from the posterior distribution, and using the package [*coda*](https://CRAN.R-project.org/package=coda) to evaluate the convergence of the MCMC chains.
 
 ### Run the models with `outbreaker()'
 
@@ -188,7 +188,7 @@ names(pop_vect) <- rownames(dist_mat) <- colnames(dist_mat) <-
 
 Now that all the distributions and matrices are set up, we create the lists `data`, `config`, `moves`, `likelihoods` and `priors` to run the main function of the package. In this example, we use the default parameters to build `moves`, `likelihoods` and `priors` with the same elements as described in section "Implementation".  The list `data` contains the distributions `f_dens` and `w_dens`, the population vector and the distance matrix, along with the onset dates, age group, location and genotype of the cases. 
 
-We implement two different models: in `out1` the import status of the cases is inferred by the model, whereas in `out2` the import status is set before the MCMC. The first short run in `out1` is run with $1,500$ iterations to find the import status, and the main run lasts for $6,000$ iterations in both models. As the import status of the cases is inferred in `out1`, we have to set a threshold to quantify what is an unlikely likelihood of transmission between cases. We use a relative outlier threshold at 0.9, which means that the threshold will be the $9^{th}$ decile of the negative log-likelihoods $L_i(t_i, j, t_j, \theta)$ in every sample. 
+We implement two different models: in `out1` the import status of the cases is inferred by the model, whereas in `out2` the import status is set before the MCMC. The first short run in `out1` is run with $1,500$ iterations to find the import status, and the main run lasts for $5,000$ iterations in both models. As the import status of the cases is inferred in `out1`, we have to set a threshold to quantify what is an unlikely likelihood of transmission between cases. We use a relative outlier threshold at 0.9, which means that the threshold will be the $9^{th}$ decile of the negative log-likelihoods $L_i(t_i, j, t_j, \theta)$ in every sample. 
 
 ```{r first_model, message = FALSE, warning = FALSE}
 # Default moves, likelihoods and priors
@@ -207,7 +207,7 @@ data1 <- outbreaker_data(dates = dt_cases$Date, #Onset dates
                          distance = dist_mat #Distance matrix
 )
 config1 <- create_config(data = data1, 
-                         n_iter = 6000, #Iteration number: main run
+                         n_iter = 5000, #Iteration number: main run
                          n_iter_import = 1500, #Iteration number: short run
                          burnin = 500, #burnin period: first run
                          outlier_relative = T, #Absolute / relative threshold 
@@ -227,7 +227,7 @@ data2 <- outbreaker_data(dates = dt_cases$Date,
 )
 config2 <- create_config(data = data2, 
                          find_import = FALSE, # No inference of import status
-                         n_iter = 6000, 
+                         n_iter = 5000, 
                          sample_every = 50, # 1 in 50 iterations is kept
                          burnin = 500)
 # Run model 2
@@ -598,7 +598,7 @@ config3 <- create_config(data = data3,
                          move_b = FALSE, # b is not estimated
                          init_b = 0, 
                          spatial_method = "power-law",
-                         n_iter = 6000, #Iteration number: main run
+                         n_iter = 5000, #Iteration number: main run
                          n_iter_import = 1500, #Iteration number: short run
                          burnin = 500, #burnin period: first run
                          outlier_relative = T, #Absolute / relative threshold
