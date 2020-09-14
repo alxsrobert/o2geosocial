@@ -16,10 +16,8 @@ Imports:
     methods,
     stats,
     grDevices,
-    ape,
     geosphere,
     ggplot2,
-    magrittr,
     visNetwork,
     data.table,
     outbreaker2
