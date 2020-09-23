@@ -1,6 +1,7 @@
 #include <Rcpp.h>
 #include <Rmath.h>
 #include "internals.h"
+#include "priors.h"
 
 
 // ON WHEN THESE ARE USED
