@@ -7,8 +7,8 @@ test_that("Output have expected format", {
   alpha <- c(NA,rep(1,4))
   
   times <- 0:4
-  f <- c(.1, .2, .5, .2, .1)
-  w <- c(.1, .2, .5, .2, .1)
+  f <- c(.1, .2, .4, .2, .05, 0.03, 0.01, 0.005, 0.005)
+  w <- c(.05, .1, .25, .5, .05, 0.03, 0.01, 0.005, 0.005)
   
   
   data(toy_outbreak_short)
@@ -75,9 +75,10 @@ test_that("Results work, all component", {
   ## get data
   alpha <- c(NA,rep(1,4))
   
-  times <- c(0, 3, 6, 7, 15)
-  f <- c(.1, .2, .5, .2, .1)
-  w <- c(.1, .2, .5, .2, .1)
+  times <- c(0, 4, 8, 9, 23)
+  
+  f <- c(.1, .2, .4, .2, .05, 0.03, 0.01, 0.005, 0.005)
+  w <- c(.05, .1, .25, .5, .05, 0.03, 0.01, 0.005, 0.005)
   
   
   data(toy_outbreak_short)
@@ -116,8 +117,8 @@ test_that("Results work, 1 component at the time", {
   alpha <- c(NA,rep(1,4))
   
   times <- c(0, 3, 6, 7, 15)
-  f <- c(.1, .2, .5, .2, .1)
-  w <- c(.1, .2, .5, .2, .1)
+  f <- c(.1, .2, .4, .2, .05, 0.03, 0.01, 0.005, 0.005)
+  w <- c(.05, .1, .25, .5, .05, 0.03, 0.01, 0.005, 0.005)
   
   
   data(toy_outbreak_short)
