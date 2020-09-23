@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include <Rmath.h>
+#include "moves.h"
 #include "internals.h"
 #include "likelihoods.h"
 #include "priors.h"
@@ -345,13 +346,12 @@ Rcpp::List cpp_move_alpha(Rcpp::List param, Rcpp::List data, Rcpp::List config,
   for (size_t i = 0; i < N; i++) {
     Rcpp::IntegerVector cluster_i = cluster_list[cluster_vec[i]-1];
     t_inf_i = t_inf[cluster_i-1];
-    
-    // only non-NA ancestries are moved, if there is at least 1 choice
-    if (alpha[i] != NA_INTEGER && sum(t_inf_i < t_inf[i]) > 0) { 
+    // only non-NA ancestries are moved, if there is at least 1 option
+    if (alpha[i] != NA_INTEGER && sum(t_inf_i < t_inf[i]) > 1) { 
       possible_ancestors = cpp_are_possible_ancestors(t_inf, alpha, genotype, 
                                                       cluster_i, i+1);
-      
-      if (possible_ancestors.size()>0){
+
+      if (possible_ancestors.size()>1){
         // loglike with current value
         // old_loglike = cpp_ll_all(data, param, R_NilValue);
         old_loglike = cpp_ll_all(data, config, param, i+1, list_custom_ll); // offset
@@ -513,8 +513,7 @@ Rcpp::List cpp_move_swap_cases(Rcpp::List param, Rcpp::List data,
   Rcpp::IntegerVector move_alpha = config["move_alpha"]; // pointer to config$move_alpha
   Rcpp::List swapinfo; // contains alpha, kappa and t_inf
   Rcpp::IntegerVector local_cases;
-  double gamma = config["gamma"];
-  
+
   Rcpp::List cluster_list = data["cluster"];
   Rcpp::IntegerVector cluster_vec = data["is_cluster"];
   
@@ -522,14 +521,11 @@ Rcpp::List cpp_move_swap_cases(Rcpp::List param, Rcpp::List data,
   
   double old_loglike = 0.0, new_loglike = 0.0, p_accept = 0.0;
   
-  Rcpp::IntegerVector t_inf_i;
-  
   for (size_t i = 0; i < N; i++) {
     Rcpp::IntegerVector cluster_i = cluster_list[cluster_vec[i]-1];
-    t_inf_i = t_inf[cluster_i-1];
-    // only non-NA ancestries are moved, if there is at least 1 choice
-    if (alpha[i] != NA_INTEGER && sum(t_inf_i < t_inf[i] + t_inf_i > t_inf[i]-gamma) > 0 &&
-        move_alpha[alpha[i]-1] == TRUE) {
+
+    // only non-NA ancestries are moved
+    if (alpha[i] != NA_INTEGER && move_alpha[alpha[i]-1] == TRUE) {
       // The local likelihood is defined as the likelihood computed for the
       // cases affected by the swap; these include:
       
@@ -538,7 +534,7 @@ Rcpp::List cpp_move_swap_cases(Rcpp::List param, Rcpp::List data,
       // - 'alpha[i]'
       // - the descendents of 'alpha[i]' (other than 'i')
       local_cases = cpp_find_local_cases(param["alpha"], cluster_i, i+1);
-      
+        
       // loglike with current parameters
       
       old_loglike = cpp_ll_all(data, config, param, local_cases, list_custom_ll); // offset
