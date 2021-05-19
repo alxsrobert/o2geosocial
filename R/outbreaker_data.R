@@ -29,8 +29,8 @@
 #' standardized, this distribution is rescaled to sum to 1.}
 #'
 #' \item{f_dens}{similar to \code{w_dens}, except that this is the distribution
-#' of the colonization time, i_e. time interval during which the pathogen can
-#' be sampled from the patient.}
+#' of the incubation period, i_e. time interval between the reported onset date
+#' and the infection date.}
 #' 
 #' \item{a_dens}{a matrix of numeric values indicating the contact between age 
 #' groups, reflecting on the infectious potential of a case for a given age group.}
