@@ -162,19 +162,21 @@ outbreaker_data <- function(..., data = list(...)) {
     
     ## Remove trailing zeroes to prevent starting with -Inf temporal loglike
     if(data$w_dens[length(data$w_dens)] < 1e-15) {
-      final_index <- max(which(data$w_dens > 1e-15))
+      final_index <- max(which(!is.infinite(log(data$w_dens)))) - 1
       data$w_dens <- data$w_dens[1:final_index]
       warning("Removed trailing zeroes found in w_dens")
     }
     
-    ## add an exponential tail summing to 1e-4 to 'w'
+    ## add an exponential tail to 'w'
     ## to cover the span of the outbreak
     ## (avoids starting with -Inf temporal loglike)
     if (length(data$w_dens) < data$max_range) {
-      length_to_add <- (data$max_range-length(data$w_dens)) + 10 # +10 to be on the safe side
-      val_to_add <- stats::dexp(seq_len(length_to_add), 1)
-      val_to_add <- 1e-4*(val_to_add/sum(val_to_add))
-      data$w_dens <- c(data$w_dens, val_to_add)
+      final_index <- length(data$w_dens)
+      length_to_add <- (data$max_range - final_index) + 1 
+      val_to_add <- min(1e-100, data$w_dens[final_index])
+      data$w_dens <- c(data$w_dens[-final_index], 
+                       rep(val_to_add, length_to_add))
+      data$w_dens <- data$w_dens/sum(data$w_dens)
     }
     
     ## standardize the mass function
@@ -310,8 +312,8 @@ outbreaker_data <- function(..., data = list(...)) {
         can_be_ances_X[data$dates[X] + unlik_f_dens < data$dates] <- FALSE
       }
       if(!is.null(data$w_dens) & !is.null(data$dates)){
-        unlik_w_dens <- which(data$log_w_dens[-1] < -40 &
-                                diff(data$log_w_dens[1,]) < 0)[1]
+        unlik_w_dens <- which(data$log_w_dens[-1] < -10 &
+                                diff(data$log_w_dens[1,]) < 0)[1] * 2
         can_be_ances_X[data$dates[X] - unlik_w_dens > data$dates] <- FALSE
       }
       if(data$genotype[X] != "Not attributed"){

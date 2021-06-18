@@ -70,8 +70,10 @@ outbreaker_find_imports <- function(moves, data, param_current,
   param_current <- outcome_MCMC[["param_current"]]
   
   ## Influence matrix per cluster
-  list_influences <- sapply(1:max(data$is_cluster), function(X)
-    return(influences[, which(data$is_cluster == X)]))
+  if(max(data$is_cluster) == 1) list_influences <- list(influences) else
+    list_influences <- sapply(1:max(data$is_cluster), function(X)
+      return(influences[, which(data$is_cluster == X)]))
+  
   ## Compute the likelihood threshold. The likelihoods of connection lower than
   ## the threshold will be considered implausible
   threshold <- -log(config$outlier_threshold)*5
