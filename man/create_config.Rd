@@ -107,6 +107,9 @@ used to compute the threshold when estimating the import status.}
 \item{outlier_relative}{a logical indicating whether the threshold is an absolute 
 or relative value, default to FALSE (absolute value).}
 
+\item{outlier_plot}{a logical indicating whether to plot the comparison between the 
+likelihoods of connection in the short run and the threshold.}
+
 \item{n_iter_import}{Number of iterations of the first short run.}
 
 \item{sample_every_import}{the frequency at which MCMC samples are retained for the

@@ -91,6 +91,9 @@
 #' \item{outlier_relative}{a logical indicating whether the threshold is an absolute 
 #' or relative value, default to FALSE (absolute value).}
 #' 
+#' \item{outlier_plot}{a logical indicating whether to plot the comparison between the 
+#' likelihoods of connection in the short run and the threshold.}
+#' 
 #' \item{n_iter_import}{Number of iterations of the first short run.}
 #' 
 #' \item{sample_every_import}{the frequency at which MCMC samples are retained for the
@@ -157,11 +160,12 @@ create_config <- function (..., data = NULL)
                    prior_a = c(0.2, 1.5), prior_b = c(0.01, 2), 
                    
                    sd_pi = 0.1, sd_a = 0.1, sd_b = 0.1, 
-
+                   
                    n_iter = 10000, sample_every = 50, 
                    
                    max_kappa = 2, find_import = TRUE, outlier_threshold = 0.05, 
-                   outlier_relative = FALSE,
+                   outlier_relative = FALSE, outlier_plot = FALSE,
+                   
                    n_iter_import = 5000, sample_every_import = 50, 
                    burnin = 1000, verbatim = FALSE)
   config <- modify_defaults(defaults, config)
@@ -393,6 +397,12 @@ create_config <- function (..., data = NULL)
   if (!is.finite(config$outlier_threshold)) {
     stop("outlier_threshold is infinite or NA")
   }
+  if (!is.logical(config$outlier_plot)) {
+    stop("outlier_plot is not a logical")
+  }
+  if (is.na(config$outlier_plot)) {
+    stop("outlier_plot is NA")
+  }
   if (!is.numeric(config$n_iter_import)) {
     stop("n_iter_import is not a numeric value")
   }
@@ -486,8 +496,8 @@ create_config <- function (..., data = NULL)
           if(any(is.na(config$init_alpha) & data$is_cluster == X & 
                  data$genotype == j & 
                  data$dates <= min(data$dates[which(data$is_cluster == X & 
-                                                   !is.na(config$init_alpha) &
-                                                   data$genotype == j)]))){
+                                                    !is.na(config$init_alpha) &
+                                                    data$genotype == j)]))){
             count_gen <- which(gen_clust == j)[1]
           } else {
             while(!(gen_clust[count_gen] == "Not attributed" | 
@@ -497,11 +507,11 @@ create_config <- function (..., data = NULL)
             if(gen_clust[count] == "Not attributed" ) count <- count_gen + 1
           }
           if(data$dates[which(is.na(config$init_alpha) &
-                               data$is_cluster == X)[count_gen]] >
+                              data$is_cluster == X)[count_gen]] >
              min(data$dates[data$is_cluster == X & !is.na(config$init_alpha) &
-                                              data$genotype == j])){
+                            data$genotype == j])){
             new_ances <- which(data$is_cluster == X & !is.na(config$init_alpha) &
-                                             data$genotype == j)[1]
+                                 data$genotype == j)[1]
             config$init_alpha[new_ances] <- NA
             config$init_alpha[data$is_cluster == X & !is.na(config$init_alpha) &
                                 data$genotype == j] <- new_ances
@@ -511,8 +521,8 @@ create_config <- function (..., data = NULL)
                                                                data$is_cluster == X)[count_gen]
         }
         for (k in which(data$is_cluster == X &
-                         !is.na(config$init_alpha) &
-                         data$genotype == "Not attributed")){
+                        !is.na(config$init_alpha) &
+                        data$genotype == "Not attributed")){
           config$init_alpha[k] <- max(which(data$is_cluster[1:k] == X &
                                               is.na(config$init_alpha[1:k])))
         }

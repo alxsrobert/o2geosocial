@@ -80,12 +80,26 @@ outbreaker_find_imports <- function(moves, data, param_current,
   ## Compute the likelihood threshold. The likelihoods of connection lower than
   ## the threshold will be considered implausible
   threshold <- -log(config$outlier_threshold)*5
+  
+  # Do not take the influence of importation into account
+  # (we are only interested in connected cases)
+  influences_vect <- c(influences[influences >= 0])
+  
+  # Compute the relative threshold 
   if(config$outlier_relative == TRUE){
-    # Do not take the influence of importation into account
-    # (we are only interested in connected cases)
-    influences_vect <- c(influences[influences >= 0])
     threshold <- quantile(influences_vect, probs = config$outlier_threshold)
+    message(
+      "The import threshold computed from the likelihoods of connection is ",
+      round(threshold, 1), ". It corresponds to an absolute threshold of ", 
+      round(exp(-threshold/5), 3), 
+      ". Therefore, a case with an probability of connection per component above ",
+      round(exp(-threshold/5), 3), " will not be classified as an importation.") 
   }
+  if(config$outlier_plot == TRUE){
+    plot_importations(influences_vect = influences_vect, threshold = threshold, 
+                      config = config)
+  } else 
+    message("Set config$outlier_plot = TRUE to plot the likelihoods of connection")
   
   # Set cases with no likely infector as import
   new_imports <- unlist(lapply(list_influences, function(X){
