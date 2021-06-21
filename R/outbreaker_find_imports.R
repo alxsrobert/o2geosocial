@@ -49,6 +49,9 @@ outbreaker_find_imports <- function(moves, data, param_current,
                                  param = param_current_imports, i = i,
                                  custom_functions = likelihoods_imports)
                       ), numeric(1))
+        # Do not take the influence of importation into account
+        # (we are only interested in connected cases)
+        influences_imports[counter, is.na(param_current_imports$alpha)] <- -1
         if(config_imports$verbatim == TRUE) 
           message(paste0("Finding import, Iteration number: ", i, "/",
                          config_imports$n_iter_import, "|| likelihood = ", 
@@ -78,7 +81,9 @@ outbreaker_find_imports <- function(moves, data, param_current,
   ## the threshold will be considered implausible
   threshold <- -log(config$outlier_threshold)*5
   if(config$outlier_relative == TRUE){
-    influences_vect <- c(influences)
+    # Do not take the influence of importation into account
+    # (we are only interested in connected cases)
+    influences_vect <- c(influences[influences >= 0])
     threshold <- quantile(influences_vect, probs = config$outlier_threshold)
   }
   
