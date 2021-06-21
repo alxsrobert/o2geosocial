@@ -117,5 +117,5 @@ outbreaker_find_imports <- function(moves, data, param_current,
   
 
   return(list(param_current = ini_param$current,
-              param_store = ini_param$store))
+              param_store = ini_param$store, threshold = as.numeric(threshold)))
 }

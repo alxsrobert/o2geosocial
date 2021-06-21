@@ -69,11 +69,6 @@ outbreaker_move <- function(moves, data, param_current,
     ## Remove unlikely transmission links
     # Define threshold
     threshold <- -log(config$outlier_threshold)*5
-    
-    if(config$outlier_relative == TRUE){
-      influences_vect <- c(influences)
-      threshold <- quantile(influences_vect, probs = config$outlier_threshold)
-    }
     bad_ancestor <- rep(threshold, data$N)
     #Compare threshold to influence
     bad_ancestor_matrix <- (influences)<(bad_ancestor)

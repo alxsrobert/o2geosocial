@@ -168,6 +168,10 @@ outbreaker <- function(data = outbreaker_data(),
                                     likelihoods = loglike)
     param_current <- temp$param_current
     param_store <- temp$param_store
+    if (config$outlier_relative == T){
+      config$outlier_relative <- FALSE
+      config$outlier_threshold <- exp(-temp$threshold / 5)
+    }
   }
   
   
