@@ -6,8 +6,8 @@
 #' @importFrom graphics legend
 #' @importFrom graphics par
 plot_importations <- function(influences_vect, threshold, config){
-  par(mfrow = c(1,1), mar = c(4, 4, 1, 1), bty = "l")
-  plot(sort(influences_vect), type = "l", xlab = "Cases", lwd = 2,
+  par(mfrow = c(1,1), mar = c(5, 5, 1, 1), bty = "l")
+  plot(sort(influences_vect), type = "l", xlab = "Connection", lwd = 2,
        ylab = "Likelihood of connection", 
        ylim = c(0, max(c(-log(0.05) * 5, influences_vect))))
   if(config$outlier_relative == T){
