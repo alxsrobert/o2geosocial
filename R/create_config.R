@@ -472,12 +472,17 @@ create_config <- function (..., data = NULL)
       config$init_alpha[data$import == TRUE] <- NA
       config$init_alpha[!duplicated(data$is_cluster)] <- NA
       for(X in unique(data$is_cluster)){
+        # Cases in the cluster
         cases_clust <- which(data$is_cluster == X)
+        # All genotypes in the cluster
         nb_gen <- unique(data$genotype[data$is_cluster == X & 
                                          data$genotype != "Not attributed"])
+        # Genotypes of cases that are imports
         gen_clust <- data$genotype[cases_clust][is.na(config$init_alpha[cases_clust])]
+        # Unique genotypes + all NAs
         unique_gen_clust <- gen_clust[gen_clust == "Not attributed" | 
                                         !duplicated(gen_clust)]
+        # If more genotypes than potential imports, add new import
         while(length(nb_gen) > length(unique_gen_clust)){
           config$init_alpha[data$is_cluster == X & 
                               data$genotype != "Not attributed" &
@@ -487,38 +492,42 @@ create_config <- function (..., data = NULL)
                                           !duplicated(gen_clust)]
           
         }
+        # All genotypes in non imports
         nb_gen_sec <- unique(data$genotype[data$is_cluster == X & 
                                              !is.na(config$init_alpha) &
                                              data$genotype != "Not attributed"])
+        pot_ances <- which(is.na(config$init_alpha) & data$is_cluster == X)
         count <- 1
         for(j in nb_gen_sec){
           count_gen <- count
+          notances_X_j <- which(data$is_cluster == X & 
+                                  !is.na(config$init_alpha) &
+                                  data$genotype == j)
+          
+          # If there is an ancestor from X with the same genotype before the first case
+          # then increment count_gen
           if(any(is.na(config$init_alpha) & data$is_cluster == X & 
                  data$genotype == j & 
-                 data$dates <= min(data$dates[which(data$is_cluster == X & 
-                                                    !is.na(config$init_alpha) &
-                                                    data$genotype == j)]))){
+                 data$dates <= min(data$dates[notances_X_j]))){
             count_gen <- which(gen_clust == j)[1]
           } else {
             while(!(gen_clust[count_gen] == "Not attributed" | 
                     gen_clust[count_gen] == j)){
               count_gen <- count_gen + 1
             }
-            if(gen_clust[count] == "Not attributed" ) count <- count_gen + 1
+            if(gen_clust[count_gen] == "Not attributed") count <- count_gen + 1
           }
-          if(data$dates[which(is.na(config$init_alpha) &
-                              data$is_cluster == X)[count_gen]] >
-             min(data$dates[data$is_cluster == X & !is.na(config$init_alpha) &
-                            data$genotype == j])){
-            new_ances <- which(data$is_cluster == X & !is.na(config$init_alpha) &
-                                 data$genotype == j)[1]
+          # If the potential import was reported before all the cases, then the first
+          # case is added as an import
+          if(data$dates[pot_ances[count_gen]] > min(data$dates[notances_X_j])){
+            new_ances <- notances_X_j[1]
             config$init_alpha[new_ances] <- NA
             config$init_alpha[data$is_cluster == X & !is.na(config$init_alpha) &
                                 data$genotype == j] <- new_ances
-          } else 
-            config$init_alpha[data$is_cluster == X & !is.na(config$init_alpha) &
-                                data$genotype == j] <- which(is.na(config$init_alpha) &
-                                                               data$is_cluster == X)[count_gen]
+          } else {
+            # Otherwise, all cases are linked to the potential import
+            config$init_alpha[notances_X_j] <- pot_ances[count_gen]
+          }
         }
         for (k in which(data$is_cluster == X &
                         !is.na(config$init_alpha) &
