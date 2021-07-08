@@ -59,7 +59,7 @@ std::vector<int> cpp_are_possible_ancestors(Rcpp::IntegerVector t_inf,
     ++j;
   }
   // If there was no genotype reported, then every case infected before i
-  // and from the same group of cases ("cluster") can be considered an import
+  // and from the same group of cases ("cluster") can be considered an infector
   if(gen_ref == "Not attributed"){
     for (size_t j = 0; j < n; j++) {
       j_clust = cluster[j]-1;

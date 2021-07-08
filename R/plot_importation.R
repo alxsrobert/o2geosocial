@@ -24,6 +24,6 @@ plot_importations <- function(influences_vect, threshold, config){
     legend("topleft", lwd = c(1, 1), col = c("black", "red"),  
            lty = c(1, 1),bty = "n",
            legend = c("Likelihood of connection per case",
-                      paste0("Threshold :", threshold)))
+                      paste0("Threshold :", round(threshold, 1))))
   }
 }
