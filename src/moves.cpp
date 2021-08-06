@@ -331,6 +331,7 @@ Rcpp::List cpp_move_alpha(Rcpp::List param, Rcpp::List data, Rcpp::List config,
                           Rcpp::RObject list_custom_ll = R_NilValue) {
   Rcpp::List new_param = clone(param);
   Rcpp::StringVector genotype = data["genotype"]; // pointer to data$genotype
+  Rcpp::StringVector all_gen = clone(genotype); // copy of data$genotype
   Rcpp::IntegerVector alpha = param["alpha"]; // pointer to param$alpha
   Rcpp::IntegerVector t_inf = param["t_inf"]; // pointer to param$t_inf
   Rcpp::IntegerVector new_alpha = new_param["alpha"]; // pointer to new_param$alpha
@@ -344,13 +345,29 @@ Rcpp::List cpp_move_alpha(Rcpp::List param, Rcpp::List data, Rcpp::List config,
   Rcpp::IntegerVector t_inf_i;
   
   for (size_t i = 0; i < N; i++) {
+    if (alpha[i] == NA_INTEGER ){
+      Rcpp::IntegerVector tree;
+      Rcpp::String gen_tree;
+      int n_tree;
+      Rcpp::IntegerVector cluster_i = cluster_list[cluster_vec[i]-1];
+      
+      tree = cpp_find_all_tree(alpha, t_inf, cluster_i, i+1);
+      gen_tree = cpp_gen_tree(tree, cluster_i, genotype, i +1);
+      n_tree = tree.size();
+      for(int j = 0; j < n_tree; j++){
+        all_gen[tree[j] - 1] = gen_tree;
+      }
+    }
+  }
+  
+  for (size_t i = 0; i < N; i++) {
     Rcpp::IntegerVector cluster_i = cluster_list[cluster_vec[i]-1];
     t_inf_i = t_inf[cluster_i-1];
     // only non-NA ancestries are moved, if there is at least 1 option
     if (alpha[i] != NA_INTEGER && sum(t_inf_i < t_inf[i]) > 1) { 
       possible_ancestors = cpp_are_possible_ancestors(t_inf, alpha, genotype, 
-                                                      cluster_i, i+1);
-
+                                                      all_gen, cluster_i, i+1);
+      
       if (possible_ancestors.size()>1){
         // loglike with current value
         // old_loglike = cpp_ll_all(data, param, R_NilValue);
@@ -366,7 +383,30 @@ Rcpp::List cpp_move_alpha(Rcpp::List param, Rcpp::List data, Rcpp::List config,
         if (p_accept < runif) { // reject new values
           new_alpha[i] = alpha[i];
         } else {
+          int old_ances = alpha[i];
           alpha[i] = new_alpha[i];
+          
+          // Update the genotype in the  tree alpha used to belong to
+          Rcpp::IntegerVector tree_a = cpp_find_all_tree(alpha, t_inf, 
+                                                         cluster_i, old_ances);
+          Rcpp::String gen_tree_a = cpp_gen_tree(tree_a, cluster_i, genotype, 
+                                                 old_ances);
+          int n_tree_a = tree_a.size();
+          int same_tree = 0;
+          for(int j = 0; j < n_tree_a; j++){
+            if(tree_a[j] == i+1) same_tree = 1;
+            all_gen[tree_a[j] - 1] = gen_tree_a;
+          }
+          
+          // Update the genotype in the  tree alpha now belongs to
+          if(all_gen[i] != all_gen[alpha[i] - 1] && same_tree == 0){
+            Rcpp::IntegerVector tree = cpp_find_all_tree(alpha, t_inf, cluster_i, i + 1);
+            Rcpp::String gen_tree = cpp_gen_tree(tree, cluster_i, genotype, i + 1);
+            int n_tree = tree.size();
+            for(int j = 0; j < n_tree; j++){
+              all_gen[tree[j] - 1] = gen_tree;
+            }
+          }
         }
       }
     }
@@ -399,6 +439,7 @@ Rcpp::List cpp_move_ancestors(Rcpp::List param, Rcpp::List data, Rcpp::List conf
   Rcpp::List new_param = clone(param);
   
   Rcpp::StringVector genotype = data["genotype"]; // pointer to data$genotype
+  Rcpp::StringVector all_gen = clone(genotype); // copy of data$genotype
   Rcpp::IntegerVector alpha = param["alpha"]; // pointer to param$alpha
   Rcpp::IntegerVector t_inf = param["t_inf"]; // pointer to param$t_inf
   Rcpp::IntegerVector kappa = param["kappa"]; // pointer to param$t_inf
@@ -421,10 +462,26 @@ Rcpp::List cpp_move_ancestors(Rcpp::List param, Rcpp::List data, Rcpp::List conf
   int j_clust;
   
   for (size_t i = 0; i < N; i++) {
+    if (alpha[i] == NA_INTEGER ){
+      Rcpp::IntegerVector tree;
+      Rcpp::String gen_tree;
+      int n_tree;
+      Rcpp::IntegerVector cluster_i = cluster_list[cluster_vec[i]-1];
+      
+      tree = cpp_find_all_tree(alpha, t_inf, cluster_i, i+1);
+      gen_tree = cpp_gen_tree(tree, cluster_i, genotype, i +1);
+      n_tree = tree.size();
+      for(int j = 0; j < n_tree; j++){
+        all_gen[tree[j] - 1] = gen_tree;
+      }
+    }
+  }
+  
+  for (size_t i = 0; i < N; i++) {
     // Only NA ancestries are considered
     if (alpha[i] == NA_INTEGER && move_alpha[i] == TRUE){
       Rcpp::IntegerVector cluster_i = cluster_list[cluster_vec[i]-1];
-
+      
       // Draw the new ancestor, can not already be an ancestor
       std::vector<int> possible_ances;
       for (int j = 0; j < cluster_i.size(); j++){
@@ -437,15 +494,12 @@ Rcpp::List cpp_move_ancestors(Rcpp::List param, Rcpp::List data, Rcpp::List conf
       Rcpp::IntegerVector possible_index;
       if (possible_ances.size()>0){
         new_ances = possible_ances[unif_rand()*possible_ances.size()];
-
+        
         new_alpha[new_ances-1] = NA_INTEGER;
         
         // Draw i's new index 
-        possible_index = cpp_are_possible_ancestors(new_t_inf, 
-                                                    new_alpha, 
-                                                    genotype, 
-                                                    cluster_i,
-                                                    i+1);
+        possible_index = cpp_are_possible_ancestors(t_inf, alpha, genotype, 
+                                                    all_gen, cluster_i, i+1);
         if (possible_index.size()>0){
           // Likelihood changed for 2 cases: i and new_ances
           changes[0] = i+1;// offset
@@ -453,7 +507,7 @@ Rcpp::List cpp_move_ancestors(Rcpp::List param, Rcpp::List data, Rcpp::List conf
           old_loglike = cpp_ll_all(data, config, param, changes, list_custom_ll); 
           
           size_t new_index = possible_index[unif_rand() * possible_index.size()];
-
+          
           new_alpha[i] = new_index;
           new_kappa[i] = new_kappa[new_ances-1];
           new_kappa[new_ances-1] = NA_INTEGER;
@@ -470,10 +524,50 @@ Rcpp::List cpp_move_ancestors(Rcpp::List param, Rcpp::List data, Rcpp::List conf
             new_kappa[new_ances-1] = kappa[new_ances-1];
             
           } else {
+            int old_ances = alpha[new_ances - 1];
+            
             alpha[i] = new_alpha[i];
             kappa[i] = new_kappa[i];
             alpha[new_ances-1] = new_alpha[new_ances-1];
             kappa[new_ances-1] = new_kappa[new_ances-1];
+            
+            int same_tree = 0;
+            
+            // Update the genotype in the tree new_ances used to belong to
+            Rcpp::IntegerVector tree_a = cpp_find_all_tree(alpha, t_inf, 
+                                                           cluster_i, old_ances);
+            Rcpp::String gen_tree_a = cpp_gen_tree(tree_a, cluster_i, genotype, 
+                                                   old_ances);
+            int n_tree_a = tree_a.size();
+            for(int j = 0; j < n_tree_a; j++){
+              if(tree_a[j] == i+1) same_tree = 1;
+              all_gen[tree_a[j] - 1] = gen_tree_a;
+            }
+            
+            // Update the genotype in the tree new_ances now belongs to
+            Rcpp::IntegerVector tree_b = cpp_find_all_tree(alpha, t_inf, 
+                                                           cluster_i, new_ances);
+            Rcpp::String gen_tree_b = cpp_gen_tree(tree_b, cluster_i, genotype, 
+                                                   new_ances);
+            int n_tree_b = tree_b.size();
+            
+            for(int j = 0; j < n_tree_b; j++){
+              if(tree_b[j] == i+1) same_tree = 1;
+              all_gen[tree_b[j] - 1] = gen_tree_b;
+            }
+            
+            // Update the genotype in the tree i now belongs to
+            if(all_gen[i] != all_gen[alpha[i] - 1] && same_tree == 0){
+              
+              Rcpp::IntegerVector tree = cpp_find_all_tree(alpha, t_inf, cluster_i, 
+                                                           i + 1);
+              Rcpp::String gen_tree = cpp_gen_tree(tree, cluster_i, genotype, 
+                                                   i + 1);
+              int n_tree = tree.size();
+              for(int j = 0; j < n_tree; j++){
+                all_gen[tree[j] - 1] = gen_tree;
+              }
+            }            
           }
         } else{
           new_alpha[new_ances-1] = alpha[new_ances-1];
@@ -483,8 +577,6 @@ Rcpp::List cpp_move_ancestors(Rcpp::List param, Rcpp::List data, Rcpp::List conf
   }
   return new_param;
 }
-
-
 
 // ---------------------------
 

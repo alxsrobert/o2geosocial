@@ -9,24 +9,25 @@
 using namespace Rcpp;
 
 // cpp_are_possible_ancestors
-std::vector<int> cpp_are_possible_ancestors(Rcpp::IntegerVector t_inf, Rcpp::IntegerVector alpha, Rcpp::StringVector genotype, Rcpp::IntegerVector cluster, size_t i);
-static SEXP _o2geosocial_cpp_are_possible_ancestors_try(SEXP t_infSEXP, SEXP alphaSEXP, SEXP genotypeSEXP, SEXP clusterSEXP, SEXP iSEXP) {
+std::vector<int> cpp_are_possible_ancestors(Rcpp::IntegerVector t_inf, Rcpp::IntegerVector alpha, Rcpp::StringVector genotype, Rcpp::StringVector gen_tree, Rcpp::IntegerVector cluster, size_t i);
+static SEXP _o2geosocial_cpp_are_possible_ancestors_try(SEXP t_infSEXP, SEXP alphaSEXP, SEXP genotypeSEXP, SEXP gen_treeSEXP, SEXP clusterSEXP, SEXP iSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type t_inf(t_infSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< Rcpp::StringVector >::type genotype(genotypeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::StringVector >::type gen_tree(gen_treeSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type cluster(clusterSEXP);
     Rcpp::traits::input_parameter< size_t >::type i(iSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_are_possible_ancestors(t_inf, alpha, genotype, cluster, i));
+    rcpp_result_gen = Rcpp::wrap(cpp_are_possible_ancestors(t_inf, alpha, genotype, gen_tree, cluster, i));
     return rcpp_result_gen;
 END_RCPP_RETURN_ERROR
 }
-RcppExport SEXP _o2geosocial_cpp_are_possible_ancestors(SEXP t_infSEXP, SEXP alphaSEXP, SEXP genotypeSEXP, SEXP clusterSEXP, SEXP iSEXP) {
+RcppExport SEXP _o2geosocial_cpp_are_possible_ancestors(SEXP t_infSEXP, SEXP alphaSEXP, SEXP genotypeSEXP, SEXP gen_treeSEXP, SEXP clusterSEXP, SEXP iSEXP) {
     SEXP rcpp_result_gen;
     {
         Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(_o2geosocial_cpp_are_possible_ancestors_try(t_infSEXP, alphaSEXP, genotypeSEXP, clusterSEXP, iSEXP));
+        rcpp_result_gen = PROTECT(_o2geosocial_cpp_are_possible_ancestors_try(t_infSEXP, alphaSEXP, genotypeSEXP, gen_treeSEXP, clusterSEXP, iSEXP));
     }
     Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
     if (rcpp_isInterrupt_gen) {
@@ -179,6 +180,43 @@ RcppExport SEXP _o2geosocial_cpp_find_all_tree(SEXP alphaSEXP, SEXP t_infSEXP, S
     {
         Rcpp::RNGScope rcpp_rngScope_gen;
         rcpp_result_gen = PROTECT(_o2geosocial_cpp_find_all_tree_try(alphaSEXP, t_infSEXP, clusterSEXP, iSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        Rf_error(CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
+}
+// cpp_gen_tree
+Rcpp::String cpp_gen_tree(Rcpp::IntegerVector tree, Rcpp::IntegerVector cluster, Rcpp::StringVector genotype, size_t i);
+static SEXP _o2geosocial_cpp_gen_tree_try(SEXP treeSEXP, SEXP clusterSEXP, SEXP genotypeSEXP, SEXP iSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type tree(treeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type cluster(clusterSEXP);
+    Rcpp::traits::input_parameter< Rcpp::StringVector >::type genotype(genotypeSEXP);
+    Rcpp::traits::input_parameter< size_t >::type i(iSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_gen_tree(tree, cluster, genotype, i));
+    return rcpp_result_gen;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _o2geosocial_cpp_gen_tree(SEXP treeSEXP, SEXP clusterSEXP, SEXP genotypeSEXP, SEXP iSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_o2geosocial_cpp_gen_tree_try(treeSEXP, clusterSEXP, genotypeSEXP, iSEXP));
     }
     Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
     if (rcpp_isInterrupt_gen) {
@@ -967,11 +1005,12 @@ RcppExport SEXP _o2geosocial_cpp_prior_all(SEXP paramSEXP, SEXP configSEXP, SEXP
 static int _o2geosocial_RcppExport_validate(const char* sig) { 
     static std::set<std::string> signatures;
     if (signatures.empty()) {
-        signatures.insert("std::vector<int>(*cpp_are_possible_ancestors)(Rcpp::IntegerVector,Rcpp::IntegerVector,Rcpp::StringVector,Rcpp::IntegerVector,size_t)");
+        signatures.insert("std::vector<int>(*cpp_are_possible_ancestors)(Rcpp::IntegerVector,Rcpp::IntegerVector,Rcpp::StringVector,Rcpp::StringVector,Rcpp::IntegerVector,size_t)");
         signatures.insert("Rcpp::List(*cpp_log_like)(Rcpp::NumericVector,Rcpp::NumericMatrix,Rcpp::NumericMatrix,double,double,int,double,Rcpp::String,int)");
         signatures.insert("Rcpp::IntegerVector(*cpp_find_descendents)(Rcpp::IntegerVector,Rcpp::IntegerVector,int)");
         signatures.insert("std::vector<int>(*cpp_find_all_descendents)(Rcpp::IntegerVector,Rcpp::IntegerVector,Rcpp::IntegerVector,int)");
         signatures.insert("Rcpp::IntegerVector(*cpp_find_all_tree)(Rcpp::IntegerVector,Rcpp::IntegerVector,Rcpp::IntegerVector,size_t)");
+        signatures.insert("Rcpp::String(*cpp_gen_tree)(Rcpp::IntegerVector,Rcpp::IntegerVector,Rcpp::StringVector,size_t)");
         signatures.insert("Rcpp::IntegerVector(*cpp_find_local_cases)(Rcpp::IntegerVector,Rcpp::IntegerVector,int)");
         signatures.insert("Rcpp::List(*cpp_swap_cases)(Rcpp::List,Rcpp::IntegerVector,int)");
         signatures.insert("double(*cpp_ll_timing_infections)(Rcpp::List,Rcpp::List,SEXP,Rcpp::RObject)");
@@ -1004,6 +1043,7 @@ RcppExport SEXP _o2geosocial_RcppExport_registerCCallable() {
     R_RegisterCCallable("o2geosocial", "_o2geosocial_cpp_find_descendents", (DL_FUNC)_o2geosocial_cpp_find_descendents_try);
     R_RegisterCCallable("o2geosocial", "_o2geosocial_cpp_find_all_descendents", (DL_FUNC)_o2geosocial_cpp_find_all_descendents_try);
     R_RegisterCCallable("o2geosocial", "_o2geosocial_cpp_find_all_tree", (DL_FUNC)_o2geosocial_cpp_find_all_tree_try);
+    R_RegisterCCallable("o2geosocial", "_o2geosocial_cpp_gen_tree", (DL_FUNC)_o2geosocial_cpp_gen_tree_try);
     R_RegisterCCallable("o2geosocial", "_o2geosocial_cpp_find_local_cases", (DL_FUNC)_o2geosocial_cpp_find_local_cases_try);
     R_RegisterCCallable("o2geosocial", "_o2geosocial_cpp_swap_cases", (DL_FUNC)_o2geosocial_cpp_swap_cases_try);
     R_RegisterCCallable("o2geosocial", "_o2geosocial_cpp_ll_timing_infections", (DL_FUNC)_o2geosocial_cpp_ll_timing_infections_try);
@@ -1030,11 +1070,12 @@ RcppExport SEXP _o2geosocial_RcppExport_registerCCallable() {
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_o2geosocial_cpp_are_possible_ancestors", (DL_FUNC) &_o2geosocial_cpp_are_possible_ancestors, 5},
+    {"_o2geosocial_cpp_are_possible_ancestors", (DL_FUNC) &_o2geosocial_cpp_are_possible_ancestors, 6},
     {"_o2geosocial_cpp_log_like", (DL_FUNC) &_o2geosocial_cpp_log_like, 9},
     {"_o2geosocial_cpp_find_descendents", (DL_FUNC) &_o2geosocial_cpp_find_descendents, 3},
     {"_o2geosocial_cpp_find_all_descendents", (DL_FUNC) &_o2geosocial_cpp_find_all_descendents, 4},
     {"_o2geosocial_cpp_find_all_tree", (DL_FUNC) &_o2geosocial_cpp_find_all_tree, 4},
+    {"_o2geosocial_cpp_gen_tree", (DL_FUNC) &_o2geosocial_cpp_gen_tree, 4},
     {"_o2geosocial_cpp_find_local_cases", (DL_FUNC) &_o2geosocial_cpp_find_local_cases, 3},
     {"_o2geosocial_cpp_swap_cases", (DL_FUNC) &_o2geosocial_cpp_swap_cases, 3},
     {"_o2geosocial_cpp_ll_timing_infections", (DL_FUNC) &_o2geosocial_cpp_ll_timing_infections, 4},
