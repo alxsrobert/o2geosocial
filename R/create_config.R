@@ -511,9 +511,15 @@ create_config <- function (..., data = NULL)
                  data$dates <= min(data$dates[notances_X_j]))){
             count_gen <- which(gen_clust == j)[1]
           } else {
-            while(!(gen_clust[count_gen] == "Not attributed" | 
-                    gen_clust[count_gen] == j)){
+            while(count_gen < length(gen_clust) && !(gen_clust[count_gen] == j)){
               count_gen <- count_gen + 1
+            }
+            if(gen_clust[count_gen] != j){
+              count_gen <- count
+              while(count_gen < length(gen_clust) &&
+                    !(gen_clust[count_gen] == "Not attributed")){
+                count_gen <- count_gen + 1
+              }
             }
             if(gen_clust[count_gen] == "Not attributed") count <- count_gen + 1
           }
