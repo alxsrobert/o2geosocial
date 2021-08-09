@@ -81,7 +81,7 @@ double cpp_ll_timing_infections(Rcpp::List data, Rcpp::List param, SEXP i,
   } else { // use of a customized likelihood function
     Rcpp::Function f = Rcpp::as<Rcpp::Function>(custom_function);
     
-    return Rcpp::as<double>(f(data, param));
+    return Rcpp::as<double>(f(data, param, i));
   }
 }
 double cpp_ll_timing_infections(Rcpp::List data, Rcpp::List param, size_t i,
@@ -140,7 +140,7 @@ double cpp_ll_timing_sampling(Rcpp::List data, Rcpp::List param, SEXP i,
   }  else { // use of a customized likelihood function
     Rcpp::Function f = Rcpp::as<Rcpp::Function>(custom_function);
     
-    return Rcpp::as<double>(f(data, param));
+    return Rcpp::as<double>(f(data, param, i));
   }
 }
 double cpp_ll_timing_sampling(Rcpp::List data, Rcpp::List param, size_t i,
@@ -208,7 +208,7 @@ double cpp_ll_space(Rcpp::List data, Rcpp::List config,
   }
   else { // use of a customized likelihood function
     Rcpp::Function f = Rcpp::as<Rcpp::Function>(custom_function);
-    return Rcpp::as<double>(f(data, param));
+    return Rcpp::as<double>(f(data, config, param, i));
   }
 }
 double cpp_ll_space(Rcpp::List data, Rcpp::List config, 
@@ -277,7 +277,7 @@ double cpp_ll_age(Rcpp::List data, Rcpp::List param, SEXP i,
   } else { // use of a customized likelihood function
     Rcpp::Function f = Rcpp::as<Rcpp::Function>(custom_function);
     
-    return Rcpp::as<double>(f(data, param));
+    return Rcpp::as<double>(f(data, param, i));
   }
 }
 double cpp_ll_age(Rcpp::List data, Rcpp::List param, int i,
@@ -344,7 +344,7 @@ double cpp_ll_reporting(Rcpp::List data, Rcpp::List param, SEXP i,
   } else { // use of a customized likelihood function
     Rcpp::Function f = Rcpp::as<Rcpp::Function>(custom_function);
     
-    return Rcpp::as<double>(f(data, param));
+    return Rcpp::as<double>(f(data, param, i));
   }
 }
 double cpp_ll_reporting(Rcpp::List data, Rcpp::List param, size_t i,
