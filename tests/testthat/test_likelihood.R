@@ -293,11 +293,11 @@ test_that("Customisation with identical functions", {
   
   
   ## generate custom functions with 2 arguments
-  f_timing_infections  <-  function(data, param) cpp_ll_timing_infections(data, param)
-  f_timing_sampling  <-  function(data, param) cpp_ll_timing_sampling(data, param)
-  f_reporting  <-  function(data, param) cpp_ll_reporting(data, param)
-  f_age  <-  function(data, param) cpp_ll_age(data, param)
-  f_space  <-  function(data, param) cpp_ll_space(data, config, param)
+  f_timing_infections  <-  function(data, param, i) cpp_ll_timing_infections(data, param, i)
+  f_timing_sampling  <-  function(data, param, i) cpp_ll_timing_sampling(data, param, i)
+  f_reporting  <-  function(data, param, i) cpp_ll_reporting(data, param, i)
+  f_age  <-  function(data, param, i) cpp_ll_age(data, param, i)
+  f_space  <-  function(data, config, param, i) cpp_ll_space(data, config, param, i)
   
   list_functions <- custom_likelihoods(age = f_age,
                                        space = f_space,
@@ -308,7 +308,7 @@ test_that("Customisation with identical functions", {
   expect_error(custom_likelihoods(age = "error_age"), 
                "The following likelihoods are not functions: age")
   expect_error(custom_likelihoods(age = function(data) cpp_ll_age(data, param)), 
-               "The following likelihoods don't have two arguments: age")
+               "The following likelihoods don't have three or four arguments: age")
   
   ## tests
   expect_equal(cpp_ll_age(data, param, , list_functions$age),
@@ -347,7 +347,7 @@ test_that("Function return -inf if incorrect parameters", {
   f <- c(.1, .2, .5, .2, .1)
   w <- c(.1, .2, .5, .2, .1)
   
-  f_null <- function(data, param) return(0.0)
+  f_null <- function(data, config = NULL, param, i) return(0.0)
   
   data <- outbreaker_data(dates = times, 
                           w_dens = w, f_dens = f)

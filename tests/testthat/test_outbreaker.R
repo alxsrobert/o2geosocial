@@ -132,7 +132,7 @@ test_that("Results work, 1 component at the time", {
   
   genotype <- c("Not attributed", "B4", "Not attributed", "Not attributed", "B4")
   
-  f_null <- function(data, param) {
+  f_null <- function(data, config = NULL, param, i) {
     return(0.0)
   }
   

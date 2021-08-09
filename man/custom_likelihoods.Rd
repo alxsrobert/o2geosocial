@@ -62,7 +62,7 @@ order:
 \examples{
 
 ## specify a null model by disabling all likelihood components
-f_null <- function(data, param) {
+f_null <- function(data, config = NULL, param, i) {
   return(0.0)
 }
 
