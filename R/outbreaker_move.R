@@ -24,8 +24,9 @@ outbreaker_move <- function(moves, data, param_current,
   J <- length(moves)
   if(config$find_import == TRUE){
     ## Define individual likelihood matrix
-    n_measures <- floor((config$n_iter) / config$sample_every)
-    influences <- matrix(0, ncol = data$N, nrow = n_measures + 1)
+    n_measures <- sum(seq(0, config$n_iter, config$sample_every) > 0)
+    if(config$sample_every != 1) n_measures = n_measures + 1
+    influences <- matrix(0, ncol = data$N, nrow = n_measures)
     colnames(influences) <- 1:data$N
     influences[1,] <- - vapply(seq_len(data$N), function(case) 
       (cpp_ll_all(data = data,config = config,
@@ -34,6 +35,7 @@ outbreaker_move <- function(moves, data, param_current,
       ),
       numeric(1))
   }
+  
   ## RUN MCMC ##
   for (i in seq.int(2, config$n_iter, 1)) {
     ## move parameters / augmented data
@@ -55,7 +57,7 @@ outbreaker_move <- function(moves, data, param_current,
       }
       if(config$find_import == TRUE){
         counter <- i / config$sample_every + 1
-        if(config$sample_every == 1) counter <- i / config$sample_every
+        if(config$sample_every == 1) counter <- i
         influences[counter,] <- - vapply(seq_len(data$N), function(case) 
           (cpp_ll_all(data = data,config = config,
                       param = param_current, i = case,
@@ -75,7 +77,7 @@ outbreaker_move <- function(moves, data, param_current,
     # In cases where the likelihood in worst than the threshold, the transmission link is removed
     bad_ancestor_matrix[bad_ancestor_matrix == FALSE] <- NA
     bad_ancestor_list <- split(x = t(bad_ancestor_matrix), 
-                               rep(1:(n_measures + 1), each = data$N))
+                               rep(1:(n_measures), each = data$N))
     # Update alpha and kappa
     param_store$alpha <- Map("*", param_store$alpha, bad_ancestor_list)
     param_store$kappa <- Map("*", param_store$kappa, bad_ancestor_list)

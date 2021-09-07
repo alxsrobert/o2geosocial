@@ -25,8 +25,8 @@ outbreaker_find_imports <- function(moves, data, param_current,
   J <- length(moves)
   
   ## create matrix of individual influences ##
-  n_measures <- floor((config$n_iter_import - config$burnin) / 
-                        config$sample_every_import)
+  n_measures <- sum(seq(0, config$n_iter_import, 
+                        config$sample_every_import) > config$burnin)
   influences <- matrix(0, ncol = data$N, nrow = n_measures)
   colnames(influences) <- 1:data$N
 
