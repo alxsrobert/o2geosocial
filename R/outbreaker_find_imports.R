@@ -116,7 +116,7 @@ outbreaker_find_imports <- function(moves, data, param_current,
     }
   }))
   
-  
+  message(paste0("Adding ", length(new_imports), " new importations"))
   
   ## All outliers are considered as introductions, so that ancestries (alpha) are set to 'NA' and
   ## the number of generations between cases and their ancestor (kappa) is set to NA; the
