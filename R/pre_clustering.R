@@ -89,5 +89,17 @@ pre_clustering <- function(data, config){
   config$move_kappa[which(is.element(data$is_cluster, 
                                      clust_isolated))] <- FALSE
   
+  # Remove unused regions
+  if((!is.null(data$region) && !is.null(data$distance) && 
+      !is.null(config$gamma))){
+    if(!is.infinite(config$gamma)){
+      regions <- unique(data$region)
+      exclude_regions <- which(colSums(data$distance[regions,] <= config$gamma) == 0)
+      if(length(exclude_regions) > 0){
+        data$distance <- data$distance[-exclude_regions, -exclude_regions]
+        data$population <- data$population[-exclude_regions]
+      }
+    }
+  }
   return(list(data = data, config = config))
 }
