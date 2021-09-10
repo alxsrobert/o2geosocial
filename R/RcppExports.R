@@ -5,6 +5,10 @@ cpp_are_possible_ancestors <- function(t_inf, alpha, genotype, gen_tree, cluster
     .Call(`_o2geosocial_cpp_are_possible_ancestors`, t_inf, alpha, genotype, gen_tree, cluster, i)
 }
 
+cpp_log_like_s <- function(population, distance, a, b, spatial) {
+    .Call(`_o2geosocial_cpp_log_like_s`, population, distance, a, b, spatial)
+}
+
 cpp_log_like <- function(population, distance, ances, a, b, max_kappa, gamma, spatial, nb_cases) {
     .Call(`_o2geosocial_cpp_log_like`, population, distance, ances, a, b, max_kappa, gamma, spatial, nb_cases)
 }

@@ -155,19 +155,15 @@ create_param <- function(data = outbreaker_data(),
   )
   class(store) <- c("outbreaker_store", "list")
   
+  
   ## ADD SPATIAL LIKELIHOOD TO PARAM ##
-  current_log_s_dens <- rep(list(matrix(-Inf, nrow = length(unique(data$region)), 
-                                        ncol = length(unique(data$region)))),
-                            config$max_kappa)
   if(config$move_a == FALSE && config$move_b == FALSE && !is.null(data$log_s_dens)){
-    current_log_s_dens[[1]] <- data$log_s_dens
-    if(config$max_kappa > 1){
-      for(i in 2:config$max_kappa){
-        s_dens <- data$s_dens %*% exp(current_log_s_dens[[i-1]])
-        current_log_s_dens[[i]]  <- log(t(t(s_dens)/colSums(s_dens)))
-      }
-    } 
-  }    
+    current_log_s_dens <- list(data$log_s_dens)
+  } else if(!is.null(data$distance)) {
+    current_log_s_dens <- list(matrix(-Inf, nrow = dim(data$distance), 
+                                      ncol = dim(data$distance)))
+  } else     current_log_s_dens <- list(matrix(-Inf))
+  
   current  <- list(
     alpha = current_alpha, 
     t_inf = current_t_inf, 

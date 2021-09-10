@@ -298,42 +298,9 @@ outbreaker_data <- function(..., data = list(...)) {
       if(any(dim(data$distance)<max(data$region)))
         stop("The dimension of the distance matrix is lower than the maximum value of the region vector")
     }
-    can_be_ances <- vapply(seq_len(data$N), function(X){
-      can_be_ances_X <- rep(FALSE, data$N)
-      if(data$import[X] == TRUE) return(can_be_ances_X)
-      if(!is.null(data$cluster)){
-        can_be_ances_X[data$cluster[[data$is_cluster[X]]]] <- TRUE        
-      } else can_be_ances_X[1:data$N] <- TRUE
-
-      can_be_ances_X[X] <- FALSE
-      if(!is.null(data$f_dens) & !is.null(data$dates)){
-        unlik_f_dens <- which(data$log_f_dens[-1] < -20 &
-                                diff(data$log_f_dens) < 0)[1]
-        can_be_ances_X[data$dates[X] + unlik_f_dens < data$dates] <- FALSE
-      }
-      if(!is.null(data$w_dens) & !is.null(data$dates)){
-        unlik_w_dens <- which(data$log_w_dens[-1] < -10 &
-                                diff(data$log_w_dens[1,]) < 0)[1] * 2
-        can_be_ances_X[data$dates[X] - unlik_w_dens > data$dates] <- FALSE
-      }
-      if(data$genotype[X] != "Not attributed"){
-        can_be_ances_X[data$genotype != data$genotype[X] &
-                         data$genotype != "Not attributed"] <- FALSE        
-      }
-      return(can_be_ances_X)
-    }, rep(FALSE, data$N))
-    ID_1 <- ID_2 <- region_1 <- region_2 <- ances_ID <- NULL
-    dt_can_be_ances <- data.table(ID_1 = rep(seq_len(data$N), data$N),
-                                  ID_2 = rep(seq_len(data$N), each = data$N),
-                                  ances_ID = c(can_be_ances))
-    dt_can_be_ances[, region_1 := data$region[ID_1]]
-    dt_can_be_ances[, region_2 := data$region[ID_2]]
-    dt_can_be_ances_reg <- dt_can_be_ances[, sum(ances_ID),
-                                           by= c("region_1", "region_2")]
-    data$can_be_ances_reg <- matrix(dt_can_be_ances_reg$V1 > 0, 
-                                    length(unique(data$region)),
-                                    length(unique(data$region)))
-    
+    # can_be_ances_reg is now deprecated
+    data$can_be_ances_reg <- matrix(-1, nrow = length(unique(data$region)), 
+                                    ncol = length(unique(data$region)))
   }
   if (!is.null(data$s_dens)){
     if(!is.matrix(data$s_dens)) stop("s_dens should be a matrix")
@@ -346,7 +313,7 @@ outbreaker_data <- function(..., data = list(...)) {
       stop("non-finite values detected in s_dens")
     }
     
-    data$log_s_dens <- log(data$s_dens)
+    data$log_s_dens <- (data$s_dens)
   }
   
   ## output is a list of checked data

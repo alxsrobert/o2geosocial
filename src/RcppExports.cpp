@@ -47,6 +47,44 @@ RcppExport SEXP _o2geosocial_cpp_are_possible_ancestors(SEXP t_infSEXP, SEXP alp
     UNPROTECT(1);
     return rcpp_result_gen;
 }
+// cpp_log_like_s
+Rcpp::List cpp_log_like_s(Rcpp::NumericVector population, Rcpp::NumericMatrix distance, double a, double b, Rcpp::String spatial);
+static SEXP _o2geosocial_cpp_log_like_s_try(SEXP populationSEXP, SEXP distanceSEXP, SEXP aSEXP, SEXP bSEXP, SEXP spatialSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type population(populationSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type distance(distanceSEXP);
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    Rcpp::traits::input_parameter< Rcpp::String >::type spatial(spatialSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_log_like_s(population, distance, a, b, spatial));
+    return rcpp_result_gen;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _o2geosocial_cpp_log_like_s(SEXP populationSEXP, SEXP distanceSEXP, SEXP aSEXP, SEXP bSEXP, SEXP spatialSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_o2geosocial_cpp_log_like_s_try(populationSEXP, distanceSEXP, aSEXP, bSEXP, spatialSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        Rf_error(CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
+}
 // cpp_log_like
 Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix distance, Rcpp::NumericMatrix ances, double a, double b, int max_kappa, double gamma, Rcpp::String spatial, int nb_cases);
 static SEXP _o2geosocial_cpp_log_like_try(SEXP populationSEXP, SEXP distanceSEXP, SEXP ancesSEXP, SEXP aSEXP, SEXP bSEXP, SEXP max_kappaSEXP, SEXP gammaSEXP, SEXP spatialSEXP, SEXP nb_casesSEXP) {
@@ -1006,6 +1044,7 @@ static int _o2geosocial_RcppExport_validate(const char* sig) {
     static std::set<std::string> signatures;
     if (signatures.empty()) {
         signatures.insert("std::vector<int>(*cpp_are_possible_ancestors)(Rcpp::IntegerVector,Rcpp::IntegerVector,Rcpp::StringVector,Rcpp::StringVector,Rcpp::IntegerVector,size_t)");
+        signatures.insert("Rcpp::List(*cpp_log_like_s)(Rcpp::NumericVector,Rcpp::NumericMatrix,double,double,Rcpp::String)");
         signatures.insert("Rcpp::List(*cpp_log_like)(Rcpp::NumericVector,Rcpp::NumericMatrix,Rcpp::NumericMatrix,double,double,int,double,Rcpp::String,int)");
         signatures.insert("Rcpp::IntegerVector(*cpp_find_descendents)(Rcpp::IntegerVector,Rcpp::IntegerVector,int)");
         signatures.insert("std::vector<int>(*cpp_find_all_descendents)(Rcpp::IntegerVector,Rcpp::IntegerVector,Rcpp::IntegerVector,int)");
@@ -1039,6 +1078,7 @@ static int _o2geosocial_RcppExport_validate(const char* sig) {
 // registerCCallable (register entry points for exported C++ functions)
 RcppExport SEXP _o2geosocial_RcppExport_registerCCallable() { 
     R_RegisterCCallable("o2geosocial", "_o2geosocial_cpp_are_possible_ancestors", (DL_FUNC)_o2geosocial_cpp_are_possible_ancestors_try);
+    R_RegisterCCallable("o2geosocial", "_o2geosocial_cpp_log_like_s", (DL_FUNC)_o2geosocial_cpp_log_like_s_try);
     R_RegisterCCallable("o2geosocial", "_o2geosocial_cpp_log_like", (DL_FUNC)_o2geosocial_cpp_log_like_try);
     R_RegisterCCallable("o2geosocial", "_o2geosocial_cpp_find_descendents", (DL_FUNC)_o2geosocial_cpp_find_descendents_try);
     R_RegisterCCallable("o2geosocial", "_o2geosocial_cpp_find_all_descendents", (DL_FUNC)_o2geosocial_cpp_find_all_descendents_try);
@@ -1071,6 +1111,7 @@ RcppExport SEXP _o2geosocial_RcppExport_registerCCallable() {
 
 static const R_CallMethodDef CallEntries[] = {
     {"_o2geosocial_cpp_are_possible_ancestors", (DL_FUNC) &_o2geosocial_cpp_are_possible_ancestors, 6},
+    {"_o2geosocial_cpp_log_like_s", (DL_FUNC) &_o2geosocial_cpp_log_like_s, 5},
     {"_o2geosocial_cpp_log_like", (DL_FUNC) &_o2geosocial_cpp_log_like, 9},
     {"_o2geosocial_cpp_find_descendents", (DL_FUNC) &_o2geosocial_cpp_find_descendents, 3},
     {"_o2geosocial_cpp_find_all_descendents", (DL_FUNC) &_o2geosocial_cpp_find_all_descendents, 4},

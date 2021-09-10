@@ -30,55 +30,42 @@ Rcpp::List cpp_move_a(Rcpp::List param, Rcpp::List data, Rcpp::List config,
   // Import
   Rcpp::List new_param = clone(param);
   Rcpp::NumericVector b = param["b"]; // these are just pointers
-  double gamma = config["gamma"];
-  int max_kappa = config["max_kappa"];
   
   Rcpp::String spatial = config["spatial_method"];
   Rcpp::IntegerVector region = data["region"];
   Rcpp::NumericMatrix distance = data["distance"];
-  Rcpp::NumericMatrix can_be_ances_reg = data["can_be_ances_reg"];
   Rcpp::NumericVector population = data["population"];
   Rcpp::NumericVector limits = config["prior_a"];
-  
   Rcpp::List new_log_s_dens = new_param["log_s_dens"];
   
   Rcpp::NumericVector new_a = new_param["a"]; // these are just pointers
   Rcpp::NumericMatrix probs = new_log_s_dens[0];
-
-  int nb_cases = pow(probs.size(), 0.5);
-
   double sd_a = static_cast<double>(config["sd_a"]);
   
   double old_logpost = 0.0, new_logpost = 0.0, p_accept = 0.0;
   
   // Move new_a
   // proposal (normal distribution with SD: config$sd_a)
-
   new_a[0] += R::rnorm(0.0, sd_a); // new proposed value
   
   if (new_a[0] < limits[0] || new_a[0] > limits[1]) {
     return param;
   }
-  new_param["log_s_dens"] = cpp_log_like(population, distance, can_be_ances_reg,
-                               new_a[0], b[0], max_kappa, gamma, spatial, nb_cases);
+  new_param["log_s_dens"] = cpp_log_like_s(population, distance, new_a[0], b[0], spatial);
   
   // compute likelihoods
   old_logpost = cpp_ll_space(data, config, param, R_NilValue, custom_ll);
   new_logpost = cpp_ll_space(data, config, new_param, R_NilValue, custom_ll);
-
   
   // compute priors
-  
   old_logpost += cpp_prior_a(param, config, custom_prior);
   new_logpost += cpp_prior_a(new_param, config, custom_prior);
   // acceptance term
   
   p_accept = exp(new_logpost - old_logpost);
 
-  
   // acceptance: the new value is already in a, so we only act if the move is
   // rejected, in which case we restore the previous ('old') value
-  
   if (p_accept < unif_rand()) { // reject new values
     return param;
   }
@@ -95,9 +82,6 @@ Rcpp::List cpp_move_b(Rcpp::List param, Rcpp::List data, Rcpp::List config,
   // Import
   Rcpp::List new_param = clone(param);
   Rcpp::NumericVector a = param["a"]; // these are just pointers
-  double gamma = config["gamma"];
-  int max_kappa = config["max_kappa"];
-  Rcpp::NumericMatrix can_be_ances_reg = data["can_be_ances_reg"];
   Rcpp::NumericVector population = data["population"];
   Rcpp::NumericMatrix distance = data["distance"];
   Rcpp::NumericVector limits = config["prior_b"];
@@ -107,12 +91,9 @@ Rcpp::List cpp_move_b(Rcpp::List param, Rcpp::List data, Rcpp::List config,
   
   Rcpp::List new_log_s_dens = new_param["log_s_dens"];
   Rcpp::NumericMatrix probs = new_log_s_dens[0];
-
   Rcpp::NumericVector new_b = new_param["b"]; // these are just pointers
   
   
-  int nb_cases = pow(probs.size(), 0.5);
-
   double sd_b = static_cast<double>(config["sd_b"]);
   
   double old_logpost = 0.0, new_logpost = 0.0, p_accept = 0.0;
@@ -127,8 +108,7 @@ Rcpp::List cpp_move_b(Rcpp::List param, Rcpp::List data, Rcpp::List config,
     return param;
   }
   
-  new_param["log_s_dens"] = cpp_log_like(population, distance, can_be_ances_reg,
-                               a[0], new_b[0], max_kappa, gamma, spatial, nb_cases);
+  new_param["log_s_dens"] = cpp_log_like_s(population, distance, a[0], new_b[0], spatial);
   
   //compute likelihoods
   old_logpost = cpp_ll_space(data, config, param, R_NilValue, custom_ll);
@@ -146,7 +126,6 @@ Rcpp::List cpp_move_b(Rcpp::List param, Rcpp::List data, Rcpp::List config,
   
   // acceptance: the new value is already in b, so we only act if the move is
   // rejected, in which case we restore the previous ('old') value
-  
   if (p_accept < unif_rand()) { // reject new values
     return param;
   }
@@ -212,7 +191,6 @@ Rcpp::List cpp_move_pi(Rcpp::List param, Rcpp::List data, Rcpp::List config,
   
   // acceptance: the new value is already in pi, so we only act if the move is
   // rejected, in which case we restore the previous ('old') value
-  
   if (p_accept < unif_rand()) { // reject new values
     return param;
   }
@@ -257,13 +235,11 @@ Rcpp::List cpp_move_t_inf(Rcpp::List param, Rcpp::List data,
   Rcpp::List cluster_list = data["cluster"];
   Rcpp::IntegerVector cluster_vec = data["is_cluster"];
   Rcpp::IntegerVector local_cases;
-  
-  size_t N = static_cast<size_t>(data["N"]);
+  int N = static_cast<int>(data["N"]);
   
   double old_loc_loglike = 0.0, new_loc_loglike = 0.0, p_loc_accept = 0.0;
   
-  
-  for (size_t i = 0; i < N; i++) {
+  for (int i = 0; i < N; i++) {
     Rcpp::IntegerVector cluster_i = cluster_list[cluster_vec[i]-1];
     local_cases = cpp_find_descendents(param["alpha"], cluster_i, i+1);
     int n_loc = local_cases.size();
@@ -278,15 +254,14 @@ Rcpp::List cpp_move_t_inf(Rcpp::List param, Rcpp::List data,
     // proposal (+/- 1)
     new_t_inf[i] += unif_rand() > 0.5 ? 1 : -1; // new proposed value
     // Check the new proposed value is correct
-    if(alpha[i] != NA_INTEGER)
-      if(new_t_inf[i] < new_t_inf[alpha[i] - 1])
-        new_t_inf[i] = t_inf[i];
-
-    if (n_loc> 0)
+    if(alpha[i] != NA_INTEGER){ 
+      if(new_t_inf[i] < new_t_inf[alpha[i] - 1]) new_t_inf[i] = t_inf[i];
+    }
+    
+    if (n_loc> 0){
       for(int k = 0; k < n_loc; k++)
-        if(new_t_inf[local_cases[k] - 1] < new_t_inf[i])
-          new_t_inf[i] = t_inf[i];
-
+        if(new_t_inf[local_cases[k] - 1] < new_t_inf[i]) new_t_inf[i] = t_inf[i];
+    }
     // loglike with new value
     new_loc_loglike = cpp_ll_timing(data, new_param, i+1, list_custom_ll); // term for case 'i' with offset
     
@@ -299,10 +274,8 @@ Rcpp::List cpp_move_t_inf(Rcpp::List param, Rcpp::List data,
     // acceptance term
     p_loc_accept = exp(new_loc_loglike - old_loc_loglike);
     
-    
     // acceptance: the new value is already in t_inf, so we only act if the move
     // is rejected, in which case we restore the previous ('old') value
-    
     if (p_loc_accept < unif_rand()) { // reject new values
       new_t_inf[i] = t_inf[i];
     }
@@ -338,13 +311,13 @@ Rcpp::List cpp_move_alpha(Rcpp::List param, Rcpp::List data, Rcpp::List config,
   Rcpp::List cluster_list = data["cluster"];
   Rcpp::IntegerVector cluster_vec = data["is_cluster"];
   
-  size_t N = static_cast<size_t>(data["N"]);
+  int N = static_cast<int>(data["N"]);
   
   double old_loglike = 0.0, new_loglike = 0.0, p_accept = 0.0, runif = 0.0;
   Rcpp::IntegerVector possible_ancestors;
   Rcpp::IntegerVector t_inf_i;
   
-  for (size_t i = 0; i < N; i++) {
+  for (int i = 0; i < N; i++) {
     if (alpha[i] == NA_INTEGER ){
       Rcpp::IntegerVector tree;
       Rcpp::String gen_tree;
@@ -360,7 +333,7 @@ Rcpp::List cpp_move_alpha(Rcpp::List param, Rcpp::List data, Rcpp::List config,
     }
   }
   
-  for (size_t i = 0; i < N; i++) {
+  for (int i = 0; i < N; i++) {
     Rcpp::IntegerVector cluster_i = cluster_list[cluster_vec[i]-1];
     t_inf_i = t_inf[cluster_i-1];
     // only non-NA ancestries are moved, if there is at least 1 option
@@ -455,13 +428,13 @@ Rcpp::List cpp_move_ancestors(Rcpp::List param, Rcpp::List data, Rcpp::List conf
   Rcpp::IntegerVector local_cases;
   Rcpp::IntegerVector desc_index;
   Rcpp::IntegerVector changes(2);
-  size_t N = static_cast<size_t>(data["N"]);
+  int N = static_cast<int>(data["N"]);
   
   double old_loglike = 0.0, new_loglike = 0.0, p_accept = 0.0, runif = 0.0;
   Rcpp::IntegerVector all_desc;
   int j_clust;
   
-  for (size_t i = 0; i < N; i++) {
+  for (int i = 0; i < N; i++) {
     if (alpha[i] == NA_INTEGER ){
       Rcpp::IntegerVector tree;
       Rcpp::String gen_tree;
@@ -477,7 +450,7 @@ Rcpp::List cpp_move_ancestors(Rcpp::List param, Rcpp::List data, Rcpp::List conf
     }
   }
   
-  for (size_t i = 0; i < N; i++) {
+  for (int i = 0; i < N; i++) {
     // Only NA ancestries are considered
     if (alpha[i] == NA_INTEGER && move_alpha[i] == TRUE){
       Rcpp::IntegerVector cluster_i = cluster_list[cluster_vec[i]-1];
@@ -605,17 +578,17 @@ Rcpp::List cpp_move_swap_cases(Rcpp::List param, Rcpp::List data,
   Rcpp::IntegerVector move_alpha = config["move_alpha"]; // pointer to config$move_alpha
   Rcpp::List swapinfo; // contains alpha, kappa and t_inf
   Rcpp::IntegerVector local_cases;
-
+  
   Rcpp::List cluster_list = data["cluster"];
   Rcpp::IntegerVector cluster_vec = data["is_cluster"];
   
-  size_t N = static_cast<size_t>(data["N"]);
+  int N = static_cast<size_t>(data["N"]);
   
   double old_loglike = 0.0, new_loglike = 0.0, p_accept = 0.0;
   
-  for (size_t i = 0; i < N; i++) {
+  for (int i = 0; i < N; i++) {
     Rcpp::IntegerVector cluster_i = cluster_list[cluster_vec[i]-1];
-
+    
     // only non-NA ancestries are moved
     if (alpha[i] != NA_INTEGER && move_alpha[alpha[i]-1] == TRUE) {
       // The local likelihood is defined as the likelihood computed for the
@@ -679,14 +652,12 @@ Rcpp::List cpp_move_kappa(Rcpp::List param, Rcpp::List data, Rcpp::List config,
   Rcpp::IntegerVector alpha = param["alpha"]; // pointer to param$alpha
   Rcpp::IntegerVector kappa = param["kappa"]; // pointer to param$kappa
   Rcpp::IntegerVector new_kappa = new_param["kappa"];
-  
-  size_t N = static_cast<size_t>(data["N"]);
+  int N = static_cast<size_t>(data["N"]);
   int K = config["max_kappa"];
   size_t jump;
-  
   double old_loglike = 0.0, new_loglike = 0.0, p_accept = 0.0;
   
-  for (size_t i = 0; i < N; i++) {
+  for (int i = 0; i < N; i++) {
     
     // only non-NA ancestries are moved
     if (alpha[i] != NA_INTEGER) {

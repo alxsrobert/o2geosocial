@@ -45,6 +45,27 @@ namespace o2geosocial {
         return Rcpp::as<std::vector<int> >(rcpp_result_gen);
     }
 
+    inline Rcpp::List cpp_log_like_s(Rcpp::NumericVector population, Rcpp::NumericMatrix distance, double a, double b, Rcpp::String spatial) {
+        typedef SEXP(*Ptr_cpp_log_like_s)(SEXP,SEXP,SEXP,SEXP,SEXP);
+        static Ptr_cpp_log_like_s p_cpp_log_like_s = NULL;
+        if (p_cpp_log_like_s == NULL) {
+            validateSignature("Rcpp::List(*cpp_log_like_s)(Rcpp::NumericVector,Rcpp::NumericMatrix,double,double,Rcpp::String)");
+            p_cpp_log_like_s = (Ptr_cpp_log_like_s)R_GetCCallable("o2geosocial", "_o2geosocial_cpp_log_like_s");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_cpp_log_like_s(Shield<SEXP>(Rcpp::wrap(population)), Shield<SEXP>(Rcpp::wrap(distance)), Shield<SEXP>(Rcpp::wrap(a)), Shield<SEXP>(Rcpp::wrap(b)), Shield<SEXP>(Rcpp::wrap(spatial)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<Rcpp::List >(rcpp_result_gen);
+    }
+
     inline Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix distance, Rcpp::NumericMatrix ances, double a, double b, int max_kappa, double gamma, Rcpp::String spatial, int nb_cases) {
         typedef SEXP(*Ptr_cpp_log_like)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
         static Ptr_cpp_log_like p_cpp_log_like = NULL;

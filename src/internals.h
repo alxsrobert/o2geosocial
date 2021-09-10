@@ -5,6 +5,8 @@
 
 std::vector<int> cpp_are_possible_ancestors(Rcpp::IntegerVector t_inf, Rcpp::IntegerVector alpha, Rcpp::StringVector genotype, Rcpp::StringVector gen_tree, Rcpp::IntegerVector cluster, size_t i);
 
+Rcpp::List cpp_log_like_s(Rcpp::NumericVector population, Rcpp::NumericMatrix distance, double a, double b, Rcpp::String spatial);
+
 Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix distance, Rcpp::NumericMatrix ances, double a, double b, int max_kappa, double gamma, Rcpp::String spatial, int nb_cases);
 
 Rcpp::IntegerVector cpp_find_descendents(Rcpp::IntegerVector alpha, Rcpp::IntegerVector cluster, int i);

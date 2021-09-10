@@ -85,33 +85,22 @@ std::vector<int> cpp_are_possible_ancestors(Rcpp::IntegerVector t_inf,
 
 // [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export()]]
-Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix distance,
-                        Rcpp::NumericMatrix ances, double a, double b, int max_kappa,
-                        double gamma, Rcpp::String spatial, int nb_cases) {
+Rcpp::List cpp_log_like_s(Rcpp::NumericVector population, Rcpp::NumericMatrix distance,
+                          double a, double b, Rcpp::String spatial) {
   int size_pop = population.size();
   Rcpp::NumericVector population_a(size_pop);
   Rcpp::NumericVector sum_pop(size_pop);
   Rcpp::NumericMatrix nb_move(size_pop, size_pop);
-  double thresh_dist = gamma;
   
-  // log_s_dens with no missing generation
-  // Rcpp::NumericMatrix probs_tot(size_pop, size_pop);
-  // log_s_dens with one missing generation
-  Rcpp::NumericMatrix probs(nb_cases, nb_cases);
-  int j, k, l;
-  double thresh_probs = 0.0;
-  if(size_pop <1000) thresh_probs = 0.000001;
-  else if(size_pop <3000) thresh_probs = 0.00001;
+  Rcpp::NumericMatrix probs(size_pop, size_pop);
+  int j, k;
   
   for(k = 0; k<size_pop; k++)
     population_a[k] = pow(population[k], a);
-  // When the distance between two counties is above thresh, we consider the 
-  // chances of connection are null. This significantly speeds up the function
-  // by reducing the number of elements of the matrix that need to be calculated.
   if(spatial == "exponential"){
     for(k = 0; k<size_pop; k++){
       for(j = 0; j<size_pop; j++){
-        if(distance(j,k) < thresh_dist && j>k){
+        if(j>k){
           nb_move(k, j) = population_a[k]*exp(-b*distance(k,j));
           nb_move(j, k) = nb_move(k,j) * population_a[j] / population_a[k];
           sum_pop[j] += nb_move(k, j);
@@ -122,16 +111,14 @@ Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix dist
         }
       }
       for(j = 0; j<size_pop; j++){
-        if(distance(k,j) <= thresh_dist){
-          if(k < nb_cases && j < nb_cases) probs(j, k) = nb_move(j, k) / sum_pop[k];
-          else nb_move(j, k) = nb_move(j, k) / sum_pop[k];
-        }
+        probs(j, k) = nb_move(j, k) / sum_pop[k];
+        probs(j, k) = (probs(j, k));
       }
     }
   } else if(spatial == "power-law"){
     for(k = 0; k<size_pop; k++){
       for(j = 0; j<size_pop; j++){
-        if(distance(j,k) < thresh_dist && j>k){
+        if(j>k){
           nb_move(k, j) = population_a[k]*pow(1+distance(j,k), b);
           nb_move(j, k) = nb_move(k,j) * population_a[j] / population_a[k];
           sum_pop[j] += nb_move(k, j);
@@ -142,59 +129,23 @@ Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix dist
         }
       }
       for(j = 0; j<size_pop; j++){
-        if(distance(k,j) <= thresh_dist){
-          if(k < nb_cases && j < nb_cases) probs(j, k) = nb_move(j, k) / sum_pop[k];
-          else nb_move(j, k) = nb_move(j, k) / sum_pop[k];
-        }
+        probs(j, k) = nb_move(j, k) / sum_pop[k];
+        probs(j, k) = (probs(j, k));
       }
     }
   }
-  if(max_kappa > 1){
-    Rcpp::NumericMatrix probs2(nb_cases, nb_cases);
-    for(k = 0; k<nb_cases; k++){
-      for(j = 0; j<nb_cases; j++){
-        if(ances(k, j) == 1 && distance(k,j) <= thresh_dist){
-          for(l = 0; l < size_pop; l++){
-            if(l < nb_cases){
-              if((probs(k, l) * probs(l, j)) > thresh_probs &&
-                 distance(k, l) <= thresh_dist && distance(l, j) <= thresh_dist)
-                probs2(k,j) += probs(k, l) * probs(l, j);
-            }
-            else
-              if((nb_move(k, l) * nb_move(l, j)) > thresh_probs &&
-                 distance(k, l) <= thresh_dist && distance(l, j) <= thresh_dist)
-                probs2(k,j)  += nb_move(k, l) * nb_move(l, j);
-          }
-        }
-      }
-    }
-    for(k = 0; k<nb_cases; k++){
-      for(j = 0; j<nb_cases; j++){
-        if(ances(k, j) == 1 && distance(k,j) <= thresh_dist){
-          probs2(k, j) = log(probs2(k, j));
-          probs(k, j) = log(probs(k, j));
-        } else{
-          probs2(k, j) = -1000;
-          probs(k, j) = -1000;
-        }
-      }
-    }
-    Rcpp::List new_log_s_dens = Rcpp::List::create(probs, probs2);
-    return(new_log_s_dens);
-  } else{
-    for(k = 0; k<nb_cases; k++){
-      for(j = 0; j<nb_cases; j++){
-        if(ances(k, j) == 1 && distance(k,j) <= thresh_dist) probs(k, j) = log(probs(k, j));
-        else if(distance(k,j) > thresh_dist) probs(k, j) = -1000;
-      }
-    }
-    Rcpp::List new_log_s_dens = Rcpp::List::create(probs);
-    return(new_log_s_dens);
-  }
+  Rcpp::List new_log_s_dens = Rcpp::List::create(probs);
+  return(new_log_s_dens);
 }
 
 
-
+// [[Rcpp::export()]]
+Rcpp::List cpp_log_like(Rcpp::NumericVector population, Rcpp::NumericMatrix distance,
+                        Rcpp::NumericMatrix ances, double a, double b, int max_kappa,
+                        double gamma, Rcpp::String spatial, int nb_cases) {
+  Rcpp::List log_like = cpp_log_like_s(population, distance, a, b, spatial);
+  return log_like;
+}
 
 // ---------------------------
 

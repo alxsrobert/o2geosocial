@@ -167,9 +167,11 @@ double cpp_ll_space(Rcpp::List data, Rcpp::List config,
     Rcpp::IntegerVector kappa = param["kappa"];
     Rcpp::IntegerVector region = data["region"];
     Rcpp::IntegerVector population = data["population"];
-    Rcpp::List log_s_dens = param["log_s_dens"];
-
+    Rcpp::List list_space = param["log_s_dens"];
+    Rcpp::NumericMatrix spatial_j = list_space[0];
     double out = 0.0;
+    double probs2 = 0.0;
+    double ll_space = 0.0;
 
     int size_pop = population.size();
     int region_j;
@@ -183,8 +185,21 @@ double cpp_ll_space(Rcpp::List data, Rcpp::List config,
           }
           region_j = region[j];
           region_index = region[alpha[j]-1];
-          Rcpp::NumericMatrix spatial_j = log_s_dens[kappa[j]-1];
-          out += spatial_j(region_index-1, region_j-1);
+          if(kappa[j] == 1) {
+            out += log(spatial_j(region_index-1, region_j-1));
+          } else{
+            probs2 = 0.0;
+            for (int k = 0; k < size_pop; k++){
+              if((spatial_j(region_index-1, k) + spatial_j(k, region_j-1)) > -20){
+                probs2 += spatial_j(region_index-1, k) * 
+                  spatial_j(k, region_j-1);
+              }
+            }
+            if(probs2 == 0.0){
+              ll_space = -1000;
+            } else ll_space = log(probs2); 
+            out += ll_space;
+          }
         }
       }
     }
@@ -199,8 +214,21 @@ double cpp_ll_space(Rcpp::List data, Rcpp::List config,
           }
           region_j = region[j];
           region_index = region[alpha[j]-1];
-          Rcpp::NumericMatrix spatial_j = log_s_dens[kappa[j]-1];
-          out += spatial_j(region_index-1, region_j-1);
+          if(kappa[j] == 1) {
+            out += log(spatial_j(region_index-1, region_j-1));
+          } else{
+            probs2 = 0.0;
+            for (int k = 0; k < size_pop; k++){
+              if((spatial_j(region_index-1, k) + spatial_j(k, region_j-1)) > -20){
+                probs2 += spatial_j(region_index-1, k) * 
+                  spatial_j(k, region_j-1);
+              }
+            }
+            if(probs2 == 0.0){ 
+              ll_space = -1000 ;
+            } else ll_space = log(probs2); 
+            out += ll_space;
+          }
         }
       } 
     }
@@ -267,9 +295,8 @@ double cpp_ll_age(Rcpp::List data, Rcpp::List param, SEXP i,
           if (kappa[j] < 1 || kappa[j] > K) {
             return  R_NegInf;
           }
-          if(kappa[j]>1)
-            Rcpp::NumericMatrix ageref = age_dens[kappa[j]-1];
-          out += ageref(age_group[alpha[j]-1]-1, age_group[j]-1);
+          Rcpp::NumericMatrix contact = age_dens[kappa[j]-1];
+          out += contact(age_group[alpha[j]-1]-1, age_group[j]-1);
         }
       }
     }
