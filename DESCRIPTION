@@ -1,7 +1,7 @@
 Package: o2geosocial
 Type: Package
 Title: Reconstruction of Transmission Chains from Surveillance Data
-Version: 1.0.1
+Version: 1.1.0
 URL: https://github.com/alxsrobert/o2geosocial
 Encoding: UTF-8
 Authors@R: c(person("Alexis", "Robert", email = "alexis.robert@lshtm.ac.uk", role = c("aut", "cre", "cph"), comment = c(ORCID = "0000-0002-4516-2965")),
