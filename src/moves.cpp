@@ -575,44 +575,56 @@ Rcpp::List cpp_move_swap_cases(Rcpp::List param, Rcpp::List data,
   Rcpp::List new_param = clone(param);
   Rcpp::IntegerVector alpha = param["alpha"]; // pointer to param$alpha
   Rcpp::IntegerVector t_inf = param["t_inf"]; // pointer to param$t_inf
+  Rcpp::IntegerVector kappa = param["kappa"]; // pointer to param$t_inf
+  Rcpp::IntegerVector new_alpha = new_param["alpha"]; 
+  Rcpp::IntegerVector new_t_inf = new_param["t_inf"]; 
+  Rcpp::IntegerVector new_kappa = new_param["kappa"]; 
+  Rcpp::IntegerVector swap_alpha, swap_t_inf, swap_kappa;
   Rcpp::IntegerVector move_alpha = config["move_alpha"]; // pointer to config$move_alpha
   Rcpp::List swapinfo; // contains alpha, kappa and t_inf
-  Rcpp::IntegerVector local_cases;
-  
+  Rcpp::IntegerVector local_cases, descendents;
   Rcpp::List cluster_list = data["cluster"];
   Rcpp::IntegerVector cluster_vec = data["is_cluster"];
-  
   int N = static_cast<size_t>(data["N"]);
+  Rcpp::IntegerVector vec_swap(N);
+  int vect_k, i_swap, size_descendents, n_loc, i, k;
   
   double old_loglike = 0.0, new_loglike = 0.0, p_accept = 0.0;
-  
-  for (int i = 0; i < N; i++) {
+  for (i = 0; i < N; i++) {
     Rcpp::IntegerVector cluster_i = cluster_list[cluster_vec[i]-1];
     
     // only non-NA ancestries are moved
-    if (alpha[i] != NA_INTEGER && move_alpha[alpha[i]-1] == TRUE) {
-      // The local likelihood is defined as the likelihood computed for the
-      // cases affected by the swap; these include:
-      
-      // - 'i'
-      // - the descendents of 'i'
-      // - 'alpha[i]'
-      // - the descendents of 'alpha[i]' (other than 'i')
-      local_cases = cpp_find_local_cases(param["alpha"], cluster_i, i+1);
-        
+    // The local likelihood is defined as the likelihood computed for the
+    // cases affected by the swap; these include:
+    
+    // - 'i'
+    // - the descendents of 'i'
+    // - 'alpha[i]'
+    // - the descendents of 'alpha[i]' (other than 'i')
+    descendents = cpp_find_descendents(alpha, cluster_i, i+1);
+    size_descendents = descendents.size();
+    i_swap = descendents[unif_rand() * descendents.size()];
+    if(size_descendents > 0 && move_alpha[i_swap - 1] == TRUE && 
+       vec_swap[i] == 0){
+      local_cases = cpp_find_local_cases(alpha, cluster_i, i_swap);
+      n_loc = local_cases.size();
       // loglike with current parameters
       
       old_loglike = cpp_ll_all(data, config, param, local_cases, list_custom_ll); // offset
       
-
+      
       // proposal: swap case 'i' and its ancestor
+      swapinfo = cpp_swap_cases(param, cluster_i, i_swap);
+      swap_alpha = swapinfo["alpha"];
+      swap_t_inf = swapinfo["t_inf"];
+      swap_kappa = swapinfo["kappa"];
       
-      swapinfo = cpp_swap_cases(param, cluster_i, i+1);
-      new_param["alpha"] = swapinfo["alpha"];
-      new_param["t_inf"] = swapinfo["t_inf"];
-      new_param["kappa"] = swapinfo["kappa"];
-      
-      
+      for (k = 0; k < n_loc; k++) {
+        vect_k = local_cases[k];
+        new_alpha[vect_k - 1] = swap_alpha[vect_k - 1];
+        new_t_inf[vect_k - 1] = swap_t_inf[vect_k - 1];
+        new_kappa[vect_k - 1] = swap_kappa[vect_k - 1];
+      }
       // loglike with new parameters
       
       new_loglike = cpp_ll_all(data, config, new_param, local_cases, list_custom_ll);
@@ -620,14 +632,22 @@ Rcpp::List cpp_move_swap_cases(Rcpp::List param, Rcpp::List data,
       
       // acceptance term
       p_accept = exp(new_loglike - old_loglike);
-      
-      
       // acceptance: change param only if new values is accepted
-      
       if (p_accept >= unif_rand()) { // accept new parameters
-        param["alpha"] = new_param["alpha"];
-        param["t_inf"] = new_param["t_inf"];
-        param["kappa"] = new_param["kappa"];
+        for (int k = 0; k < n_loc; k++) {
+          vect_k = local_cases[k];
+          alpha[vect_k - 1] = new_alpha[vect_k - 1];
+          t_inf[vect_k - 1] = new_t_inf[vect_k - 1];
+          kappa[vect_k - 1] = new_kappa[vect_k - 1];
+          vec_swap[i_swap - 1] = 1;
+        }
+      } else{
+        for (int k = 0; k < n_loc; k++) {
+          vect_k = local_cases[k];
+          new_alpha[vect_k - 1] = alpha[vect_k - 1];
+          new_t_inf[vect_k - 1] = t_inf[vect_k - 1];
+          new_kappa[vect_k - 1] = kappa[vect_k - 1];
+        }
       }
     }
   }
