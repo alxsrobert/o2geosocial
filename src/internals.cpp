@@ -35,7 +35,7 @@ std::vector<int> cpp_are_possible_ancestors(Rcpp::IntegerVector t_inf,
                                             Rcpp::StringVector genotype,
                                             Rcpp::StringVector gen_tree,
                                             Rcpp::IntegerVector cluster,
-                                            size_t i) {
+                                            int delta, size_t i) {
   size_t n = cluster.size();
   std::vector<int> out;
   out.reserve(n);
@@ -59,7 +59,7 @@ std::vector<int> cpp_are_possible_ancestors(Rcpp::IntegerVector t_inf,
   if(gen_ref == "Not attributed"){
     for (size_t j = 0; j < n; j++) {
       j_clust = cluster[j]-1;
-      if (t_inf[j_clust] < ref_t_inf) { // offset
+      if (t_inf[j_clust] < ref_t_inf && t_inf[j_clust] > ref_t_inf - delta) { // offset
         out.push_back(j_clust+1);
       }
     }
@@ -68,7 +68,7 @@ std::vector<int> cpp_are_possible_ancestors(Rcpp::IntegerVector t_inf,
     // genotype as i and i's descendents can be a cluster
     for (size_t j = 0; j < n; j++) {
       j_clust = cluster[j]-1;
-      if (t_inf[j_clust] < ref_t_inf && 
+      if (t_inf[j_clust] < ref_t_inf && t_inf[j_clust] > ref_t_inf - delta && 
           (gen_tree[j_clust] == gen_ref 
              || gen_tree[j_clust] == "Not attributed")) { // offset
         out.push_back(j_clust+1);
@@ -350,7 +350,8 @@ Rcpp::IntegerVector cpp_find_local_cases(Rcpp::IntegerVector alpha,
 
 // [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export()]]
-Rcpp::List cpp_swap_cases(Rcpp::List param, Rcpp::IntegerVector cluster, int i) {
+Rcpp::List cpp_swap_cases(Rcpp::List param, Rcpp::IntegerVector cluster, 
+                          Rcpp::IntegerVector move_alpha, int i) {
   Rcpp::IntegerVector alpha_in = param["alpha"];
   Rcpp::IntegerVector t_inf_in = param["t_inf"];
   Rcpp::IntegerVector kappa_in = param["kappa"];
@@ -371,14 +372,8 @@ Rcpp::List cpp_swap_cases(Rcpp::List param, Rcpp::IntegerVector cluster, int i) 
     return out;
   }
   
-  
-  // escape if ancestor of the case is imported, i.e. alpha[x-1] is NA
-  
   int x = alpha_in[i-1];
-  //if (alpha_in[x-1] == NA_INTEGER) {
-  // return out;
-  //}
-  
+
   
   // replace ancestries:
   // - descendents of 'i' become descendents of 'x'
@@ -386,9 +381,9 @@ Rcpp::List cpp_swap_cases(Rcpp::List param, Rcpp::IntegerVector cluster, int i) 
   
   for (size_t j = 0; j < length_cluster; j++) {
     j_clust = cluster[j]-1;
-    if (alpha_in[j_clust] == i) {
+    if (alpha_in[j_clust] == i && move_alpha[j_clust] == TRUE) {
       alpha_out[j_clust] = x;
-    } else if (alpha_in[j_clust] == x) {
+    } else if (alpha_in[j_clust] == x && move_alpha[j_clust] == TRUE) {
       alpha_out[j_clust] = i;
     }
   }
