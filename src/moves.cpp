@@ -247,7 +247,7 @@ Rcpp::List cpp_move_t_inf(Rcpp::List param, Rcpp::List data,
     old_loc_loglike = cpp_ll_timing(data, param, i+1, list_custom_ll); // term for case 'i' with offset
     
     // term descendents of 'i'
-    if (local_cases.size() > 0) {
+    if (n_loc > 0) {
       old_loc_loglike += cpp_ll_timing(data, param, local_cases, list_custom_ll);
     }
     
@@ -278,7 +278,7 @@ Rcpp::List cpp_move_t_inf(Rcpp::List param, Rcpp::List data,
     // is rejected, in which case we restore the previous ('old') value
     if (p_loc_accept < unif_rand()) { // reject new values
       new_t_inf[i] = t_inf[i];
-    }
+    } else t_inf[i] = new_t_inf[i];
   }
   
   return new_param;
@@ -307,13 +307,18 @@ Rcpp::List cpp_move_alpha(Rcpp::List param, Rcpp::List data, Rcpp::List config,
   Rcpp::StringVector all_gen = clone(genotype); // copy of data$genotype
   Rcpp::IntegerVector alpha = param["alpha"]; // pointer to param$alpha
   Rcpp::IntegerVector t_inf = param["t_inf"]; // pointer to param$t_inf
+  Rcpp::IntegerVector kappa = param["kappa"]; // pointer to kappa
   Rcpp::IntegerVector new_alpha = new_param["alpha"]; // pointer to new_param$alpha
+  Rcpp::IntegerVector new_kappa = new_param["kappa"]; // pointer to new_param$alpha
   Rcpp::List cluster_list = data["cluster"];
   Rcpp::IntegerVector cluster_vec = data["is_cluster"];
+  Rcpp::IntegerVector move_alpha = config["move_alpha"]; 
+  int delta = config["delta"]; 
+  int K = config["max_kappa"]; 
   
   int N = static_cast<int>(data["N"]);
   
-  double old_loglike = 0.0, new_loglike = 0.0, p_accept = 0.0, runif = 0.0;
+  double old_loglike = 0.0, new_loglike = 0.0, p_accept = 0.0;
   Rcpp::IntegerVector possible_ancestors;
   Rcpp::IntegerVector t_inf_i;
   
@@ -337,9 +342,10 @@ Rcpp::List cpp_move_alpha(Rcpp::List param, Rcpp::List data, Rcpp::List config,
     Rcpp::IntegerVector cluster_i = cluster_list[cluster_vec[i]-1];
     t_inf_i = t_inf[cluster_i-1];
     // only non-NA ancestries are moved, if there is at least 1 option
-    if (alpha[i] != NA_INTEGER && sum(t_inf_i < t_inf[i]) > 1) { 
+    if (alpha[i] != NA_INTEGER && sum(t_inf_i < t_inf[i]) > 1 && 
+        move_alpha[i] == TRUE) { 
       possible_ancestors = cpp_are_possible_ancestors(t_inf, alpha, genotype, 
-                                                      all_gen, cluster_i, i+1);
+                                                      all_gen, cluster_i, delta, i+1);
       
       if (possible_ancestors.size()>1){
         // loglike with current value
@@ -347,17 +353,19 @@ Rcpp::List cpp_move_alpha(Rcpp::List param, Rcpp::List data, Rcpp::List config,
         old_loglike = cpp_ll_all(data, config, param, i+1, list_custom_ll); // offset
         // proposal (+/- 1)
         new_alpha[i] = possible_ancestors[unif_rand() * possible_ancestors.size()];
+        new_kappa[i] = unif_rand() * K + 1;
         // loglike with current value
         new_loglike = cpp_ll_all(data, config, new_param, i+1, list_custom_ll);
         // acceptance term
         p_accept = exp(new_loglike - old_loglike);
-        runif = unif_rand();
         // which case we restore the previous ('old') value
-        if (p_accept < runif) { // reject new values
+        if (p_accept < unif_rand()) { // reject new values
           new_alpha[i] = alpha[i];
+          new_kappa[i] = kappa[i];
         } else {
           int old_ances = alpha[i];
           alpha[i] = new_alpha[i];
+          kappa[i] = new_kappa[i];
           
           // Update the genotype in the  tree alpha used to belong to
           Rcpp::IntegerVector tree_a = cpp_find_all_tree(alpha, t_inf, 
@@ -415,8 +423,9 @@ Rcpp::List cpp_move_ancestors(Rcpp::List param, Rcpp::List data, Rcpp::List conf
   Rcpp::StringVector all_gen = clone(genotype); // copy of data$genotype
   Rcpp::IntegerVector alpha = param["alpha"]; // pointer to param$alpha
   Rcpp::IntegerVector t_inf = param["t_inf"]; // pointer to param$t_inf
-  Rcpp::IntegerVector kappa = param["kappa"]; // pointer to param$t_inf
-  Rcpp::IntegerVector move_alpha = config["move_alpha"]; // pointer to param$t_inf
+  Rcpp::IntegerVector kappa = param["kappa"]; // pointer to param$kappa
+  Rcpp::IntegerVector move_alpha = config["move_alpha"];
+  int delta = config["delta"]; 
   
   Rcpp::IntegerVector new_alpha = new_param["alpha"];
   Rcpp::IntegerVector new_kappa = new_param["kappa"];
@@ -472,7 +481,7 @@ Rcpp::List cpp_move_ancestors(Rcpp::List param, Rcpp::List data, Rcpp::List conf
         
         // Draw i's new index 
         possible_index = cpp_are_possible_ancestors(t_inf, alpha, genotype, 
-                                                    all_gen, cluster_i, i+1);
+                                                    all_gen, cluster_i, delta, i+1);
         if (possible_index.size()>0){
           // Likelihood changed for 2 cases: i and new_ances
           changes[0] = i+1;// offset
@@ -572,49 +581,56 @@ Rcpp::List cpp_move_swap_cases(Rcpp::List param, Rcpp::List data,
                                Rcpp::List config, 
                                Rcpp::RObject list_custom_ll = R_NilValue) {
   
-  Rcpp::List new_param = clone(param);
-  Rcpp::IntegerVector alpha = param["alpha"]; // pointer to param$alpha
-  Rcpp::IntegerVector t_inf = param["t_inf"]; // pointer to param$t_inf
-  Rcpp::IntegerVector kappa = param["kappa"]; // pointer to param$t_inf
-  Rcpp::IntegerVector new_alpha = new_param["alpha"]; 
-  Rcpp::IntegerVector new_t_inf = new_param["t_inf"]; 
-  Rcpp::IntegerVector new_kappa = new_param["kappa"]; 
-  Rcpp::IntegerVector swap_alpha, swap_t_inf, swap_kappa;
   Rcpp::IntegerVector move_alpha = config["move_alpha"]; // pointer to config$move_alpha
-  Rcpp::List swapinfo; // contains alpha, kappa and t_inf
-  Rcpp::IntegerVector local_cases, descendents;
+  
   Rcpp::List cluster_list = data["cluster"];
   Rcpp::IntegerVector cluster_vec = data["is_cluster"];
   int N = static_cast<size_t>(data["N"]);
-  Rcpp::IntegerVector vec_swap(N);
-  int vect_k, i_swap, size_descendents, n_loc, i, k;
   
+  Rcpp::IntegerVector alpha = param["alpha"]; // pointer to param$alpha
+  Rcpp::IntegerVector t_inf = param["t_inf"]; // pointer to param$t_inf
+  Rcpp::IntegerVector kappa = param["kappa"]; // pointer to kappa
+  Rcpp::StringVector genotype = data["genotype"]; // pointer to data$genotype
+  
+  Rcpp::List new_param = clone(param);
+  Rcpp::IntegerVector new_alpha = new_param["alpha"]; 
+  Rcpp::IntegerVector new_t_inf = new_param["t_inf"]; 
+  Rcpp::IntegerVector new_kappa = new_param["kappa"]; 
+  
+  Rcpp::IntegerVector swap_alpha, swap_t_inf, swap_kappa;
+  Rcpp::List swapinfo; // contains alpha, kappa and t_inf
+  Rcpp::IntegerVector local_cases, descendents, desc_i, desc_i_swap;
+  Rcpp::IntegerVector tree_i, tree_j;
+  Rcpp::String gen_tree, gen_tree_j;
+  Rcpp::IntegerVector vec_swap(N);
+  int vect_k, i_swap, size_descendents, n_loc, i, k, j_clust;
   double old_loglike = 0.0, new_loglike = 0.0, p_accept = 0.0;
+  
   for (i = 0; i < N; i++) {
     Rcpp::IntegerVector cluster_i = cluster_list[cluster_vec[i]-1];
     
-    // only non-NA ancestries are moved
-    // The local likelihood is defined as the likelihood computed for the
-    // cases affected by the swap; these include:
-    
-    // - 'i'
-    // - the descendents of 'i'
-    // - 'alpha[i]'
-    // - the descendents of 'alpha[i]' (other than 'i')
     descendents = cpp_find_descendents(alpha, cluster_i, i+1);
     size_descendents = descendents.size();
-    i_swap = descendents[unif_rand() * descendents.size()];
+    i_swap = descendents[unif_rand() * size_descendents];
+    // The local likelihood is defined as the likelihood computed for the
+    // cases affected by the swap; these include:
+    // - 'i_swap'
+    // - the descendents of 'i_swap'
+    // - 'i'
+    // - the descendents of 'i' (other than 'i_swap')
+    
     if(size_descendents > 0 && move_alpha[i_swap - 1] == TRUE && 
-       vec_swap[i] == 0){
+       move_alpha[i] == TRUE && vec_swap[i] == 0){
+      
       local_cases = cpp_find_local_cases(alpha, cluster_i, i_swap);
       n_loc = local_cases.size();
-      // loglike with current parameters
       
+      // loglike with current parameters
       old_loglike = cpp_ll_all(data, config, param, local_cases, list_custom_ll); // offset
       
       
       // proposal: swap case 'i' and its ancestor
-      swapinfo = cpp_swap_cases(param, cluster_i, i_swap);
+      swapinfo = cpp_swap_cases(param, cluster_i, move_alpha, i_swap);
       swap_alpha = swapinfo["alpha"];
       swap_t_inf = swapinfo["t_inf"];
       swap_kappa = swapinfo["kappa"];
@@ -629,7 +645,6 @@ Rcpp::List cpp_move_swap_cases(Rcpp::List param, Rcpp::List data,
       
       new_loglike = cpp_ll_all(data, config, new_param, local_cases, list_custom_ll);
       
-      
       // acceptance term
       p_accept = exp(new_loglike - old_loglike);
       // acceptance: change param only if new values is accepted
@@ -639,8 +654,8 @@ Rcpp::List cpp_move_swap_cases(Rcpp::List param, Rcpp::List data,
           alpha[vect_k - 1] = new_alpha[vect_k - 1];
           t_inf[vect_k - 1] = new_t_inf[vect_k - 1];
           kappa[vect_k - 1] = new_kappa[vect_k - 1];
-          vec_swap[i_swap - 1] = 1;
         }
+        vec_swap[i_swap - 1] = 1;
       } else{
         for (int k = 0; k < n_loc; k++) {
           vect_k = local_cases[k];
@@ -649,11 +664,85 @@ Rcpp::List cpp_move_swap_cases(Rcpp::List param, Rcpp::List data,
           new_kappa[vect_k - 1] = kappa[vect_k - 1];
         }
       }
+    } else if(alpha[i] == NA_INTEGER && move_alpha[i] == FALSE && vec_swap[i] == 0){
+      // Special case to swap cases defined as importations (improve the mixing
+      // of the trees)
+      Rcpp::IntegerVector swap_ances;
+      tree_i = cpp_find_all_tree(alpha, t_inf, cluster_i, i+1);
+      gen_tree = cpp_gen_tree(tree_i, cluster_i, genotype, i+1);
+
+      for (int j = 0; j < cluster_i.size(); j++){
+        j_clust = cluster_i[j]-1;
+        if (alpha[j_clust] == NA_INTEGER && j_clust != i){
+          tree_j = cpp_find_all_tree(alpha, t_inf, cluster_i, j_clust + 1);
+          gen_tree_j = cpp_gen_tree(tree_j, cluster_i, genotype, j_clust + 1);
+          if(gen_tree_j == gen_tree || gen_tree_j == "Not attributed"){
+            swap_ances.push_back(j_clust+1);
+          }
+        }
+      }
+
+      if(swap_ances.size() > 0){
+        i_swap = swap_ances[unif_rand() * swap_ances.size()];
+        desc_i = cpp_find_descendents(alpha, cluster_i, i + 1);
+        desc_i_swap = cpp_find_descendents(alpha, cluster_i, i_swap);
+        
+        old_loglike = cpp_ll_all(data, config, param, desc_i, list_custom_ll) +
+          cpp_ll_all(data, config, param, desc_i_swap, list_custom_ll) +
+          cpp_ll_all(data, config, param, i + 1, list_custom_ll) +
+          cpp_ll_all(data, config, param, i_swap, list_custom_ll); // offset
+        
+        int t_inf_i = new_t_inf[i];
+        int t_inf_i_swap = new_t_inf[i_swap - 1];
+        new_t_inf[i_swap - 1] = t_inf_i;
+        new_t_inf[i] = t_inf_i_swap;
+        
+        for (k = 0; k < desc_i.size(); k++) {
+          vect_k = desc_i[k];
+          new_alpha[vect_k - 1] = i_swap;
+        }
+        for (k = 0; k < desc_i_swap.size(); k++) {
+          vect_k = desc_i_swap[k];
+          new_alpha[vect_k - 1] = i + 1;
+        }
+        
+        new_loglike = cpp_ll_all(data, config, new_param, desc_i, list_custom_ll) +
+          cpp_ll_all(data, config, new_param, desc_i_swap, list_custom_ll) +
+          cpp_ll_all(data, config, new_param, i + 1, list_custom_ll) +
+          cpp_ll_all(data, config, new_param, i_swap, list_custom_ll); // offset
+
+        // acceptance term
+        p_accept = exp(new_loglike - old_loglike);
+        // acceptance: change param only if new values is accepted
+        if (p_accept >= unif_rand()) { // accept new parameters
+          for (k = 0; k < desc_i.size(); k++) {
+            vect_k = desc_i[k];
+            alpha[vect_k - 1] = new_alpha[vect_k - 1];
+          }
+          for (k = 0; k < desc_i_swap.size(); k++) {
+            vect_k = desc_i_swap[k];
+            alpha[vect_k - 1] = new_alpha[vect_k - 1];
+          }
+          t_inf[i_swap - 1] = new_t_inf[i_swap - 1];
+          t_inf[i] = new_t_inf[i];
+          vec_swap[i_swap - 1] = 1;
+        } else{
+          for (k = 0; k < desc_i.size(); k++) {
+            vect_k = desc_i[k];
+            new_alpha[vect_k - 1] = alpha[vect_k - 1];
+          }
+          for (k = 0; k < desc_i_swap.size(); k++) {
+            vect_k = desc_i_swap[k];
+            new_alpha[vect_k - 1] = alpha[vect_k - 1];
+          }
+          new_t_inf[i_swap - 1] = t_inf[i_swap - 1];
+          new_t_inf[i] = t_inf[i];
+        }
+      }
     }
   }
   return param;
 }
-
 
 // ---------------------------
 
