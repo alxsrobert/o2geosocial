@@ -43,13 +43,41 @@ outbreaker_find_imports <- function(moves, data, param_current,
                                  param = param_current_imports, i = i,
                                  custom_functions = likelihoods_imports)
                       ), numeric(1))
-        # Do not take the influence of importation into account
-        # (we are only interested in connected cases)
-        influences_imports[counter, is.na(param_current_imports$alpha)] <- -1
+        
         if(config_imports$verbatim == TRUE) 
           message(paste0("Finding import, Iteration number: ", i, "/",
                          config_imports$n_iter_import, "|| likelihood = ", 
                          round(sum(influences_imports[counter,]), 2)))
+        # Correct the influence for cases linked to an importation:
+        ## Likelihoods of cases already classified as importations are not taken
+        ## into account when adding new imports. Therefore, implausible latent
+        ## periods may not result in the addition of an importation. To correct
+        ## for this, we incorporate the f_dens of importations to the influence 
+        ## score of their infectee: 
+        alpha <- param_current_imports$alpha
+        linked_to_imports <- which(is.na(alpha[alpha]) & !is.na(alpha))
+        f_like_linked <- - vapply(
+          linked_to_imports, function(i) (
+            cpp_ll_timing_sampling(data = data_imports, 
+                                   param = param_current_imports, i = i,
+                                   custom_function = likelihoods_imports$timing_sampling)
+          ), numeric(1))
+        f_like_ances <- - vapply(
+          alpha[linked_to_imports], function(i) (
+            cpp_ll_timing_sampling(data = data_imports, 
+                                   param = param_current_imports, i = i,
+                                   custom_function = likelihoods_imports$timing_sampling)
+          ), numeric(1))
+        # Compute maximum f_dens
+        average_f_link <- pmax(f_like_ances, f_like_linked)
+        
+        influences_imports[counter,linked_to_imports] <- 
+          influences_imports[counter,linked_to_imports] - 
+          f_like_linked + average_f_link
+        
+        # Do not take the influence of importation into account
+        # (we are only interested in connected cases)
+        influences_imports[counter, is.na(param_current_imports$alpha)] <- -1
         counter <- counter + 1L
       }
     } # end of the chain
@@ -104,7 +132,8 @@ outbreaker_find_imports <- function(moves, data, param_current,
       n_imports_iteration <- apply(bad_ancestor_matrix, 1, sum)
       # Add the min(n_imports_iteration) new import in the cluster
       imports <- names(which(
-        bad_ancestor_matrix[which.min(n_imports_iteration),] == TRUE))
+        bad_ancestor_matrix[which.min(n_imports_iteration),] & 
+          config$move_alpha[as.numeric(colnames(X))]))
       imports <- as.numeric(imports)
       return(imports)
     }

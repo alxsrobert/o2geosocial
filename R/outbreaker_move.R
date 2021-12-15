@@ -47,22 +47,42 @@ outbreaker_move <- function(moves, data, param_current,
     if ((i %% config$sample_every) == 0) {
       param_store <- outbreaker_mcmc_store(param_current, param_store, data,
                                            config, likelihoods, priors, i)
+      influence_i <- - vapply(seq_len(data$N), function(case) 
+        (cpp_ll_all(data = data,config = config, param = param_current, i = case,
+                    custom_functions = likelihoods)
+        ), numeric(1))
       if(config$verbatim == TRUE){
-        influence_i <- - vapply(seq_len(data$N), function(case) 
-          (cpp_ll_all(data = data,config = config, param = param_current, i = case,
-                      custom_functions = likelihoods)
-          ), numeric(1))
         message(paste0("Iteration number: ", i, "/", config$n_iter,
                        "|| likelihood = ", round(sum(influence_i), 2)))
       }
       if(config$find_import == TRUE){
         counter <- i / config$sample_every + 1
         if(config$sample_every == 1) counter <- i
-        influences[counter,] <- - vapply(seq_len(data$N), function(case) 
-          (cpp_ll_all(data = data,config = config,
-                      param = param_current, i = case,
-                      custom_functions = likelihoods)
+        # Correct the influence for cases linked to an importation:
+        ## Likelihoods of cases already classified as importations are not taken
+        ## into account when adding new imports. Therefore, implausible latent
+        ## periods may not result in the addition of an importation. To correct
+        ## for this, we add the f_dens of importations to the influence score of 
+        ## their infectee: 
+        alpha <- param_current$alpha
+        linked_to_imports <- which(is.na(alpha[alpha]) & !is.na(alpha))
+        f_like_linked <- - vapply(
+          linked_to_imports, function(i) (
+            cpp_ll_timing_sampling(data = data, param = param_current, i = i,
+                                   custom_function = likelihoods$timing_sampling)
           ), numeric(1))
+        f_like_ances <- - vapply(
+          alpha[linked_to_imports], function(i) (
+            cpp_ll_timing_sampling(data = data, param = param_current, i = i,
+                                   custom_function = likelihoods$timing_sampling)
+          ), numeric(1))
+        # Compute average f_dens for "linked_to_imports"
+        average_f_link <- pmax(f_like_ances, f_like_linked)
+        
+        influence_i[linked_to_imports] <- influence_i[linked_to_imports] - 
+          f_like_linked + average_f_link
+        influences[counter,] <- influence_i
+        
       }
     }
   } # end of the chain
@@ -73,7 +93,9 @@ outbreaker_move <- function(moves, data, param_current,
     threshold <- -log(config$outlier_threshold)*5
     bad_ancestor <- rep(threshold, data$N)
     #Compare threshold to influence
-    bad_ancestor_matrix <- (influences)<(bad_ancestor)
+    bad_ancestor_matrix <- (influences)<(bad_ancestor) | 
+      matrix(!config$move_alpha, ncol = ncol(influences), nrow = nrow(influences), 
+             byrow = T)
     # In cases where the likelihood in worst than the threshold, the transmission link is removed
     bad_ancestor_matrix[bad_ancestor_matrix == FALSE] <- NA
     bad_ancestor_list <- split(x = t(bad_ancestor_matrix), 
