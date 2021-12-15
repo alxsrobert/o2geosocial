@@ -313,6 +313,8 @@ outbreaker_data <- function(..., data = list(...)) {
       stop("non-finite values detected in s_dens")
     }
     
+    data$s_dens <- data$s_dens[names(data$population),
+                               names(data$population)]
     data$log_s_dens <- (data$s_dens)
   }
   
