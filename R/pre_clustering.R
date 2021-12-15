@@ -74,8 +74,6 @@ pre_clustering <- function(data, config){
                          return(which(new_clusters == X)))
   data$cluster <- list_clust
   
-  config$init_tree <- "star"
-  config$init_kappa <- 1
   config <- create_config(config, data = data)
   
   # All cases in isolated chains are imports
