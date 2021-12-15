@@ -3,7 +3,7 @@
 
 #include <Rcpp.h>
 
-std::vector<int> cpp_are_possible_ancestors(Rcpp::IntegerVector t_inf, Rcpp::IntegerVector alpha, Rcpp::StringVector genotype, Rcpp::StringVector gen_tree, Rcpp::IntegerVector cluster, size_t i);
+std::vector<int> cpp_are_possible_ancestors(Rcpp::IntegerVector t_inf, Rcpp::IntegerVector alpha, Rcpp::StringVector genotype, Rcpp::StringVector gen_tree, Rcpp::IntegerVector cluster, int delta, size_t i);
 
 Rcpp::List cpp_log_like_s(Rcpp::NumericVector population, Rcpp::NumericMatrix distance, double a, double b, Rcpp::String spatial);
 
@@ -19,6 +19,6 @@ Rcpp::String cpp_gen_tree(Rcpp::IntegerVector tree, Rcpp::IntegerVector cluster,
 
 Rcpp::IntegerVector cpp_find_local_cases(Rcpp::IntegerVector alpha, Rcpp::IntegerVector cluster, int i);
 
-Rcpp::List cpp_swap_cases(Rcpp::List param, Rcpp::IntegerVector cluster, int i);
+Rcpp::List cpp_swap_cases(Rcpp::List param, Rcpp::IntegerVector cluster, Rcpp::IntegerVector move_alpha, int i);
 
 #endif
