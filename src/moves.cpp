@@ -349,7 +349,6 @@ Rcpp::List cpp_move_alpha(Rcpp::List param, Rcpp::List data, Rcpp::List config,
       
       if (possible_ancestors.size()>1){
         // loglike with current value
-        // old_loglike = cpp_ll_all(data, param, R_NilValue);
         old_loglike = cpp_ll_all(data, config, param, i+1, list_custom_ll); // offset
         // proposal (+/- 1)
         new_alpha[i] = possible_ancestors[unif_rand() * possible_ancestors.size()];
@@ -599,12 +598,25 @@ Rcpp::List cpp_move_swap_cases(Rcpp::List param, Rcpp::List data,
   
   Rcpp::IntegerVector swap_alpha, swap_t_inf, swap_kappa;
   Rcpp::List swapinfo; // contains alpha, kappa and t_inf
-  Rcpp::IntegerVector local_cases, descendents, desc_i, desc_i_swap;
+  Rcpp::IntegerVector local_cases, descendents, desc_i_swap;
   Rcpp::IntegerVector tree_i, tree_j;
   Rcpp::String gen_tree, gen_tree_j;
   Rcpp::IntegerVector vec_swap(N);
   int vect_k, i_swap, size_descendents, n_loc, i, k, j_clust;
   double old_loglike = 0.0, new_loglike = 0.0, p_accept = 0.0;
+
+  Rcpp::StringVector all_gen = clone(genotype); // copy of data$genotype
+  for (int i = 0; i < N; i++) {
+    if (alpha[i] == NA_INTEGER && all_gen[i] == "Not attributed"){
+      Rcpp::IntegerVector tree;
+      Rcpp::String gen_tree;
+      Rcpp::IntegerVector cluster_i = cluster_list[cluster_vec[i]-1];
+      
+      tree = cpp_find_all_tree(alpha, t_inf, cluster_i, i+1);
+      gen_tree = cpp_gen_tree(tree, cluster_i, genotype, i +1);
+      all_gen[i] = gen_tree;
+    }
+  }
   
   for (i = 0; i < N; i++) {
     if(vec_swap[i] == 0){
@@ -619,9 +631,8 @@ Rcpp::List cpp_move_swap_cases(Rcpp::List param, Rcpp::List data,
       // - the descendents of 'i_swap'
       // - 'i'
       // - the descendents of 'i' (other than 'i_swap')
-      
+
       if(size_descendents > 0 && move_alpha[i_swap - 1] == TRUE && move_alpha[i] == TRUE){
-        
         local_cases = cpp_find_local_cases(alpha, cluster_i, i_swap);
         n_loc = local_cases.size();
         
@@ -668,61 +679,49 @@ Rcpp::List cpp_move_swap_cases(Rcpp::List param, Rcpp::List data,
         // Special case to swap cases defined as importations (improve the mixing
         // of the trees)
         Rcpp::IntegerVector swap_ances;
-        tree_i = cpp_find_all_tree(alpha, t_inf, cluster_i, i+1);
-        gen_tree = cpp_gen_tree(tree_i, cluster_i, genotype, i+1);
         
         for (int j = 0; j < cluster_i.size(); j++){
           j_clust = cluster_i[j]-1;
-          if (alpha[j_clust] == NA_INTEGER && j_clust != i){
-            if(gen_tree == "Not attributed"){
-              swap_ances.push_back(j_clust+1);
-            } else{
-              if(genotype[j_clust] == "Not attributed"){
-                tree_j = cpp_find_all_tree(alpha, t_inf, cluster_i, j_clust + 1);
-                gen_tree_j = cpp_gen_tree(tree_j, cluster_i, genotype, j_clust + 1);
-              } else gen_tree_j = genotype[j_clust];
-              if(gen_tree_j == gen_tree || gen_tree_j == "Not attributed"){
-                swap_ances.push_back(j_clust+1);
-              }
-            }
+          if (alpha[j_clust] == NA_INTEGER && j_clust != i &&
+              (all_gen[i] == all_gen[j_clust] || all_gen[i] == "Not attributed" ||
+              all_gen[j_clust] == "Not attributed")){
+            swap_ances.push_back(j_clust+1);
           }
         }
         
         if(swap_ances.size() > 0){
           i_swap = swap_ances[unif_rand() * swap_ances.size()];
-          desc_i = cpp_find_descendents(alpha, cluster_i, i + 1);
           desc_i_swap = cpp_find_descendents(alpha, cluster_i, i_swap);
-          
-          old_loglike = cpp_ll_all(data, config, param, desc_i, list_custom_ll) +
-            cpp_ll_all(data, config, param, desc_i_swap, list_custom_ll) +
-            cpp_ll_all(data, config, param, i + 1, list_custom_ll) +
-            cpp_ll_all(data, config, param, i_swap, list_custom_ll); // offset
-          
+
           int t_inf_i = new_t_inf[i];
           int t_inf_i_swap = new_t_inf[i_swap - 1];
           new_t_inf[i_swap - 1] = t_inf_i;
           new_t_inf[i] = t_inf_i_swap;
+
+          Rcpp::IntegerVector all_cases;
           
-          for (k = 0; k < desc_i.size(); k++) {
-            vect_k = desc_i[k];
+          for (k = 0; k < descendents.size(); k++) {
+            vect_k = descendents[k];
             new_alpha[vect_k - 1] = i_swap;
+            all_cases.push_back(vect_k);
           }
           for (k = 0; k < desc_i_swap.size(); k++) {
             vect_k = desc_i_swap[k];
             new_alpha[vect_k - 1] = i + 1;
+            all_cases.push_back(vect_k);
           }
+          all_cases.push_back(i_swap);
+          all_cases.push_back(i + 1);
           
-          new_loglike = cpp_ll_all(data, config, new_param, desc_i, list_custom_ll) +
-            cpp_ll_all(data, config, new_param, desc_i_swap, list_custom_ll) +
-            cpp_ll_all(data, config, new_param, i + 1, list_custom_ll) +
-            cpp_ll_all(data, config, new_param, i_swap, list_custom_ll); // offset
-          
+          old_loglike = cpp_ll_all(data, config, param, all_cases, list_custom_ll);
+          new_loglike = cpp_ll_all(data, config, new_param, all_cases, list_custom_ll); // offset
+
           // acceptance term
           p_accept = exp(new_loglike - old_loglike);
           // acceptance: change param only if new values is accepted
           if (p_accept >= unif_rand()) { // accept new parameters
-            for (k = 0; k < desc_i.size(); k++) {
-              vect_k = desc_i[k];
+            for (k = 0; k < descendents.size(); k++) {
+              vect_k = descendents[k];
               alpha[vect_k - 1] = new_alpha[vect_k - 1];
             }
             for (k = 0; k < desc_i_swap.size(); k++) {
@@ -733,8 +732,8 @@ Rcpp::List cpp_move_swap_cases(Rcpp::List param, Rcpp::List data,
             t_inf[i] = new_t_inf[i];
             vec_swap[i_swap - 1] = 1;
           } else{
-            for (k = 0; k < desc_i.size(); k++) {
-              vect_k = desc_i[k];
+            for (k = 0; k < descendents.size(); k++) {
+              vect_k = descendents[k];
               new_alpha[vect_k - 1] = alpha[vect_k - 1];
             }
             for (k = 0; k < desc_i_swap.size(); k++) {
@@ -750,12 +749,12 @@ Rcpp::List cpp_move_swap_cases(Rcpp::List param, Rcpp::List data,
   }
   return param;
 }
-  
-  // ---------------------------
-  
-  
-  // Movement of the number of generations on transmission chains ('kappa') is
-  // done for one ancestry at a time. As for infection times ('t_inf') we use a
+
+// ---------------------------
+
+
+// Movement of the number of generations on transmission chains ('kappa') is
+// done for one ancestry at a time. As for infection times ('t_inf') we use a
 // dumb, symmetric +/- 1 proposal. But because values are typically in a short
 // range (e.g. [1-3]) we probably propose more dumb values here. We may
 // eventually want to bounce back or use and correct for assymetric proposals.
