@@ -119,12 +119,16 @@ Rcpp::List cpp_log_like_s(Rcpp::NumericVector population, Rcpp::NumericMatrix di
     for(k = 0; k<size_pop; k++){
       for(j = 0; j<size_pop; j++){
         if(j>k){
-          nb_move(k, j) = population_a[k]*pow(1+distance(j,k), b);
+          nb_move(k, j) = population_a[k]*pow(distance(j,k), b);
           nb_move(j, k) = nb_move(k,j) * population_a[j] / population_a[k];
           sum_pop[j] += nb_move(k, j);
           sum_pop[k] += nb_move(j, k);
         } else if(j == k){
-          nb_move(k, j) = population_a[k];
+          if(distance(j,k) == 0){
+            nb_move(k, j) = population_a[k];
+          } else{
+            nb_move(k, j) = population_a[k] * pow(distance(j,k), b);
+          }
           sum_pop[k] += nb_move(k, j);
         }
       }
