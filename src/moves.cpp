@@ -245,14 +245,14 @@ Rcpp::List cpp_move_t_inf(Rcpp::List param, Rcpp::List data,
     int n_loc = local_cases.size();
     // loglike with current value
     old_loc_loglike = cpp_ll_timing(data, param, i+1, list_custom_ll); // term for case 'i' with offset
-    
+
     // term descendents of 'i'
     if (n_loc > 0) {
       old_loc_loglike += cpp_ll_timing(data, param, local_cases, list_custom_ll);
     }
     
     // proposal (+/- 1)
-    new_t_inf[i] += unif_rand() > 0.5 ? 1 : -1; // new proposed value
+    new_t_inf[i] += unif_rand() > 0.5 ? 1: -1; // new proposed value
     // Check the new proposed value is correct
     if(alpha[i] != NA_INTEGER){ 
       if(new_t_inf[i] < new_t_inf[alpha[i] - 1]) new_t_inf[i] = t_inf[i];
@@ -264,7 +264,7 @@ Rcpp::List cpp_move_t_inf(Rcpp::List param, Rcpp::List data,
     }
     // loglike with new value
     new_loc_loglike = cpp_ll_timing(data, new_param, i+1, list_custom_ll); // term for case 'i' with offset
-    
+
     // term descendents of 'i'
     if (n_loc> 0) {
       new_loc_loglike += cpp_ll_timing(data, new_param, local_cases, list_custom_ll);
@@ -278,7 +278,9 @@ Rcpp::List cpp_move_t_inf(Rcpp::List param, Rcpp::List data,
     // is rejected, in which case we restore the previous ('old') value
     if (p_loc_accept < unif_rand()) { // reject new values
       new_t_inf[i] = t_inf[i];
-    } else t_inf[i] = new_t_inf[i];
+    } else{
+       t_inf[i] = new_t_inf[i];
+    }
   }
   
   return new_param;
@@ -347,7 +349,9 @@ Rcpp::List cpp_move_alpha(Rcpp::List param, Rcpp::List data, Rcpp::List config,
       possible_ancestors = cpp_are_possible_ancestors(t_inf, alpha, genotype, 
                                                       all_gen, cluster_i, delta, i+1);
       
-      if (possible_ancestors.size()>1){
+      // Add possible_ancestors[0] if possible_ancestors.size() = 0 
+      if (possible_ancestors.size() > 1 || (possible_ancestors[0] != alpha[i] && 
+          possible_ancestors.size() > 0)){
         // loglike with current value
         old_loglike = cpp_ll_all(data, config, param, i+1, list_custom_ll); // offset
         // proposal (+/- 1)
@@ -355,6 +359,7 @@ Rcpp::List cpp_move_alpha(Rcpp::List param, Rcpp::List data, Rcpp::List config,
         new_kappa[i] = unif_rand() * K + 1;
         // loglike with current value
         new_loglike = cpp_ll_all(data, config, new_param, i+1, list_custom_ll);
+        
         // acceptance term
         p_accept = exp(new_loglike - old_loglike);
         // which case we restore the previous ('old') value
