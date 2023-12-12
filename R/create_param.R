@@ -72,23 +72,23 @@
 #' \code{outbreaker_param} class content:
 #' \itemize{
 #'
-#'  \item \code{alpha}{An integer vector of length \code{data$N}, storing
-#' indices (from 1 to N) of infectors for each case.}
+#'  \item \code{alpha}: An integer vector of length \code{data$N}, storing
+#' indices (from 1 to N) of infectors for each case.
 #'
-#'  \item \code{t_inf}{An integer vector of length \code{data$N}, storing dates
-#' of infections for each case.}
+#'  \item \code{t_inf}: An integer vector of length \code{data$N}, storing dates
+#' of infections for each case.
 #'
-#'  \item \code{kappa}{An integer vector of length \code{data$N}, storing the
-#' number of generations before the last sampled ancestor for each case.}
+#'  \item \code{kappa}: An integer vector of length \code{data$N}, storing the
+#' number of generations before the last sampled ancestor for each case.
 #'
-#'  \item \code{pi}{The value of the reporting probability.}
+#'  \item \code{pi}: The value of the reporting probability.
 #'
-#'  \item \code{a}{The value of the first spatial parameter (population).}
+#'  \item \code{a}: The value of the first spatial parameter (population).
 #'
-#'  \item \code{b}{The value of the second spatial parameter (distance).}
+#'  \item \code{b}: The value of the second spatial parameter (distance).
 #'  
-#'  \item \code{log_s_dens}{The spatial likelihood matrix, calculated at each step
-#'  from a and b if move_a == TRUE or move_b == TRUE.}
+#'  \item \code{log_s_dens}:The spatial likelihood matrix, calculated at each step
+#'  from a and b if move_a == TRUE or move_b == TRUE.
 #'
 #' }
 #'
