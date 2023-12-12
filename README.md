@@ -1,5 +1,5 @@
 [![Travis-CI Build Status](https://travis-ci.org/alxsrobert/o2geosocial.svg?branch=master)](https://travis-ci.org/alxsrobert/o2geosocial)
-[![codecov](https://codecov.io/gh/alxsrobert/o2geosocial/branch/master/graph/badge.svg)](https://codecov.io/gh/alxsrobert/o2geosocial)
+[![codecov](https://codecov.io/gh/alxsrobert/o2geosocial/branch/master/graph/badge.svg)](https://app.codecov.io/gh/alxsrobert/o2geosocial)
 [![Build status](https://ci.appveyor.com/api/projects/status/9ri90o60a32q3tls?svg=true)](https://ci.appveyor.com/project/alxsrobert/o2geosocial)
 
 

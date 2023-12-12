@@ -27,44 +27,44 @@
 #' \code{outbreaker_store} class content:
 #' \itemize{
 #'
-#'  \item \code{size}{The length of the list, corresponding to the number of
-#' samples saved from the MCMC.}
+#'  \item \code{size}:The length of the list, corresponding to the number of
+#' samples saved from the MCMC.
 #'
-#'  \item \code{step}{A vector of integers of length \code{size}, storing the
-#' steps of the MCMC corresponding to the saved samples.}
+#'  \item \code{step}: A vector of integers of length \code{size}, storing the
+#' steps of the MCMC corresponding to the saved samples.
 #'
-#'  \item \code{post}{A numeric vector of length \code{size}, storing
-#' log-posterior values.}
+#'  \item \code{post}: A numeric vector of length \code{size}, storing
+#' log-posterior values.
 #'
-#'  \item \code{like}{A numeric vector of length \code{size}, storing
-#' log-likelihood values.}
+#'  \item \code{like}: A numeric vector of length \code{size}, storing
+#' log-likelihood values.
 #'
-#'  \item \code{prior}{A numeric vector of length \code{size},
-#' storing log-prior values.}
+#'  \item \code{prior}: A numeric vector of length \code{size},
+#' storing log-prior values.
 #'
-#'  \item \code{alpha}{A list of length \code{size}. Each item of the list is
+#'  \item \code{alpha}: A list of length \code{size}. Each item of the list is
 #' an integer vector of length \code{data$N}, storing indices (from 1 to N) of
-#' infectors for each case.}
+#' infectors for each case.
 #' 
-#'  \item \code{t_inf}{A list of length \code{size}. Each item of the list is
+#'  \item \code{t_inf}: A list of length \code{size}. Each item of the list is
 #' an integer vector of length \code{data$N}, storing dates of infections for
-#' each case.}
+#' each case.
 #'
-#'  \item \code{kappa}{A list of length \code{size}. Each item of the list is
+#'  \item \code{kappa}: A list of length \code{size}. Each item of the list is
 #' an integer vector of length \code{data$N}, storing the number of generations
-#' before the last sampled ancestor for each case.}
+#' before the last sampled ancestor for each case.
 #'
-#'  \item \code{pi}{A numeric vector of length \code{size}, storing values of
-#' the reporting probability.}
+#'  \item \code{pi}: A numeric vector of length \code{size}, storing values of
+#' the reporting probability.
 #' 
-#'  \item \code{a}{A numeric vector of length \code{size}, storing values of
-#' the first spatial parameter (population).}
+#'  \item \code{a}: A numeric vector of length \code{size}, storing values of
+#' the first spatial parameter (population).
 #' 
-#'  \item \code{b}{A numeric vector of length \code{size}, storing values of
-#' the second spatial parameter (distance).}
+#'  \item \code{b}: A numeric vector of length \code{size}, storing values of
+#' the second spatial parameter (distance).
 #'
-#'  \item \code{counter}{A counter used to keep track of the current iteration
-#' of the MCMC (used internally).}
+#'  \item \code{counter}: A counter used to keep track of the current iteration
+#' of the MCMC (used internally).
 #'
 #' }
 #'

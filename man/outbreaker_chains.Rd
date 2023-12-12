@@ -59,38 +59,38 @@ The function \code{summary} returns a list containing 9 elements:
 
 \itemize{
 
-\item{\code{step}}{contains the first and last values of the iteration 
+\item{\code{step}}: contains the first and last values of the iteration 
 number; the interval between each iteration retained for the output 
 (defined by the parameter \code{sample_every} in \code{create_config}),
- and the number of iterations in the output,}
+ and the number of iterations in the output,
 
-\item{\code{post}}{contains the minimum, maximum, mean, median and 
-quartiles of the posterior distribution.}
+\item{\code{post}}: contains the minimum, maximum, mean, median and 
+quartiles of the posterior distribution.
 
-\item{\code{like}}{contains the minimum, maximum, mean, median and 
-quartiles of the likelihood distribution.}
+\item{\code{like}}: contains the minimum, maximum, mean, median and 
+quartiles of the likelihood distribution.
 
-\item{\code{prior}}{contains the minimum, maximum, mean, median and 
-quartiles of the prior distribution.}
+\item{\code{prior}}: contains the minimum, maximum, mean, median and 
+quartiles of the prior distribution.
 
-\item{\code{pi}}{contains the minimum, maximum, mean, median and quartiles 
-of the conditional report ratio.}
+\item{\code{pi}}: contains the minimum, maximum, mean, median and quartiles 
+of the conditional report ratio.
 
-\item{\code{a}}{contains the minimum, maximum, mean, median and quartiles 
-of the spatial parameter \code{a}.}
+\item{\code{a}}: contains the minimum, maximum, mean, median and quartiles 
+of the spatial parameter \code{a}.
 
-\item{\code{b}}{contains the minimum, maximum, mean, median and quartiles 
-of the spatial parameter \code{b}.}
+\item{\code{b}}: contains the minimum, maximum, mean, median and quartiles 
+of the spatial parameter \code{b}.
 
-\item{\code{tree}}{a \code{data.frame} that contains the most likely 
+\item{\code{tree}}: a \code{data.frame} that contains the most likely 
 infector, the infection date, and the number of missing generations of each
 case. It also contains the \code{support} of the most likely branch (i.e. 
 the proportion of iterations where the infector of a case is its most 
 likely infector), and \code{import}, the proportion of iteration where the 
-case was classified as an importation.}
+case was classified as an importation.
 
-\item{\code{cluster}}{a data frame listing the minimum, maximum, median,
-mean and quartile of the cluster size distribution.}
+\item{\code{cluster}}: a data frame listing the minimum, maximum, median,
+mean and quartile of the cluster size distribution.
 
 }
 }
