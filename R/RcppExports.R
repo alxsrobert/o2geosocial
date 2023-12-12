@@ -115,5 +115,5 @@ cpp_prior_all <- function(param, config, custom_functions = NULL) {
 
 # Register entry points for exported C++ functions
 methods::setLoadAction(function(ns) {
-    .Call('_o2geosocial_RcppExport_registerCCallable', PACKAGE = 'o2geosocial')
+    .Call(`_o2geosocial_RcppExport_registerCCallable`)
 })

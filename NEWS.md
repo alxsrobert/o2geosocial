@@ -1,3 +1,6 @@
+# o2geosocial 1.1.1
+* Fix: Update `Rcpp` to remove warnings
+
 # o2geosocial 1.1.0
 
 ## Major Changes
