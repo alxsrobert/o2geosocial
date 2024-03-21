@@ -35,6 +35,9 @@ test_that("test: try different default movements", {
   config <- create_config(config = pre_clust[["config"]], 
                           data = data)
   data <- add_convolutions(data = data, config = config)
+  if(!is.null(data$log_w_dens[config$max_kappa, ])){
+    config$delta <- max(which(data$log_w_dens[config$max_kappa, ] > -20))
+  }
   
   param <- create_param(data = data, config = config)$current
   likeli <- custom_likelihoods()
@@ -141,6 +144,9 @@ test_that("test: try customization movements", {
   data <- outbreaker_data(data = pre_clust[["data"]])
   config <- create_config(config = pre_clust[["config"]])
   data <- add_convolutions(data = data, config = config)
+  if(!is.null(data$log_w_dens[config$max_kappa, ])){
+    config$delta <- max(which(data$log_w_dens[config$max_kappa, ] > -20))
+  }
   
   param <- create_param(data = data, config = config)$current
   likeli <- custom_likelihoods()

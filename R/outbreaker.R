@@ -127,8 +127,10 @@ outbreaker <- function(data = outbreaker_data(),
   
   ## ADD CONVOLUTIONS TO DATA ##
   data <- add_convolutions(data = data, config = config)
-  config$delta <- max(which(data$log_w_dens[config$max_kappa, ] > -20))
   
+  if(!is.null(data$log_w_dens[config$max_kappa, ])){
+    config$delta <- max(which(data$log_w_dens[config$max_kappa, ] > -20))
+  } else config$delta <- 1e6 # set delta to an arbitrary value
   ## PROCESS CUSTOM FUNCTIONS FOR PRIORS AND LIKELIHOOD ##
   priors <- custom_priors(priors)
   loglike <- custom_likelihoods(likelihoods)

@@ -54,21 +54,12 @@ std::vector<int> cpp_are_possible_ancestors(Rcpp::IntegerVector t_inf,
     gen_ref = genotype[all_descendents[j]-1];
     ++j;
   }
-  // If delta is set to NA, then define it as the biggest possible integer 
-  // (leaving it to NA may lead to runtime errors during tests)
-  if(delta == NA_INTEGER){
-    if(ref_t_inf < 0){
-      delta = std::numeric_limits<int>::max() + ref_t_inf;
-    } else {
-      delta = std::numeric_limits<int>::max();
-    }
-  }
   // If there was no genotype reported, then every case infected before i
   // and from the same group of cases ("cluster") can be considered an infector
   if(gen_ref == "Not attributed"){
     for (size_t j = 0; j < n; j++) {
       j_clust = cluster[j]-1;
-      if (t_inf[j_clust] < ref_t_inf && t_inf[j_clust] > ref_t_inf - delta) { // offset
+      if (t_inf[j_clust] < ref_t_inf && t_inf[j_clust] > (ref_t_inf - delta)) { // offset
         out.push_back(j_clust+1);
       }
     }
@@ -77,7 +68,7 @@ std::vector<int> cpp_are_possible_ancestors(Rcpp::IntegerVector t_inf,
     // genotype as i and i's descendents can be a cluster
     for (size_t j = 0; j < n; j++) {
       j_clust = cluster[j]-1;
-      if (t_inf[j_clust] < ref_t_inf && t_inf[j_clust] > ref_t_inf - delta && 
+      if (t_inf[j_clust] < ref_t_inf && t_inf[j_clust] > (ref_t_inf - delta) && 
           (gen_tree[j_clust] == gen_ref 
              || gen_tree[j_clust] == "Not attributed")) { // offset
         out.push_back(j_clust+1);
