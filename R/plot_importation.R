@@ -6,6 +6,8 @@
 #' @importFrom graphics legend
 #' @importFrom graphics par
 plot_importations <- function(influences_vect, threshold, config){
+  oldpar <- par(no.readonly = TRUE)
+  on.exit(par(oldpar))
   par(mfrow = c(1,1), mar = c(5, 5, 1, 1), bty = "l")
   plot(sort(influences_vect), type = "l", xlab = "Connection", lwd = 2,
        ylab = "Likelihood of connection", 
