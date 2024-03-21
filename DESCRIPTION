@@ -9,7 +9,7 @@ Authors@R: c(person("Alexis", "Robert", email = "alexis.robert@lshtm.ac.uk", rol
 		    person("Adam J", "Kucharski", email = "adam.kucharski@lshtm.ac.uk", role = c("aut"), comment = c(ORCID = "0000-0001-8814-9421")),
 		    person("Thibaut", "Jombart", role = c("ctb")))
 Maintainer: Alexis Robert <alexis.robert@lshtm.ac.uk>
-Description: Bayesian reconstruction of who infected whom during past outbreaks using routinely-collected surveillance data. Inference of transmission trees using genotype, age specific social contacts, distance between cases and onset dates of the reported cases. (Robert A, Kucharski AJ, Gastanaduy PA, Paul P, Funk S. 2020 <doi:10.1098/rsif.2020.0084>).
+Description: Bayesian reconstruction of who infected whom during past outbreaks using routinely-collected surveillance data. Inference of transmission trees using genotype, age specific social contacts, distance between cases and onset dates of the reported cases. (Robert A, Kucharski AJ, Gastanaduy PA, Paul P, Funk S. (2020) <doi:10.1098/rsif.2020.0084>).
 License: MIT + file LICENSE
 Imports: 
     Rcpp,
