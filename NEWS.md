@@ -1,3 +1,6 @@
+# o2geosocial 1.1.3
+* Fix: add extra checks to avoid segfaults in move_alpha and move_swap_alpha
+
 # o2geosocial 1.1.2
 * Resubmission following CRAN archive
 

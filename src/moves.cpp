@@ -323,6 +323,7 @@ Rcpp::List cpp_move_alpha(Rcpp::List param, Rcpp::List data, Rcpp::List config,
   double old_loglike = 0.0, new_loglike = 0.0, p_accept = 0.0;
   Rcpp::IntegerVector possible_ancestors;
   Rcpp::IntegerVector t_inf_i;
+  int rank;
   
   for (int i = 0; i < N; i++) {
     if (alpha[i] == NA_INTEGER ){
@@ -350,46 +351,49 @@ Rcpp::List cpp_move_alpha(Rcpp::List param, Rcpp::List data, Rcpp::List config,
                                                       all_gen, cluster_i, delta, i+1);
       
       // Add possible_ancestors[0] if possible_ancestors.size() = 0 
-      if (possible_ancestors.size() > 1 || (possible_ancestors[0] != alpha[i] && 
-          possible_ancestors.size() > 0)){
-        // loglike with current value
-        old_loglike = cpp_ll_all(data, config, param, i+1, list_custom_ll); // offset
-        // proposal (+/- 1)
-        new_alpha[i] = possible_ancestors[unif_rand() * possible_ancestors.size()];
-        new_kappa[i] = unif_rand() * K + 1;
-        // loglike with current value
-        new_loglike = cpp_ll_all(data, config, new_param, i+1, list_custom_ll);
-        
-        // acceptance term
-        p_accept = exp(new_loglike - old_loglike);
-        // which case we restore the previous ('old') value
-        if (p_accept < unif_rand()) { // reject new values
-          new_alpha[i] = alpha[i];
-          new_kappa[i] = kappa[i];
-        } else {
-          int old_ances = alpha[i];
-          alpha[i] = new_alpha[i];
-          kappa[i] = new_kappa[i];
+      if (possible_ancestors.size() > 0){
+        if (possible_ancestors.size() > 1 || possible_ancestors[0] != alpha[i]){
+          // loglike with current value
+          old_loglike = cpp_ll_all(data, config, param, i+1, list_custom_ll); // offset
+          // proposal (+/- 1)
+          rank = floor(unif_rand() * possible_ancestors.size());
+          // printf("%i %i \n", possible_ancestors.size(), rank);
+          new_alpha[i] = possible_ancestors[rank];
+          new_kappa[i] = floor(unif_rand() * K) + 1;
+          // loglike with current value
+          new_loglike = cpp_ll_all(data, config, new_param, i+1, list_custom_ll);
           
-          // Update the genotype in the  tree alpha used to belong to
-          Rcpp::IntegerVector tree_a = cpp_find_all_tree(alpha, t_inf, 
-                                                         cluster_i, old_ances);
-          Rcpp::String gen_tree_a = cpp_gen_tree(tree_a, cluster_i, genotype, 
-                                                 old_ances);
-          int n_tree_a = tree_a.size();
-          int same_tree = 0;
-          for(int j = 0; j < n_tree_a; j++){
-            if(tree_a[j] == i+1) same_tree = 1;
-            all_gen[tree_a[j] - 1] = gen_tree_a;
-          }
-          
-          // Update the genotype in the  tree alpha now belongs to
-          if(all_gen[i] != all_gen[alpha[i] - 1] && same_tree == 0){
-            Rcpp::IntegerVector tree = cpp_find_all_tree(alpha, t_inf, cluster_i, i + 1);
-            Rcpp::String gen_tree = cpp_gen_tree(tree, cluster_i, genotype, i + 1);
-            int n_tree = tree.size();
-            for(int j = 0; j < n_tree; j++){
-              all_gen[tree[j] - 1] = gen_tree;
+          // acceptance term
+          p_accept = exp(new_loglike - old_loglike);
+          // which case we restore the previous ('old') value
+          if (p_accept < unif_rand()) { // reject new values
+            new_alpha[i] = alpha[i];
+            new_kappa[i] = kappa[i];
+          } else {
+            int old_ances = alpha[i];
+            alpha[i] = new_alpha[i];
+            kappa[i] = new_kappa[i];
+            
+            // Update the genotype in the  tree alpha used to belong to
+            Rcpp::IntegerVector tree_a = cpp_find_all_tree(alpha, t_inf, 
+                                                           cluster_i, old_ances);
+            Rcpp::String gen_tree_a = cpp_gen_tree(tree_a, cluster_i, genotype, 
+                                                   old_ances);
+            int n_tree_a = tree_a.size();
+            int same_tree = 0;
+            for(int j = 0; j < n_tree_a; j++){
+              if(tree_a[j] == i+1) same_tree = 1;
+              all_gen[tree_a[j] - 1] = gen_tree_a;
+            }
+            
+            // Update the genotype in the  tree alpha now belongs to
+            if(all_gen[i] != all_gen[alpha[i] - 1] && same_tree == 0){
+              Rcpp::IntegerVector tree = cpp_find_all_tree(alpha, t_inf, cluster_i, i + 1);
+              Rcpp::String gen_tree = cpp_gen_tree(tree, cluster_i, genotype, i + 1);
+              int n_tree = tree.size();
+              for(int j = 0; j < n_tree; j++){
+                all_gen[tree[j] - 1] = gen_tree;
+              }
             }
           }
         }
@@ -445,7 +449,7 @@ Rcpp::List cpp_move_ancestors(Rcpp::List param, Rcpp::List data, Rcpp::List conf
   
   double old_loglike = 0.0, new_loglike = 0.0, p_accept = 0.0, runif = 0.0;
   Rcpp::IntegerVector all_desc;
-  int j_clust;
+  int j_clust, rank_ances, rank_index;
   
   for (int i = 0; i < N; i++) {
     if (alpha[i] == NA_INTEGER ){
@@ -479,7 +483,8 @@ Rcpp::List cpp_move_ancestors(Rcpp::List param, Rcpp::List data, Rcpp::List conf
       size_t new_ances;
       Rcpp::IntegerVector possible_index;
       if (possible_ances.size()>0){
-        new_ances = possible_ances[unif_rand()*possible_ances.size()];
+        rank_ances = floor(unif_rand() * possible_ances.size());
+        new_ances = possible_ances[rank_ances];
         
         new_alpha[new_ances-1] = NA_INTEGER;
         
@@ -492,8 +497,9 @@ Rcpp::List cpp_move_ancestors(Rcpp::List param, Rcpp::List data, Rcpp::List conf
           changes[1] = new_ances;
           old_loglike = cpp_ll_all(data, config, param, changes, list_custom_ll); 
           
-          size_t new_index = possible_index[unif_rand() * possible_index.size()];
-          
+          rank_index = floor(unif_rand() * possible_index.size());
+          size_t new_index = possible_index[rank_index];
+
           new_alpha[i] = new_index;
           new_kappa[i] = new_kappa[new_ances-1];
           new_kappa[new_ances-1] = NA_INTEGER;
@@ -604,10 +610,9 @@ Rcpp::List cpp_move_swap_cases(Rcpp::List param, Rcpp::List data,
   Rcpp::IntegerVector swap_alpha, swap_t_inf, swap_kappa;
   Rcpp::List swapinfo; // contains alpha, kappa and t_inf
   Rcpp::IntegerVector local_cases, descendents, desc_i_swap;
-  Rcpp::IntegerVector tree_i, tree_j;
   Rcpp::String gen_tree, gen_tree_j;
   Rcpp::IntegerVector vec_swap(N);
-  int vect_k, i_swap, size_descendents, n_loc, i, k, j_clust;
+  int vect_k, i_swap, size_descendents, n_loc, i, k, j_clust, rank;
   double old_loglike = 0.0, new_loglike = 0.0, p_accept = 0.0;
 
   Rcpp::StringVector all_gen = clone(genotype); // copy of data$genotype
@@ -629,15 +634,20 @@ Rcpp::List cpp_move_swap_cases(Rcpp::List param, Rcpp::List data,
       
       descendents = cpp_find_descendents(alpha, cluster_i, i+1);
       size_descendents = descendents.size();
-      i_swap = descendents[unif_rand() * size_descendents];
+      if(size_descendents > 0){
+        rank = floor(unif_rand() * size_descendents);
+        i_swap = descendents[rank];
+      } else i_swap = 1;
+      
       // The local likelihood is defined as the likelihood computed for the
       // cases affected by the swap; these include:
       // - 'i_swap' 
       // - the descendents of 'i_swap'
       // - 'i'
       // - the descendents of 'i' (other than 'i_swap')
-
+      
       if(size_descendents > 0 && move_alpha[i_swap - 1] == TRUE && move_alpha[i] == TRUE){
+        
         local_cases = cpp_find_local_cases(alpha, cluster_i, i_swap);
         n_loc = local_cases.size();
         
@@ -695,7 +705,7 @@ Rcpp::List cpp_move_swap_cases(Rcpp::List param, Rcpp::List data,
         }
         
         if(swap_ances.size() > 0){
-          i_swap = swap_ances[unif_rand() * swap_ances.size()];
+          i_swap = swap_ances[floor(unif_rand() * swap_ances.size())];
           desc_i_swap = cpp_find_descendents(alpha, cluster_i, i_swap);
 
           int t_inf_i = new_t_inf[i];
